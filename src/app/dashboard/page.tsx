@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from "react";
 import InfoPanel from "./info/infoPanel";
 import ArcDiagram from "./graphs/arcDiagram";
@@ -6,7 +8,7 @@ import SankeySelector from "./graphs/sankeySelector";
 
 interface DashboardProps {}
 
-const Dashboard: React.FC<DashboardProps> = () => {
+const Page: React.FC<DashboardProps> = () => {
   const [data, setData] = useState<Record<string, any>>({});
   const [fetchDone, setFetchDone] = useState<boolean>(false);
   const [selected, setSelected] = useState<string | null>(null);
@@ -45,14 +47,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
   return (
     <div>
       {fetchDone ? (
-        <div className="row data-row">
+        <div className="grid grid-cols-7 gap-4">
           <InfoPanel
             data={data}
             selected={selected}
             anchorSelect={handleAnchorInteraction}
           />
           <div
-            className="col-md-6 graph-panel"
+            className="flex flex-col col-span-3 h-screen graph-panel"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -79,4 +81,4 @@ const Dashboard: React.FC<DashboardProps> = () => {
   );
 };
 
-export default Dashboard;
+export default Page;

@@ -1,0 +1,1750 @@
+{
+    "nodes": [
+        {
+            "id": 0,
+            "name": "HARU: Action-directive",
+            "grp": 0,
+            "n": 5.75,
+            "interactions": [
+                {
+                    "id": 3,
+                    "thread_id": 0,
+                    "statement": "My day went well, thanks!",
+                    "response": "Ok Ben, let's get started with working on your Math homework!",
+                    "timestamp": "18:00:03",
+                    "sentiment": 0.625
+                },
+                {
+                    "id": 71,
+                    "thread_id": 6,
+                    "statement": "Yes, that's what I'm about to do.",
+                    "response": "Don't forget to set a sleep timer, Ben.",
+                    "timestamp": "21:25:10",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 73,
+                    "thread_id": 6,
+                    "statement": "Right.",
+                    "response": "And Ben, don't forget to set your alarm for 7 AM tomorrow morning.",
+                    "timestamp": "21:25:12",
+                    "sentiment": 0.0
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 1,
+            "name": "HARU: Affirmative Answer",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 2,
+            "name": "HARU: Apology",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 3,
+            "name": "HARU: Collaborative Completion",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 4,
+            "name": "HARU: Conversation Filler",
+            "grp": 0,
+            "n": 5.25,
+            "interactions": [
+                {
+                    "id": 29,
+                    "thread_id": 2,
+                    "statement": "Ok Haru, I'm done with my Math homework",
+                    "response": "That's amazing Ben, good job.",
+                    "timestamp": "18:41:29",
+                    "sentiment": 0.65
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 5,
+            "name": "HARU: Downplayer",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 6,
+            "name": "HARU: Greeting",
+            "grp": 0,
+            "n": 8.0,
+            "interactions": [
+                {
+                    "id": 13,
+                    "thread_id": 0,
+                    "statement": "Found it! Sure, let's do that.",
+                    "response": "Ok Ben, I'll check back again in 15 minutes to see how you're doing. ",
+                    "timestamp": "18:00:13",
+                    "sentiment": 0.25
+                },
+                {
+                    "id": 16,
+                    "thread_id": 1,
+                    "statement": "I'm already at question 9, one more to go and I'm done.",
+                    "response": "That's great Ben. I'll be here if you need me and I'll check again with you in 15 minutes!",
+                    "timestamp": "18:15:16",
+                    "sentiment": 1.0
+                },
+                {
+                    "id": 24,
+                    "thread_id": 1,
+                    "statement": "Thanks Haru, can you tell me some examples of how it's used?",
+                    "response": "Certainly Ben.",
+                    "timestamp": "18:30:24",
+                    "sentiment": 0.21428571428571427
+                },
+                {
+                    "id": 35,
+                    "thread_id": 2,
+                    "statement": "Sure, thank you Haru.",
+                    "response": "No problem Ben. Talk to you in 60 minutes.",
+                    "timestamp": "18:41:36",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 38,
+                    "thread_id": 3,
+                    "statement": "Ok Haru, just 5 more minutes, promise.",
+                    "response": "Ok Ben, I will check back with you in 5 minutes.",
+                    "timestamp": "19:41:39",
+                    "sentiment": 0.25
+                },
+                {
+                    "id": 55,
+                    "thread_id": 4,
+                    "statement": "Ok Haru, let me find that!",
+                    "response": "No worries Ben, whenever you are ready.",
+                    "timestamp": "19:46:56",
+                    "sentiment": 0.2
+                },
+                {
+                    "id": 58,
+                    "thread_id": 5,
+                    "statement": "Sure, Haru.",
+                    "response": "Sounds good Ben. Let's start off with a shower. Don't forget to take your pajamas with you.",
+                    "timestamp": "21:00:02",
+                    "sentiment": 0.7
+                },
+                {
+                    "id": 60,
+                    "thread_id": 5,
+                    "statement": "Oh right, thanks for reminding me Haru.",
+                    "response": "No problem, Ben.",
+                    "timestamp": "21:00:04",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 62,
+                    "thread_id": 5,
+                    "statement": "Hi Haru, all done with my shower!",
+                    "response": "Hi Ben, although I don't have a sense of smell, I just wanted to say that you probably smell much better now. Don't forget to brush your teeth, Ben!",
+                    "timestamp": "21:23:02",
+                    "sentiment": 0.625
+                },
+                {
+                    "id": 65,
+                    "thread_id": 6,
+                    "statement": "All done brushing!",
+                    "response": "Let me see that smile. Looks good, nice job Ben!",
+                    "timestamp": "21:25:04",
+                    "sentiment": 0.5833333333333334
+                },
+                {
+                    "id": 77,
+                    "thread_id": 6,
+                    "statement": "It's at 85%.",
+                    "response": "Great, thank you for checking that Ben.",
+                    "timestamp": "21:25:16",
+                    "sentiment": 0.8
+                },
+                {
+                    "id": 79,
+                    "thread_id": 6,
+                    "statement": "Ok. Goodnight Haru.",
+                    "response": "Goodnight Ben, good job today. See you tomorrow morning.",
+                    "timestamp": "21:25:18",
+                    "sentiment": 0.7
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 7,
+            "name": "HARU: Non-affirmative Answer",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 8,
+            "name": "HARU: Other",
+            "grp": 0,
+            "n": 7.5,
+            "interactions": [
+                {
+                    "id": 5,
+                    "thread_id": 0,
+                    "statement": "Ok, Haru! When is it due again?",
+                    "response": "Your Math homework is due tomorrow Ben.",
+                    "timestamp": "18:00:05",
+                    "sentiment": -0.125
+                },
+                {
+                    "id": 9,
+                    "thread_id": 0,
+                    "statement": "Did we leave off at question 5?",
+                    "response": "That's right Ben, the last question you did was question 5, but you skipped question 3 last time. You had asked me to set a reminder for you this morning to ask your Math teacher, Ms. Woods, about question 3. Just checking, did you remember to do that today Ben?",
+                    "timestamp": "18:00:09",
+                    "sentiment": 0.09523809523809523
+                },
+                {
+                    "id": 22,
+                    "thread_id": 1,
+                    "statement": "Yes. Can you remind me what Pascal's Triangle is?",
+                    "response": "Certainly Ben. Pascal's Triangle is a triangular array of the binomial coefficients that arises in probability theory, combinatorics, and algebra.",
+                    "timestamp": "18:30:22",
+                    "sentiment": 0.21428571428571427
+                },
+                {
+                    "id": 25,
+                    "thread_id": 1,
+                    "statement": "Certainly Ben.",
+                    "response": "Pascal's Triangle is used widely in probability theory, combinatorics, and algebra.",
+                    "timestamp": "18:30:25",
+                    "sentiment": -0.1
+                },
+                {
+                    "id": 27,
+                    "thread_id": 2,
+                    "statement": "Hmm, ok, I think I have an idea of how to do question 10 now.",
+                    "response": "I'm glad I could help Ben, I'll check back again in 15 minutes to see how you're doing.",
+                    "timestamp": "18:30:27",
+                    "sentiment": 0.25
+                },
+                {
+                    "id": 36,
+                    "thread_id": 2,
+                    "statement": "No problem Ben. Talk to you in 60 minutes.",
+                    "response": "Hi Ben, it has been 60 minutes since you started playing that game. Earlier, you had wanted me to remind you to set a hard 1-hour time limit to the time you spend playing games.",
+                    "timestamp": "19:41:37",
+                    "sentiment": -0.23055555555555554
+                },
+                {
+                    "id": 41,
+                    "thread_id": 4,
+                    "statement": "What time is it right now, Haru?",
+                    "response": "Ben, the current time is 7:46 PM.",
+                    "timestamp": "19:46:42",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 43,
+                    "thread_id": 4,
+                    "statement": "Wait, it's past 7:30 already?",
+                    "response": "Yes Ben, and it is 2 hours and 14 minutes until your scheduled bedtime at 10 PM, but you have not finished your English homework.",
+                    "timestamp": "19:46:44",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 45,
+                    "thread_id": 4,
+                    "statement": "How long will it take me to finish my homework?",
+                    "response": "You usually take about 1 hour and 30 minutes to complete your English homework. You had already spent 30 minutes earlier working on it, so you might still have about 1 hour of work left.",
+                    "timestamp": "19:46:46",
+                    "sentiment": -0.041666666666666664
+                },
+                {
+                    "id": 47,
+                    "thread_id": 4,
+                    "statement": "That means I still have over an hour left to spare before bed, right?",
+                    "response": "But Ben, you usually spare 1 hour to get ready for bed to give yourself time to shower, change your clothes, and brush your teeth.",
+                    "timestamp": "19:46:48",
+                    "sentiment": -0.024999999999999994
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 9,
+            "name": "HARU: Question",
+            "grp": 0,
+            "n": 9.0,
+            "interactions": [
+                {
+                    "id": 1,
+                    "thread_id": 0,
+                    "statement": "Hi Haru!",
+                    "response": "Hello Ben! How was your day today?",
+                    "timestamp": "18:00:01",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 7,
+                    "thread_id": 0,
+                    "statement": "Oh, thank you for reminding me.",
+                    "response": "You're welcome Ben. Do you remember where we left off last time?",
+                    "timestamp": "18:00:07",
+                    "sentiment": 0.26666666666666666
+                },
+                {
+                    "id": 11,
+                    "thread_id": 0,
+                    "statement": "I did. Let me try to find the notes I took today.",
+                    "response": "Sure thing, Ben. Should we finish question number 3 first before moving on to question 6?",
+                    "timestamp": "18:00:11",
+                    "sentiment": 0.375
+                },
+                {
+                    "id": 14,
+                    "thread_id": 0,
+                    "statement": "Ok Ben, I'll check back again in 15 minutes to see how you're doing. ",
+                    "response": "Just checking in, how is your homework going Ben? Did you have any trouble doing any of the questions?",
+                    "timestamp": "18:15:14",
+                    "sentiment": -0.2
+                },
+                {
+                    "id": 18,
+                    "thread_id": 1,
+                    "statement": "Ok Haru!",
+                    "response": "Hi Ben, is everything going alright with your homework?",
+                    "timestamp": "18:30:18",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 20,
+                    "thread_id": 1,
+                    "statement": "Hi Haru, I'm having trouble with the last question, question 10.",
+                    "response": "Would you like me to help you look up something on Google?",
+                    "timestamp": "18:30:20",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 31,
+                    "thread_id": 2,
+                    "statement": "Haru, what else do I have to do today?",
+                    "response": "You have an English reading assignment for tomorrow. Would you like to get started on that or would you like to take a break?",
+                    "timestamp": "18:41:31",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 33,
+                    "thread_id": 2,
+                    "statement": "I think I can use a break.",
+                    "response": "Ok, I will set time for a 1-hour break. How does that sound for you?",
+                    "timestamp": "18:41:34",
+                    "sentiment": 0.45
+                },
+                {
+                    "id": 39,
+                    "thread_id": 3,
+                    "statement": "Ok Ben, I will check back with you in 5 minutes.",
+                    "response": "Hi Ben, it has been 5 minutes but it looks like you are still playing your game. Your overall screen time has exceeded 65 minutes today. How about we put the console away now? Would you like to get back to your English homework that is due tomorrow?",
+                    "timestamp": "19:46:40",
+                    "sentiment": -0.10500000000000001
+                },
+                {
+                    "id": 49,
+                    "thread_id": 4,
+                    "statement": "Oh right. Then... can't I continue playing for another 15 minutes?",
+                    "response": "Ben, I did notice earlier that you were struggling with your English homework. Why don't we spend more time working on that instead?",
+                    "timestamp": "19:46:50",
+                    "sentiment": 0.16666666666666666
+                },
+                {
+                    "id": 51,
+                    "thread_id": 4,
+                    "statement": "The homework does seem like it might be a bit more difficult than usual...",
+                    "response": "Then, is there anything that I can help you with, Ben?",
+                    "timestamp": "19:46:52",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 53,
+                    "thread_id": 4,
+                    "statement": "I think I need to look up a few terms in the dictionary.",
+                    "response": "Sure Ben, can you recite those words to me?",
+                    "timestamp": "19:46:54",
+                    "sentiment": 0.5
+                },
+                {
+                    "id": 56,
+                    "thread_id": 4,
+                    "statement": "No worries Ben, whenever you are ready.",
+                    "response": "Hi Ben, the time is currently 9 PM. Should we start getting ready for bed?",
+                    "timestamp": "21:00:00",
+                    "sentiment": 0.1
+                },
+                {
+                    "id": 67,
+                    "thread_id": 6,
+                    "statement": "Great, thanks for checking Haru.",
+                    "response": "Would you like me to tell you a bedtime story?",
+                    "timestamp": "21:25:06",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 69,
+                    "thread_id": 6,
+                    "statement": "Bedtime story? I'm too old for that, Haru!",
+                    "response": "How about we play the Bedtime playlist you created on Spotify?",
+                    "timestamp": "21:25:08",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 75,
+                    "thread_id": 6,
+                    "statement": "Yes, it's set.",
+                    "response": "Ben, is the battery on your phone charged?",
+                    "timestamp": "21:25:14",
+                    "sentiment": 0.0
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 10,
+            "name": "HARU: Self-talk",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 11,
+            "name": "HARU: Statement-opinion",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 12,
+            "name": "HARU: Thanking",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 13,
+            "name": "CHILD: Action-directive",
+            "grp": 0,
+            "n": 5.5,
+            "interactions": [
+                {
+                    "id": 12,
+                    "thread_id": 0,
+                    "statement": "Sure thing, Ben. Should we finish question number 3 first before moving on to question 6?",
+                    "response": "Found it! Sure, let's do that.",
+                    "timestamp": "18:00:12",
+                    "sentiment": 0.5
+                },
+                {
+                    "id": 37,
+                    "thread_id": 3,
+                    "statement": "Hi Ben, it has been 60 minutes since you started playing that game. Earlier, you had wanted me to remind you to set a hard 1-hour time limit to the time you spend playing games.",
+                    "response": "Ok Haru, just 5 more minutes, promise.",
+                    "timestamp": "19:41:38",
+                    "sentiment": 0.5
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 14,
+            "name": "CHILD: Affirmative Answer",
+            "grp": 0,
+            "n": 5.5,
+            "interactions": [
+                {
+                    "id": 70,
+                    "thread_id": 6,
+                    "statement": "How about we play the Bedtime playlist you created on Spotify?",
+                    "response": "Yes, that's what I'm about to do.",
+                    "timestamp": "21:25:09",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 74,
+                    "thread_id": 6,
+                    "statement": "And Ben, don't forget to set your alarm for 7 AM tomorrow morning.",
+                    "response": "Yes, it's set.",
+                    "timestamp": "21:25:13",
+                    "sentiment": 0.0
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 15,
+            "name": "CHILD: Apology",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 16,
+            "name": "CHILD: Collaborative Completion",
+            "grp": 0,
+            "n": 5.25,
+            "interactions": [
+                {
+                    "id": 64,
+                    "thread_id": 5,
+                    "statement": "Yes, doing that now Haru!",
+                    "response": "All done brushing!",
+                    "timestamp": "21:25:00",
+                    "sentiment": 0.0
+                }
+            ],
+            "show": "false"
+        },
+        {
+            "id": 17,
+            "name": "CHILD: Conversation Filler",
+            "grp": 0,
+            "n": 6.25,
+            "interactions": [
+                {
+                    "id": 17,
+                    "thread_id": 1,
+                    "statement": "That's great Ben. I'll be here if you need me and I'll check again with you in 15 minutes!",
+                    "response": "Ok Haru!",
+                    "timestamp": "18:15:17",
+                    "sentiment": 0.625
+                },
+                {
+                    "id": 54,
+                    "thread_id": 4,
+                    "statement": "Sure Ben, can you recite those words to me?",
+                    "response": "Ok Haru, let me find that!",
+                    "timestamp": "19:46:55",
+                    "sentiment": 0.625
+                },
+                {
+                    "id": 57,
+                    "thread_id": 5,
+                    "statement": "Hi Ben, the time is currently 9 PM. Should we start getting ready for bed?",
+                    "response": "Sure, Haru.",
+                    "timestamp": "21:00:01",
+                    "sentiment": 0.5
+                },
+                {
+                    "id": 63,
+                    "thread_id": 5,
+                    "statement": "Hi Ben, although I don't have a sense of smell, I just wanted to say that you probably smell much better now. Don't forget to brush your teeth, Ben!",
+                    "response": "Yes, doing that now Haru!",
+                    "timestamp": "21:23:03",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 72,
+                    "thread_id": 6,
+                    "statement": "Don't forget to set a sleep timer, Ben.",
+                    "response": "Right.",
+                    "timestamp": "21:25:11",
+                    "sentiment": 0.2857142857142857
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 18,
+            "name": "CHILD: Downplayer",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 19,
+            "name": "CHILD: Greeting",
+            "grp": 0,
+            "n": 7.0,
+            "interactions": [
+                {
+                    "id": 0,
+                    "thread_id": 0,
+                    "statement": "",
+                    "response": "Hi Haru!",
+                    "timestamp": "18:00:00",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 2,
+                    "thread_id": 0,
+                    "statement": "Hello Ben! How was your day today?",
+                    "response": "My day went well, thanks!",
+                    "timestamp": "18:00:02",
+                    "sentiment": 0.25
+                },
+                {
+                    "id": 6,
+                    "thread_id": 0,
+                    "statement": "Your Math homework is due tomorrow Ben.",
+                    "response": "Oh, thank you for reminding me.",
+                    "timestamp": "18:00:06",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 34,
+                    "thread_id": 2,
+                    "statement": "Ok, I will set time for a 1-hour break. How does that sound for you?",
+                    "response": "Sure, thank you Haru.",
+                    "timestamp": "18:41:35",
+                    "sentiment": 0.5
+                },
+                {
+                    "id": 59,
+                    "thread_id": 5,
+                    "statement": "Sounds good Ben. Let's start off with a shower. Don't forget to take your pajamas with you.",
+                    "response": "Oh right, thanks for reminding me Haru.",
+                    "timestamp": "21:00:03",
+                    "sentiment": 0.24285714285714285
+                },
+                {
+                    "id": 61,
+                    "thread_id": 5,
+                    "statement": "No problem, Ben.",
+                    "response": "Hi Haru, all done with my shower!",
+                    "timestamp": "21:23:00",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 66,
+                    "thread_id": 6,
+                    "statement": "Let me see that smile. Looks good, nice job Ben!",
+                    "response": "Great, thanks for checking Haru.",
+                    "timestamp": "21:25:05",
+                    "sentiment": 0.5
+                },
+                {
+                    "id": 78,
+                    "thread_id": 6,
+                    "statement": "Great, thank you for checking that Ben.",
+                    "response": "Ok. Goodnight Haru.",
+                    "timestamp": "21:25:17",
+                    "sentiment": 0.0
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 20,
+            "name": "CHILD: Non-affirmative Answer",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        },
+        {
+            "id": 21,
+            "name": "CHILD: Other",
+            "grp": 0,
+            "n": 7.0,
+            "interactions": [
+                {
+                    "id": 10,
+                    "thread_id": 0,
+                    "statement": "That's right Ben, the last question you did was question 5, but you skipped question 3 last time. You had asked me to set a reminder for you this morning to ask your Math teacher, Ms. Woods, about question 3. Just checking, did you remember to do that today Ben?",
+                    "response": "I did. Let me try to find the notes I took today.",
+                    "timestamp": "18:00:10",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 15,
+                    "thread_id": 1,
+                    "statement": "Just checking in, how is your homework going Ben? Did you have any trouble doing any of the questions?",
+                    "response": "I'm already at question 9, one more to go and I'm done.",
+                    "timestamp": "18:15:15",
+                    "sentiment": 0.5
+                },
+                {
+                    "id": 19,
+                    "thread_id": 1,
+                    "statement": "Hi Ben, is everything going alright with your homework?",
+                    "response": "Hi Haru, I'm having trouble with the last question, question 10.",
+                    "timestamp": "18:30:19",
+                    "sentiment": -0.1
+                },
+                {
+                    "id": 26,
+                    "thread_id": 2,
+                    "statement": "Pascal's Triangle is used widely in probability theory, combinatorics, and algebra.",
+                    "response": "Hmm, ok, I think I have an idea of how to do question 10 now.",
+                    "timestamp": "18:30:26",
+                    "sentiment": 0.5
+                },
+                {
+                    "id": 28,
+                    "thread_id": 2,
+                    "statement": "I'm glad I could help Ben, I'll check back again in 15 minutes to see how you're doing.",
+                    "response": "Ok Haru, I'm done with my Math homework",
+                    "timestamp": "18:41:28",
+                    "sentiment": 0.5
+                },
+                {
+                    "id": 32,
+                    "thread_id": 2,
+                    "statement": "You have an English reading assignment for tomorrow. Would you like to get started on that or would you like to take a break?",
+                    "response": "I think I can use a break.",
+                    "timestamp": "18:41:33",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 52,
+                    "thread_id": 4,
+                    "statement": "Then, is there anything that I can help you with, Ben?",
+                    "response": "I think I need to look up a few terms in the dictionary.",
+                    "timestamp": "19:46:53",
+                    "sentiment": -0.2
+                },
+                {
+                    "id": 76,
+                    "thread_id": 6,
+                    "statement": "Ben, is the battery on your phone charged?",
+                    "response": "It's at 85%.",
+                    "timestamp": "21:25:15",
+                    "sentiment": 0.0
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 22,
+            "name": "CHILD: Question",
+            "grp": 0,
+            "n": 7.5,
+            "interactions": [
+                {
+                    "id": 4,
+                    "thread_id": 0,
+                    "statement": "Ok Ben, let's get started with working on your Math homework!",
+                    "response": "Ok, Haru! When is it due again?",
+                    "timestamp": "18:00:04",
+                    "sentiment": 0.25
+                },
+                {
+                    "id": 8,
+                    "thread_id": 0,
+                    "statement": "You're welcome Ben. Do you remember where we left off last time?",
+                    "response": "Did we leave off at question 5?",
+                    "timestamp": "18:00:08",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 21,
+                    "thread_id": 1,
+                    "statement": "Would you like me to help you look up something on Google?",
+                    "response": "Yes. Can you remind me what Pascal's Triangle is?",
+                    "timestamp": "18:30:21",
+                    "sentiment": 0.0
+                },
+                {
+                    "id": 23,
+                    "thread_id": 1,
+                    "statement": "Certainly Ben. Pascal's Triangle is a triangular array of the binomial coefficients that arises in probability theory, combinatorics, and algebra.",
+                    "response": "Thanks Haru, can you tell me some examples of how it's used?",
+                    "timestamp": "18:30:23",
+                    "sentiment": 0.2
+                },
+                {
+                    "id": 40,
+                    "thread_id": 4,
+                    "statement": "Hi Ben, it has been 5 minutes but it looks like you are still playing your game. Your overall screen time has exceeded 65 minutes today. How about we put the console away now? Would you like to get back to your English homework that is due tomorrow?",
+                    "response": "What time is it right now, Haru?",
+                    "timestamp": "19:46:41",
+                    "sentiment": 0.2857142857142857
+                },
+                {
+                    "id": 42,
+                    "thread_id": 4,
+                    "statement": "Ben, the current time is 7:46 PM.",
+                    "response": "Wait, it's past 7:30 already?",
+                    "timestamp": "19:46:43",
+                    "sentiment": -0.25
+                },
+                {
+                    "id": 44,
+                    "thread_id": 4,
+                    "statement": "Yes Ben, and it is 2 hours and 14 minutes until your scheduled bedtime at 10 PM, but you have not finished your English homework.",
+                    "response": "How long will it take me to finish my homework?",
+                    "timestamp": "19:46:45",
+                    "sentiment": -0.05
+                },
+                {
+                    "id": 46,
+                    "thread_id": 4,
+                    "statement": "You usually take about 1 hour and 30 minutes to complete your English homework. You had already spent 30 minutes earlier working on it, so you might still have about 1 hour of work left.",
+                    "response": "That means I still have over an hour left to spare before bed, right?",
+                    "timestamp": "19:46:47",
+                    "sentiment": 0.14285714285714285
+                },
+                {
+                    "id": 48,
+                    "thread_id": 4,
+                    "statement": "But Ben, you usually spare 1 hour to get ready for bed to give yourself time to shower, change your clothes, and brush your teeth.",
+                    "response": "Oh right. Then... can't I continue playing for another 15 minutes?",
+                    "timestamp": "19:46:49",
+                    "sentiment": 0.2857142857142857
+                },
+                {
+                    "id": 68,
+                    "thread_id": 6,
+                    "statement": "Would you like me to tell you a bedtime story?",
+                    "response": "Bedtime story? I'm too old for that, Haru!",
+                    "timestamp": "21:25:07",
+                    "sentiment": 0.125
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 23,
+            "name": "CHILD: Self-talk",
+            "grp": 0,
+            "n": 5.25,
+            "interactions": [
+                {
+                    "id": 30,
+                    "thread_id": 2,
+                    "statement": "That's amazing Ben, good job.",
+                    "response": "Haru, what else do I have to do today?",
+                    "timestamp": "18:41:30",
+                    "sentiment": 0.0
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 24,
+            "name": "CHILD: Statement-opinion",
+            "grp": 0,
+            "n": 5.25,
+            "interactions": [
+                {
+                    "id": 50,
+                    "thread_id": 4,
+                    "statement": "Ben, I did notice earlier that you were struggling with your English homework. Why don't we spend more time working on that instead?",
+                    "response": "The homework does seem like it might be a bit more difficult than usual...",
+                    "timestamp": "19:46:51",
+                    "sentiment": -0.08333333333333333
+                }
+            ],
+            "show": "true"
+        },
+        {
+            "id": 25,
+            "name": "CHILD: Thanking",
+            "grp": 0,
+            "n": 5,
+            "interactions": [],
+            "show": "false"
+        }
+    ],
+    "links": {
+        "haru": [
+            {
+                "name": "HARU: Question to CHILD: Greeting",
+                "source": 9,
+                "target": 19,
+                "value": 2,
+                "interactions": [
+                    {
+                        "id": 2,
+                        "thread_id": 0,
+                        "statement": "Hello Ben! How was your day today?",
+                        "response": "My day went well, thanks!",
+                        "timestamp": "18:00:02",
+                        "sentiment": 0.25
+                    },
+                    {
+                        "id": 34,
+                        "thread_id": 2,
+                        "statement": "Ok, I will set time for a 1-hour break. How does that sound for you?",
+                        "response": "Sure, thank you Haru.",
+                        "timestamp": "18:41:35",
+                        "sentiment": 0.5
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Action-directive to CHILD: Question",
+                "source": 0,
+                "target": 22,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 4,
+                        "thread_id": 0,
+                        "statement": "Ok Ben, let's get started with working on your Math homework!",
+                        "response": "Ok, Haru! When is it due again?",
+                        "timestamp": "18:00:04",
+                        "sentiment": 0.25
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Other to CHILD: Greeting",
+                "source": 8,
+                "target": 19,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 6,
+                        "thread_id": 0,
+                        "statement": "Your Math homework is due tomorrow Ben.",
+                        "response": "Oh, thank you for reminding me.",
+                        "timestamp": "18:00:06",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Question to CHILD: Question",
+                "source": 9,
+                "target": 22,
+                "value": 4,
+                "interactions": [
+                    {
+                        "id": 8,
+                        "thread_id": 0,
+                        "statement": "You're welcome Ben. Do you remember where we left off last time?",
+                        "response": "Did we leave off at question 5?",
+                        "timestamp": "18:00:08",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 21,
+                        "thread_id": 1,
+                        "statement": "Would you like me to help you look up something on Google?",
+                        "response": "Yes. Can you remind me what Pascal's Triangle is?",
+                        "timestamp": "18:30:21",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 40,
+                        "thread_id": 4,
+                        "statement": "Hi Ben, it has been 5 minutes but it looks like you are still playing your game. Your overall screen time has exceeded 65 minutes today. How about we put the console away now? Would you like to get back to your English homework that is due tomorrow?",
+                        "response": "What time is it right now, Haru?",
+                        "timestamp": "19:46:41",
+                        "sentiment": 0.2857142857142857
+                    },
+                    {
+                        "id": 68,
+                        "thread_id": 6,
+                        "statement": "Would you like me to tell you a bedtime story?",
+                        "response": "Bedtime story? I'm too old for that, Haru!",
+                        "timestamp": "21:25:07",
+                        "sentiment": 0.125
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Other to CHILD: Other",
+                "source": 8,
+                "target": 21,
+                "value": 3,
+                "interactions": [
+                    {
+                        "id": 10,
+                        "thread_id": 0,
+                        "statement": "That's right Ben, the last question you did was question 5, but you skipped question 3 last time. You had asked me to set a reminder for you this morning to ask your Math teacher, Ms. Woods, about question 3. Just checking, did you remember to do that today Ben?",
+                        "response": "I did. Let me try to find the notes I took today.",
+                        "timestamp": "18:00:10",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 26,
+                        "thread_id": 2,
+                        "statement": "Pascal's Triangle is used widely in probability theory, combinatorics, and algebra.",
+                        "response": "Hmm, ok, I think I have an idea of how to do question 10 now.",
+                        "timestamp": "18:30:26",
+                        "sentiment": 0.5
+                    },
+                    {
+                        "id": 28,
+                        "thread_id": 2,
+                        "statement": "I'm glad I could help Ben, I'll check back again in 15 minutes to see how you're doing.",
+                        "response": "Ok Haru, I'm done with my Math homework",
+                        "timestamp": "18:41:28",
+                        "sentiment": 0.5
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Question to CHILD: Action-directive",
+                "source": 9,
+                "target": 13,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 12,
+                        "thread_id": 0,
+                        "statement": "Sure thing, Ben. Should we finish question number 3 first before moving on to question 6?",
+                        "response": "Found it! Sure, let's do that.",
+                        "timestamp": "18:00:12",
+                        "sentiment": 0.5
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Question to CHILD: Other",
+                "source": 9,
+                "target": 21,
+                "value": 5,
+                "interactions": [
+                    {
+                        "id": 15,
+                        "thread_id": 1,
+                        "statement": "Just checking in, how is your homework going Ben? Did you have any trouble doing any of the questions?",
+                        "response": "I'm already at question 9, one more to go and I'm done.",
+                        "timestamp": "18:15:15",
+                        "sentiment": 0.5
+                    },
+                    {
+                        "id": 19,
+                        "thread_id": 1,
+                        "statement": "Hi Ben, is everything going alright with your homework?",
+                        "response": "Hi Haru, I'm having trouble with the last question, question 10.",
+                        "timestamp": "18:30:19",
+                        "sentiment": -0.1
+                    },
+                    {
+                        "id": 32,
+                        "thread_id": 2,
+                        "statement": "You have an English reading assignment for tomorrow. Would you like to get started on that or would you like to take a break?",
+                        "response": "I think I can use a break.",
+                        "timestamp": "18:41:33",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 52,
+                        "thread_id": 4,
+                        "statement": "Then, is there anything that I can help you with, Ben?",
+                        "response": "I think I need to look up a few terms in the dictionary.",
+                        "timestamp": "19:46:53",
+                        "sentiment": -0.2
+                    },
+                    {
+                        "id": 76,
+                        "thread_id": 6,
+                        "statement": "Ben, is the battery on your phone charged?",
+                        "response": "It's at 85%.",
+                        "timestamp": "21:25:15",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Greeting to CHILD: Conversation Filler",
+                "source": 6,
+                "target": 17,
+                "value": 2,
+                "interactions": [
+                    {
+                        "id": 17,
+                        "thread_id": 1,
+                        "statement": "That's great Ben. I'll be here if you need me and I'll check again with you in 15 minutes!",
+                        "response": "Ok Haru!",
+                        "timestamp": "18:15:17",
+                        "sentiment": 0.625
+                    },
+                    {
+                        "id": 63,
+                        "thread_id": 5,
+                        "statement": "Hi Ben, although I don't have a sense of smell, I just wanted to say that you probably smell much better now. Don't forget to brush your teeth, Ben!",
+                        "response": "Yes, doing that now Haru!",
+                        "timestamp": "21:23:03",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Other to CHILD: Question",
+                "source": 8,
+                "target": 22,
+                "value": 5,
+                "interactions": [
+                    {
+                        "id": 23,
+                        "thread_id": 1,
+                        "statement": "Certainly Ben. Pascal's Triangle is a triangular array of the binomial coefficients that arises in probability theory, combinatorics, and algebra.",
+                        "response": "Thanks Haru, can you tell me some examples of how it's used?",
+                        "timestamp": "18:30:23",
+                        "sentiment": 0.2
+                    },
+                    {
+                        "id": 42,
+                        "thread_id": 4,
+                        "statement": "Ben, the current time is 7:46 PM.",
+                        "response": "Wait, it's past 7:30 already?",
+                        "timestamp": "19:46:43",
+                        "sentiment": -0.25
+                    },
+                    {
+                        "id": 44,
+                        "thread_id": 4,
+                        "statement": "Yes Ben, and it is 2 hours and 14 minutes until your scheduled bedtime at 10 PM, but you have not finished your English homework.",
+                        "response": "How long will it take me to finish my homework?",
+                        "timestamp": "19:46:45",
+                        "sentiment": -0.05
+                    },
+                    {
+                        "id": 46,
+                        "thread_id": 4,
+                        "statement": "You usually take about 1 hour and 30 minutes to complete your English homework. You had already spent 30 minutes earlier working on it, so you might still have about 1 hour of work left.",
+                        "response": "That means I still have over an hour left to spare before bed, right?",
+                        "timestamp": "19:46:47",
+                        "sentiment": 0.14285714285714285
+                    },
+                    {
+                        "id": 48,
+                        "thread_id": 4,
+                        "statement": "But Ben, you usually spare 1 hour to get ready for bed to give yourself time to shower, change your clothes, and brush your teeth.",
+                        "response": "Oh right. Then... can't I continue playing for another 15 minutes?",
+                        "timestamp": "19:46:49",
+                        "sentiment": 0.2857142857142857
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Conversation Filler to CHILD: Self-talk",
+                "source": 4,
+                "target": 23,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 30,
+                        "thread_id": 2,
+                        "statement": "That's amazing Ben, good job.",
+                        "response": "Haru, what else do I have to do today?",
+                        "timestamp": "18:41:30",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Other to CHILD: Action-directive",
+                "source": 8,
+                "target": 13,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 37,
+                        "thread_id": 3,
+                        "statement": "Hi Ben, it has been 60 minutes since you started playing that game. Earlier, you had wanted me to remind you to set a hard 1-hour time limit to the time you spend playing games.",
+                        "response": "Ok Haru, just 5 more minutes, promise.",
+                        "timestamp": "19:41:38",
+                        "sentiment": 0.5
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Question to CHILD: Statement-opinion",
+                "source": 9,
+                "target": 24,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 50,
+                        "thread_id": 4,
+                        "statement": "Ben, I did notice earlier that you were struggling with your English homework. Why don't we spend more time working on that instead?",
+                        "response": "The homework does seem like it might be a bit more difficult than usual...",
+                        "timestamp": "19:46:51",
+                        "sentiment": -0.08333333333333333
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Question to CHILD: Conversation Filler",
+                "source": 9,
+                "target": 17,
+                "value": 2,
+                "interactions": [
+                    {
+                        "id": 54,
+                        "thread_id": 4,
+                        "statement": "Sure Ben, can you recite those words to me?",
+                        "response": "Ok Haru, let me find that!",
+                        "timestamp": "19:46:55",
+                        "sentiment": 0.625
+                    },
+                    {
+                        "id": 57,
+                        "thread_id": 5,
+                        "statement": "Hi Ben, the time is currently 9 PM. Should we start getting ready for bed?",
+                        "response": "Sure, Haru.",
+                        "timestamp": "21:00:01",
+                        "sentiment": 0.5
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Greeting to CHILD: Greeting",
+                "source": 6,
+                "target": 19,
+                "value": 4,
+                "interactions": [
+                    {
+                        "id": 59,
+                        "thread_id": 5,
+                        "statement": "Sounds good Ben. Let's start off with a shower. Don't forget to take your pajamas with you.",
+                        "response": "Oh right, thanks for reminding me Haru.",
+                        "timestamp": "21:00:03",
+                        "sentiment": 0.24285714285714285
+                    },
+                    {
+                        "id": 61,
+                        "thread_id": 5,
+                        "statement": "No problem, Ben.",
+                        "response": "Hi Haru, all done with my shower!",
+                        "timestamp": "21:23:00",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 66,
+                        "thread_id": 6,
+                        "statement": "Let me see that smile. Looks good, nice job Ben!",
+                        "response": "Great, thanks for checking Haru.",
+                        "timestamp": "21:25:05",
+                        "sentiment": 0.5
+                    },
+                    {
+                        "id": 78,
+                        "thread_id": 6,
+                        "statement": "Great, thank you for checking that Ben.",
+                        "response": "Ok. Goodnight Haru.",
+                        "timestamp": "21:25:17",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Question to CHILD: Affirmative Answer",
+                "source": 9,
+                "target": 14,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 70,
+                        "thread_id": 6,
+                        "statement": "How about we play the Bedtime playlist you created on Spotify?",
+                        "response": "Yes, that's what I'm about to do.",
+                        "timestamp": "21:25:09",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Action-directive to CHILD: Conversation Filler",
+                "source": 0,
+                "target": 17,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 72,
+                        "thread_id": 6,
+                        "statement": "Don't forget to set a sleep timer, Ben.",
+                        "response": "Right.",
+                        "timestamp": "21:25:11",
+                        "sentiment": 0.2857142857142857
+                    }
+                ]
+            },
+            {
+                "name": "HARU: Action-directive to CHILD: Affirmative Answer",
+                "source": 0,
+                "target": 14,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 74,
+                        "thread_id": 6,
+                        "statement": "And Ben, don't forget to set your alarm for 7 AM tomorrow morning.",
+                        "response": "Yes, it's set.",
+                        "timestamp": "21:25:13",
+                        "sentiment": 0.0
+                    }
+                ]
+            }
+        ],
+        "user": [
+            {
+                "name": "CHILD: Greeting to HARU: Question",
+                "source": 19,
+                "target": 9,
+                "value": 3,
+                "interactions": [
+                    {
+                        "id": 1,
+                        "thread_id": 0,
+                        "statement": "Hi Haru!",
+                        "response": "Hello Ben! How was your day today?",
+                        "timestamp": "18:00:01",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 7,
+                        "thread_id": 0,
+                        "statement": "Oh, thank you for reminding me.",
+                        "response": "You're welcome Ben. Do you remember where we left off last time?",
+                        "timestamp": "18:00:07",
+                        "sentiment": 0.26666666666666666
+                    },
+                    {
+                        "id": 67,
+                        "thread_id": 6,
+                        "statement": "Great, thanks for checking Haru.",
+                        "response": "Would you like me to tell you a bedtime story?",
+                        "timestamp": "21:25:06",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Greeting to HARU: Action-directive",
+                "source": 19,
+                "target": 0,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 3,
+                        "thread_id": 0,
+                        "statement": "My day went well, thanks!",
+                        "response": "Ok Ben, let's get started with working on your Math homework!",
+                        "timestamp": "18:00:03",
+                        "sentiment": 0.625
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Question to HARU: Other",
+                "source": 22,
+                "target": 8,
+                "value": 7,
+                "interactions": [
+                    {
+                        "id": 5,
+                        "thread_id": 0,
+                        "statement": "Ok, Haru! When is it due again?",
+                        "response": "Your Math homework is due tomorrow Ben.",
+                        "timestamp": "18:00:05",
+                        "sentiment": -0.125
+                    },
+                    {
+                        "id": 9,
+                        "thread_id": 0,
+                        "statement": "Did we leave off at question 5?",
+                        "response": "That's right Ben, the last question you did was question 5, but you skipped question 3 last time. You had asked me to set a reminder for you this morning to ask your Math teacher, Ms. Woods, about question 3. Just checking, did you remember to do that today Ben?",
+                        "timestamp": "18:00:09",
+                        "sentiment": 0.09523809523809523
+                    },
+                    {
+                        "id": 22,
+                        "thread_id": 1,
+                        "statement": "Yes. Can you remind me what Pascal's Triangle is?",
+                        "response": "Certainly Ben. Pascal's Triangle is a triangular array of the binomial coefficients that arises in probability theory, combinatorics, and algebra.",
+                        "timestamp": "18:30:22",
+                        "sentiment": 0.21428571428571427
+                    },
+                    {
+                        "id": 41,
+                        "thread_id": 4,
+                        "statement": "What time is it right now, Haru?",
+                        "response": "Ben, the current time is 7:46 PM.",
+                        "timestamp": "19:46:42",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 43,
+                        "thread_id": 4,
+                        "statement": "Wait, it's past 7:30 already?",
+                        "response": "Yes Ben, and it is 2 hours and 14 minutes until your scheduled bedtime at 10 PM, but you have not finished your English homework.",
+                        "timestamp": "19:46:44",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 45,
+                        "thread_id": 4,
+                        "statement": "How long will it take me to finish my homework?",
+                        "response": "You usually take about 1 hour and 30 minutes to complete your English homework. You had already spent 30 minutes earlier working on it, so you might still have about 1 hour of work left.",
+                        "timestamp": "19:46:46",
+                        "sentiment": -0.041666666666666664
+                    },
+                    {
+                        "id": 47,
+                        "thread_id": 4,
+                        "statement": "That means I still have over an hour left to spare before bed, right?",
+                        "response": "But Ben, you usually spare 1 hour to get ready for bed to give yourself time to shower, change your clothes, and brush your teeth.",
+                        "timestamp": "19:46:48",
+                        "sentiment": -0.024999999999999994
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Other to HARU: Question",
+                "source": 21,
+                "target": 9,
+                "value": 4,
+                "interactions": [
+                    {
+                        "id": 11,
+                        "thread_id": 0,
+                        "statement": "I did. Let me try to find the notes I took today.",
+                        "response": "Sure thing, Ben. Should we finish question number 3 first before moving on to question 6?",
+                        "timestamp": "18:00:11",
+                        "sentiment": 0.375
+                    },
+                    {
+                        "id": 20,
+                        "thread_id": 1,
+                        "statement": "Hi Haru, I'm having trouble with the last question, question 10.",
+                        "response": "Would you like me to help you look up something on Google?",
+                        "timestamp": "18:30:20",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 33,
+                        "thread_id": 2,
+                        "statement": "I think I can use a break.",
+                        "response": "Ok, I will set time for a 1-hour break. How does that sound for you?",
+                        "timestamp": "18:41:34",
+                        "sentiment": 0.45
+                    },
+                    {
+                        "id": 53,
+                        "thread_id": 4,
+                        "statement": "I think I need to look up a few terms in the dictionary.",
+                        "response": "Sure Ben, can you recite those words to me?",
+                        "timestamp": "19:46:54",
+                        "sentiment": 0.5
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Action-directive to HARU: Greeting",
+                "source": 13,
+                "target": 6,
+                "value": 2,
+                "interactions": [
+                    {
+                        "id": 13,
+                        "thread_id": 0,
+                        "statement": "Found it! Sure, let's do that.",
+                        "response": "Ok Ben, I'll check back again in 15 minutes to see how you're doing. ",
+                        "timestamp": "18:00:13",
+                        "sentiment": 0.25
+                    },
+                    {
+                        "id": 38,
+                        "thread_id": 3,
+                        "statement": "Ok Haru, just 5 more minutes, promise.",
+                        "response": "Ok Ben, I will check back with you in 5 minutes.",
+                        "timestamp": "19:41:39",
+                        "sentiment": 0.25
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Other to HARU: Greeting",
+                "source": 21,
+                "target": 6,
+                "value": 2,
+                "interactions": [
+                    {
+                        "id": 16,
+                        "thread_id": 1,
+                        "statement": "I'm already at question 9, one more to go and I'm done.",
+                        "response": "That's great Ben. I'll be here if you need me and I'll check again with you in 15 minutes!",
+                        "timestamp": "18:15:16",
+                        "sentiment": 1.0
+                    },
+                    {
+                        "id": 77,
+                        "thread_id": 6,
+                        "statement": "It's at 85%.",
+                        "response": "Great, thank you for checking that Ben.",
+                        "timestamp": "21:25:16",
+                        "sentiment": 0.8
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Conversation Filler to HARU: Question",
+                "source": 17,
+                "target": 9,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 18,
+                        "thread_id": 1,
+                        "statement": "Ok Haru!",
+                        "response": "Hi Ben, is everything going alright with your homework?",
+                        "timestamp": "18:30:18",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Question to HARU: Greeting",
+                "source": 22,
+                "target": 6,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 24,
+                        "thread_id": 1,
+                        "statement": "Thanks Haru, can you tell me some examples of how it's used?",
+                        "response": "Certainly Ben.",
+                        "timestamp": "18:30:24",
+                        "sentiment": 0.21428571428571427
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Other to HARU: Other",
+                "source": 21,
+                "target": 8,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 27,
+                        "thread_id": 2,
+                        "statement": "Hmm, ok, I think I have an idea of how to do question 10 now.",
+                        "response": "I'm glad I could help Ben, I'll check back again in 15 minutes to see how you're doing.",
+                        "timestamp": "18:30:27",
+                        "sentiment": 0.25
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Other to HARU: Conversation Filler",
+                "source": 21,
+                "target": 4,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 29,
+                        "thread_id": 2,
+                        "statement": "Ok Haru, I'm done with my Math homework",
+                        "response": "That's amazing Ben, good job.",
+                        "timestamp": "18:41:29",
+                        "sentiment": 0.65
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Self-talk to HARU: Question",
+                "source": 23,
+                "target": 9,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 31,
+                        "thread_id": 2,
+                        "statement": "Haru, what else do I have to do today?",
+                        "response": "You have an English reading assignment for tomorrow. Would you like to get started on that or would you like to take a break?",
+                        "timestamp": "18:41:31",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Greeting to HARU: Greeting",
+                "source": 19,
+                "target": 6,
+                "value": 4,
+                "interactions": [
+                    {
+                        "id": 35,
+                        "thread_id": 2,
+                        "statement": "Sure, thank you Haru.",
+                        "response": "No problem Ben. Talk to you in 60 minutes.",
+                        "timestamp": "18:41:36",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 60,
+                        "thread_id": 5,
+                        "statement": "Oh right, thanks for reminding me Haru.",
+                        "response": "No problem, Ben.",
+                        "timestamp": "21:00:04",
+                        "sentiment": 0.0
+                    },
+                    {
+                        "id": 62,
+                        "thread_id": 5,
+                        "statement": "Hi Haru, all done with my shower!",
+                        "response": "Hi Ben, although I don't have a sense of smell, I just wanted to say that you probably smell much better now. Don't forget to brush your teeth, Ben!",
+                        "timestamp": "21:23:02",
+                        "sentiment": 0.625
+                    },
+                    {
+                        "id": 79,
+                        "thread_id": 6,
+                        "statement": "Ok. Goodnight Haru.",
+                        "response": "Goodnight Ben, good job today. See you tomorrow morning.",
+                        "timestamp": "21:25:18",
+                        "sentiment": 0.7
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Question to HARU: Question",
+                "source": 22,
+                "target": 9,
+                "value": 2,
+                "interactions": [
+                    {
+                        "id": 49,
+                        "thread_id": 4,
+                        "statement": "Oh right. Then... can't I continue playing for another 15 minutes?",
+                        "response": "Ben, I did notice earlier that you were struggling with your English homework. Why don't we spend more time working on that instead?",
+                        "timestamp": "19:46:50",
+                        "sentiment": 0.16666666666666666
+                    },
+                    {
+                        "id": 69,
+                        "thread_id": 6,
+                        "statement": "Bedtime story? I'm too old for that, Haru!",
+                        "response": "How about we play the Bedtime playlist you created on Spotify?",
+                        "timestamp": "21:25:08",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Statement-opinion to HARU: Question",
+                "source": 24,
+                "target": 9,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 51,
+                        "thread_id": 4,
+                        "statement": "The homework does seem like it might be a bit more difficult than usual...",
+                        "response": "Then, is there anything that I can help you with, Ben?",
+                        "timestamp": "19:46:52",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Conversation Filler to HARU: Greeting",
+                "source": 17,
+                "target": 6,
+                "value": 2,
+                "interactions": [
+                    {
+                        "id": 55,
+                        "thread_id": 4,
+                        "statement": "Ok Haru, let me find that!",
+                        "response": "No worries Ben, whenever you are ready.",
+                        "timestamp": "19:46:56",
+                        "sentiment": 0.2
+                    },
+                    {
+                        "id": 58,
+                        "thread_id": 5,
+                        "statement": "Sure, Haru.",
+                        "response": "Sounds good Ben. Let's start off with a shower. Don't forget to take your pajamas with you.",
+                        "timestamp": "21:00:02",
+                        "sentiment": 0.7
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Collaborative Completion to HARU: Greeting",
+                "source": 16,
+                "target": 6,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 65,
+                        "thread_id": 6,
+                        "statement": "All done brushing!",
+                        "response": "Let me see that smile. Looks good, nice job Ben!",
+                        "timestamp": "21:25:04",
+                        "sentiment": 0.5833333333333334
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Affirmative Answer to HARU: Action-directive",
+                "source": 14,
+                "target": 0,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 71,
+                        "thread_id": 6,
+                        "statement": "Yes, that's what I'm about to do.",
+                        "response": "Don't forget to set a sleep timer, Ben.",
+                        "timestamp": "21:25:10",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Conversation Filler to HARU: Action-directive",
+                "source": 17,
+                "target": 0,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 73,
+                        "thread_id": 6,
+                        "statement": "Right.",
+                        "response": "And Ben, don't forget to set your alarm for 7 AM tomorrow morning.",
+                        "timestamp": "21:25:12",
+                        "sentiment": 0.0
+                    }
+                ]
+            },
+            {
+                "name": "CHILD: Affirmative Answer to HARU: Question",
+                "source": 14,
+                "target": 9,
+                "value": 1,
+                "interactions": [
+                    {
+                        "id": 75,
+                        "thread_id": 6,
+                        "statement": "Yes, it's set.",
+                        "response": "Ben, is the battery on your phone charged?",
+                        "timestamp": "21:25:14",
+                        "sentiment": 0.0
+                    }
+                ]
+            }
+        ]
+    },
+    "attributes": [
+        {
+            "threads": 7,
+            "lines": 80
+        }
+    ]
+}

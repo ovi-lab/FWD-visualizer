@@ -1,32 +1,45 @@
-import { writeFile } from 'fs/promises'
-import { join } from 'path'
+'use client'
+import { useState } from 'react';
 
 export default function ServerUploadPage() {
-  async function upload(data: FormData) {
-    'use server'
+  const [file, setFile] = useState<File | null>(null);
 
-    const file: File | null = data.get('file') as unknown as File
-    if (!file) {
-      throw new Error('No file uploaded')
+  async function uploadFile() {
+    try {
+      if (!file) {
+        throw new Error('No file selected');
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/processUpload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('File uploaded successfully');
+      } else {
+        console.error('Failed to upload file');
+      }
+    } catch (error) {
+      console.error(error);
     }
+  }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    // With the file data in the buffer, you can do whatever you want with it.
-    // For this, we'll just write it to the filesystem in a new location
-    console.log(`${buffer}`)
-
-    return { success: true }
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const selectedFile = event.target.files?.[0] || null;
+    setFile(selectedFile);
   }
 
   return (
     <main>
-      <h1>React Server Component: Upload</h1>
-      <form action={upload}>
-        <input type="file" name="file" />
-        <input type="submit" value="    Upload" />
+      <h1>Upload JSON File</h1>
+      <form onSubmit={(e) => { e.preventDefault(); uploadFile(); }}>
+        <input type="file" name="file" onChange={handleFileChange} accept=".json" />
+        <input type="submit" value="Upload" />
       </form>
     </main>
-  )
+  );
 }

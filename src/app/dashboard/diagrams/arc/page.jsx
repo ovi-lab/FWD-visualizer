@@ -55,6 +55,7 @@ const Label = ({ x, node, arcHeight }) => (
 );
 
 // Begin ArcDiagram Component
+//TODO: Convert to functional component
 class ArcDiagram extends Component {
   constructor(props) {
     super(props);

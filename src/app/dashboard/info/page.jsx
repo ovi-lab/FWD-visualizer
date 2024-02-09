@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ThreadList from "./threadList";
 import "./infoStyles.css";
 
-
+// TODO: Convert to Functional Component
 class InfoPanel extends Component {
   constructor(props) {
     super(props);

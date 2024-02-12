@@ -4,7 +4,7 @@ import "./chatBox.css";
 import { scaleLinear } from "d3";
 import { DataContext } from "../page";;
 /**
-* Separates chat segments by the threads identified in the conversation
+* Separates chat segments by the threadList identified in the conversation
 * @param stmt The current statement to check for new thread
 * @returns Thread ID Separator JSX component
 **/
@@ -58,7 +58,7 @@ const Bubble = ({stmt, id}) => {
 
 const Chatbox = (props) => {
   const [threads, setThreads] = useState([]);
-  const [statements, setExchanges] = useState([]);
+  const [statements, setStatements] = useState([]);
   const [chatAnchor, setChatAnchor] = useState(null);
   let AnchorRef = useRef(null);
   const data = useContext(DataContext);
@@ -66,18 +66,18 @@ const Chatbox = (props) => {
 
   useEffect(() => {
     //const data = props.data;
-    const threads = {};
-    const statements = {};
+    const threadList = {};
+    const statementList = {};
     data.nodes.forEach((entry) => {
       entry.interactions.forEach((interaction) => {
         const threadId = interaction.index;
         const speaker = interaction.turn;
-        if (!threads[threadId]) {
-          threads[threadId] = [];
+        if (!threadList[threadId]) {
+          threadList[threadId] = [];
         }
         // Change here if data format is modified
-        threads[threadId].push(interaction.idx);
-        statements[interaction.idx] = {
+        threadList[threadId].push(interaction.idx);
+        statementList[interaction.idx] = {
           id: interaction.idx,
           speaker: speaker,
           text: interaction.sentence,
@@ -88,8 +88,8 @@ const Chatbox = (props) => {
       });
     });
 
-    setThreads(threads);
-    setExchanges(Object.values(statements));
+    setThreads(threadList);
+    setStatements(Object.values(statementList));
   }, [props.data]);
 
   useEffect(() => {

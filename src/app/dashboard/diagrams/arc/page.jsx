@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { Component } from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
@@ -15,11 +15,9 @@ const Node = ({ key, x, node, size, arcHeight, isSelected, handle }) => (
     id={node.name}
     r={size(Math.pow(1.1, node.n))}
     key={key}
-    fill={isSelected
-        ? "green"
-        : node.name.includes("haru:")
-        ? "#80b1d3"
-        : "#fb8072"}
+    fill={
+      isSelected ? "green" : node.name.includes("haru:") ? "#80b1d3" : "#fb8072"
+    }
     stroke="grey"
     onClick={() => handle("node", node.name, node.id)}
   />
@@ -119,8 +117,8 @@ class ArcDiagram extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.selected !== prevProps.selected ) {
-      this.setState({selected: this.props.selected})
+    if (this.props.selected !== prevProps.selected) {
+      this.setState({ selected: this.props.selected });
     }
   }
 
@@ -133,7 +131,7 @@ class ArcDiagram extends Component {
     const { nodes, links, x, size, selected } = this.state;
     return (
       <div className="arcWrapper">
-      <h3 style={{textAlign:"left"}}>Arc Diagram</h3>
+        <h3 style={{ textAlign: "left" }}>Arc Diagram</h3>
         <svg width={"100%"} height={"100%"} viewBox={`0 0 750 450`}>
           <g transform={`translate(${100},${-100})`}>
             {
@@ -161,7 +159,7 @@ class ArcDiagram extends Component {
             {
               // Render Labels on the diagram
               nodes.map((node) => (
-                <Label x={x} node={node} arcHeight={arcHeight} />
+                <Label key={node.id} x={x} node={node} arcHeight={arcHeight} />
               ))
             }
           </g>

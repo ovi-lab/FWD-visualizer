@@ -22,11 +22,11 @@ const sankeyGenerator = d3sankey()
 
 const color = d3.scaleOrdinal(d3.schemeSet3);
 
-const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle}) => {
+const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle }) => {
   return (
     <g key={id}>
       <rect
-      className="node sankeyNode"
+        className="node sankeyNode"
         height={y1 - y0}
         width={x1 - x0}
         x={x0}
@@ -34,7 +34,7 @@ const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle}) => {
         stroke={"black"}
         fill={isSelected ? "green" : color(name.match(/:(.*)/)[1].trim())}
         onClick={() => {
-          handle("node", name, id)
+          handle("node", name, id);
         }}
       />
       <title>`${name}`</title>
@@ -79,18 +79,17 @@ class SankeyDiagram extends Component {
       links: [],
       width: 0,
       height: 0,
-      chatAnchor: null
+      chatAnchor: null,
     };
   }
   componentDidMount() {
     this.loadGraphData();
   }
-  
+
   componentDidUpdate(prevProps) {
     // if the selected node is changed in props, update state
     if (this.props.selected !== prevProps.selected) {
-      this.setState({selected: this.props.selected})
-      
+      this.setState({ selected: this.props.selected });
     }
     // If the selected visualization direction is changed, regenerate the viz
     if (this.props.linkData !== prevProps.linkData) {
@@ -118,11 +117,11 @@ class SankeyDiagram extends Component {
 
   handleSankeyInteraction = (type, nodeName, id) => {
     // this.setState({selected: nodeName});
-    this.props.handle(type, nodeName, id)
-  }
+    this.props.handle(type, nodeName, id);
+  };
 
   render() {
-    let { nodes, links, width, height, selected} = this.state;
+    let { nodes, links, width, height, selected } = this.state;
     return (
       <div className="sankeyWrapper">
         <svg
@@ -135,12 +134,21 @@ class SankeyDiagram extends Component {
           <g style={{ mixBlendMode: "multiply" }}>
             {nodes.map((node) => {
               //add nodes
-              
-                return <Nodes key={node.idx} node {...node} width={width} height={height} isSelected={node.name === selected} handle={this.handleSankeyInteraction}/>;
-              
+
+              return (
+                <Nodes
+                  key={node.idx}
+                  node
+                  {...node}
+                  width={width}
+                  height={height}
+                  isSelected={node.name === selected}
+                  handle={this.handleSankeyInteraction}
+                />
+              );
             })}
             {links.map((link, index) => (
-              <Links key = {index} link {...link} />
+              <Links key={index} link {...link} />
             ))}
           </g>
         </svg>

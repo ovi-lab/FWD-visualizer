@@ -34,7 +34,7 @@ function InfoButton({ interact, conversationNum, handleClick }) {
 
 export default function ThreadList({ data, selected, anchorClick }) {
   // Find the selected node in the data array
-  const selectedNode = data.nodes.find((node) => node.name === selected);
+  const selectedNode = data.find((node) => node.name === selected);
 
   if (!selectedNode) {
     return <p>Selected node not found in the data</p>;
@@ -45,7 +45,6 @@ export default function ThreadList({ data, selected, anchorClick }) {
   let numConversations = 1;
   selectedNode.interactions.map((interact) => {
     if (interact.lastInteraction === true) {
-      console.log("bruh")
       numConversations++;
     }
 

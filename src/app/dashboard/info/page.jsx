@@ -1,51 +1,49 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import ThreadList from "./threadList";
 import "./infoStyles.css";
 
-// TODO: Convert to Functional Component
-class InfoPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: null,
-      selected: "",
-    };
-  }
+const InfoPanel = (props) => {
+  const [nodes, setNodes] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  const [selected, setSelected] = useState("");
 
-  componentDidMount() {
-    this.setState({
-      data: this.props.data,
-      selected: this.props.selected
-    })
-  }
+  useEffect(() => {
+    fetch("../../data/new_robot_data.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setNodes(data.nodes);
+        setLoading(false);
+      });
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (this.props !== prevProps) {
-      this.setState({ selected: this.props.selected });
-    }
-  }
+  useEffect(() => {
+    setSelected(props.selected);
+  }, [props.selected]);
 
-anchorButtonClick = (anchorId) => {
-  this.props.anchorSelect(anchorId)
-}
+  const anchorButtonClick = (anchorId) => {
+    props.anchorSelect(anchorId);
+  };
 
-  render() {
-    const { data, selected } = this.state;
-    return (
-      <div className="col-span-1 infoPanel">
-        <h3>Information Panel</h3>
-        {!selected ? (
-          <p>Select an item on either diagram to get started</p>
-        ) : (
-          <div>
-            <h4>{selected}</h4>
-            <p>Here are the items attached to the selected node:</p>
-            <ThreadList data={data} selected={selected} anchorClick={this.anchorButtonClick}/>
-          </div>
-        )}
-      </div>
-    );
-  }
-}
+  if (isLoading) return <p>loading...</p>;
+
+  return (
+    <div className="col-span-1 infoPanel">
+      <h3>Information Panel</h3>
+      {!selected ? (
+        <p>Select an item on either diagram to get started</p>
+      ) : (
+        <div>
+          <h4>{selected}</h4>
+          <p>Here are the items attached to the selected node:</p>
+          <ThreadList
+            data={nodes}
+            selected={selected}
+            anchorClick={anchorButtonClick}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default InfoPanel;

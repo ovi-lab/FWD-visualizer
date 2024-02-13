@@ -1,8 +1,9 @@
 "use client";
-import React, {useContext, useEffect, useRef, useState } from "react";
+import React, {use, useContext, useEffect, useRef, useState } from "react";
 import "./chatBox.css";
 import { scaleLinear } from "d3";
-import { DataContext } from "../page";;
+import { DataContext } from "../page";
+import {getData} from "../../lib/utils/getData";
 /**
 * Separates chat segments by the threadList identified in the conversation
 * @param stmt The current statement to check for new thread
@@ -56,20 +57,29 @@ const Bubble = ({stmt, id}) => {
   );
 };
 
-const Chatbox = (props) => {
+export default function Chatbox(props) {
+  const [nodes, setNodes] = useState([])
+  const [isLoading, setLoading] = useState(true)
   const [threads, setThreads] = useState([]);
   const [statements, setStatements] = useState([]);
   const [chatAnchor, setChatAnchor] = useState(null);
   let AnchorRef = useRef(null);
-  const data = useContext(DataContext);
-  console.log(data)
+  
+  useEffect(() => {
+    fetch('../../data/new_robot_data.json')
+      .then((res) => res.json())
+      .then((data) => {
+        setNodes(data.nodes)
+        setLoading(false)
+      })
+  }, [])
 
   useEffect(() => {
-    //const data = props.data;
+    const nodeList = nodes
     const threadList = {};
     const statementList = {};
-    data.nodes.forEach((entry) => {
-      entry.interactions.forEach((interaction) => {
+    nodeList.map((entry) => {
+      entry.interactions.map((interaction) => {
         const threadId = interaction.index;
         const speaker = interaction.turn;
         if (!threadList[threadId]) {
@@ -86,12 +96,12 @@ const Chatbox = (props) => {
           threadId: threadId,
         };
       });
+      
     });
-
     setThreads(threadList);
     setStatements(Object.values(statementList));
-  }, [props.data]);
-
+  }, [nodes])
+  
   useEffect(() => {
     if (props.chatAnchor !== AnchorRef) {
       
@@ -112,6 +122,7 @@ const Chatbox = (props) => {
     }
   }, [props.chatAnchor, chatAnchor, AnchorRef]);
 
+  if (isLoading) return <p>Loading...</p>
   return (
     <div className="col-span-2 chatbox-container">
       <h1>Conversation Transcript</h1>
@@ -138,4 +149,3 @@ const Chatbox = (props) => {
   );
 };
 
-export default Chatbox;

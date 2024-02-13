@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function SideBar() {
   return (
     <aside
@@ -30,37 +31,37 @@ export default function SideBar() {
             </a>
           </li>
           <li>
-            <a
+            <Link
               href="/dashboard/chat"
               className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
             >
               <span className="ms-3">Chat View</span>
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="/dashboard/diagrams/arc"
               className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
             >
               <span className="ms-3">Arc Diagram</span>
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="/dashboard/sankey"
               className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
             >
               <span className="ms-3">Sankey Diagram</span>
-            </a>
+            </Link>
           </li>
           <li className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700"></li>
           <li>
-            <a
+            <Link
               href="/dashboard/upload"
               className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
             >
               <span className="ms-3">Upload JSON</span>
-            </a>
+            </Link>
           </li>
         </ul>
       </div>

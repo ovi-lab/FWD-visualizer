@@ -4,13 +4,13 @@ import * as d3 from "d3";
 import "../graphStyles.css";
 
 // Create subcomponents for nodes, links, and labels
-const Node = ({ cx, node, size, arcHeight, isSelected, handle }) => (
+const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
   <circle
     className="node arcNode"
-    cx={cx}
+    cx={xPosition}
     cy={arcHeight - 30}
     id={node.name}
-    r={size(Math.pow(1.1, node.n))}
+    r={size}
     fill={
       isSelected ? "green" : node.name.includes("haru:") ? "#80b1d3" : "#fb8072"
     }
@@ -31,14 +31,14 @@ const Link = ({ link, key }) => (
   />
 );
 
-const Label = ({ cx, node, arcHeight }) => (
+const Label = ({ xPosition, node, arcHeight }) => (
   <text
-    x={cx}
+    x={xPosition}
     y={arcHeight - 15}
     transform={`rotate(-45)`}
     style={{
       textAnchor: "end",
-      transformOrigin: `${x(node.name)}px ${arcHeight - 5}px`,
+      transformOrigin: `${xPosition}px ${arcHeight - 5}px`,
       fontSize: "0.75rem",
     }}
     key={node.name}
@@ -54,9 +54,8 @@ export default function ArcDiagram(props) {
   const [links, setLinks] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [scales, setScales] = useState({});
   const previousSelected = useRef(null);
-  const [xScale, setXScale] = useState(null);
-  const [size, setSize] = useState(null);
 
   useEffect(() => {
     if (props.selected !== previousSelected.current) {
@@ -74,11 +73,13 @@ export default function ArcDiagram(props) {
         const arcHeight = 450;
 
         // A linear scale to position the nodes on the X axis
-        const x = d3.scalePoint().range([0, arcWidth]).domain(allNodes);
+        let x = d3.scalePoint().range([0, arcWidth]).domain(allNodes);
         console.log("XSCALE CHECK: " + x);
 
         // A linear scale for node size
-        setSize(d3.scaleLinear().domain([1, 10]).range([2, 10]));
+        let size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
+
+        setScales({ scalePoint: x });
 
         const idToNode = {};
         data.nodes.forEach((n) => {
@@ -111,21 +112,18 @@ export default function ArcDiagram(props) {
           });
         setNodes(data.nodes);
         setLinks(calculatedLinks);
-        setXScale(x);
         setLoading(false);
       });
   }, []);
 
   const handleNodeSelect = (type, nodeName, id) => {
-    setState((prevState) => ({
-      ...prevState,
-      selected: nodeName,
-    }));
+    setSelected(nodeName);
     props.handleInteraction(type, nodeName, id);
   };
 
+  const size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
+
   if (isLoading) return <p>loading...</p>;
-  console.log(size);
   return (
     <div className="arcWrapper">
       <h3 style={{ textAlign: "left" }}>Arc Diagram</h3>
@@ -139,9 +137,9 @@ export default function ArcDiagram(props) {
           {nodes.map((node) => (
             <Node
               key={node.id}
-              cx={xScale(node.name)}
+              xPosition={scales.scalePoint(node.name)}
               node={node}
-              size={size}
+              size={size(Math.pow(1.1, node.n))}
               arcHeight={450}
               isSelected={node.name === selected}
               handle={handleNodeSelect}
@@ -151,7 +149,7 @@ export default function ArcDiagram(props) {
           {nodes.map((node) => (
             <Label
               key={node.id}
-              cx={xScale(node.name)}
+              xPosition={scales.scalePoint(node.name)}
               node={node}
               arcHeight={450}
             />

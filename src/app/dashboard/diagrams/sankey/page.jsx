@@ -11,7 +11,7 @@ function SankeySelector({ selected, handleInteraction}) {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-5 w-100% h-100%">
       <h3 style={{float:"left"}}>Sankey Diagram</h3>
       <input
         type="radio"

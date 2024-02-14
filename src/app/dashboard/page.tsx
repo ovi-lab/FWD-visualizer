@@ -64,12 +64,10 @@ const Dashboard = () => {
           >
             <h3>Diagrams</h3>
             <ArcDiagram
-              data={data}
               selected={selected}
               handleInteraction={handleNodeInteraction}
             />
             <SankeySelector
-              data={data}
               selected={selected}
               handleInteraction={handleNodeInteraction}
             />

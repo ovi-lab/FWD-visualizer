@@ -119,7 +119,7 @@ const SankeyDiagram = (props) => {
   }, [nodes, links]);
 
   return (
-    <div className="sankeyWrapper">
+    <div className="sankeyWrapper w-100% h-100%">
       <svg
         className="sankeyDiagram"
         ref={sankeyRef}

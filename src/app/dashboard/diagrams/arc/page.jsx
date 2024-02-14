@@ -131,13 +131,13 @@ export default function ArcDiagram(props) {
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
-  
 
   
   // A linear scale for node size
   const size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
 
   if (isLoading) return <p>loading...</p>;
+  
   return (
     <div className="p-6 arcWrapper">
       <h3 style={{ textAlign: "left" }}>Arc Diagram</h3>

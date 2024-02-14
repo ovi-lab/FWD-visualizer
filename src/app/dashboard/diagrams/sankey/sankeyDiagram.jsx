@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
   sankey as d3sankey,
   sankeyCenter,
   sankeyLinkHorizontal,
 } from "d3-sankey";
 import "../graphStyles.css";
-import * as d3 from "d3";
+import { scaleOrdinal, schemeSet3 } from "d3";
 
 const width = 600;
 const height = 400;
@@ -20,7 +20,7 @@ const sankeyGenerator = d3sankey()
     [width, height - 5],
   ]);
 
-const color = d3.scaleOrdinal(d3.schemeSet3);
+const color = scaleOrdinal(schemeSet3);
 
 const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle }) => {
   return (
@@ -70,91 +70,82 @@ const Links = (link) => {
 };
 
 // TODO: convert to functional component
-class SankeyDiagram extends Component {
-  sankeyRef = React.createRef();
-  constructor(props) {
-    super(props);
-    this.state = {
-      nodes: [],
-      links: [],
-      width: 0,
-      height: 0,
-      chatAnchor: null,
-    };
-  }
-  componentDidMount() {
-    this.loadGraphData();
-  }
+const SankeyDiagram = (props) => {
+  const [nodes, setNodes] = useState([]);
+  const [links, setLinks] = useState([]);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [viewBox, setViewBox] = useState(`0 0 600 400`)
+  const sankeyRef = React.useRef();
 
-  componentDidUpdate(prevProps) {
-    // if the selected node is changed in props, update state
-    if (this.props.selected !== prevProps.selected) {
-      this.setState({ selected: this.props.selected });
-    }
-    // If the selected visualization direction is changed, regenerate the viz
-    if (this.props.linkData !== prevProps.linkData) {
-      this.loadGraphData();
-    }
-  }
+  useEffect(() => {
+    let selectedLinks = ""
+    fetch("../../../data/new_robot_data.json")
+      .then((res) => res.json())
+      .then((data) => {
+        if (props.dataDirection === "haru-user") {
+            selectedLinks = data.links.haru
+        } else {
+          selectedLinks = data.links.user
+          }
+        const { nodes, links } = sankeyGenerator({
+          nodes: data.nodes.map((d) => Object.assign({}, d)),
+          links: selectedLinks.map((d) => Object.assign({}, d)),
+        });
 
-  loadGraphData() {
-    const { nodeData, linkData } = this.props;
+        const { width: newWidth, height: newHeight } =
+          sankeyRef.current.getBoundingClientRect();
 
-    const { nodes, links } = sankeyGenerator({
-      nodes: nodeData.map((d) => Object.assign({}, d)),
-      links: linkData.map((d) => Object.assign({}, d)),
-    });
+        setNodes(nodes);
+        setLinks(links);
+        setWidth(newWidth);
+        setHeight(newHeight);
+      });
+  }, []);
 
-    const { width, height } = this.sankeyRef.current.getBoundingClientRect();
-
-    this.setState({
-      nodes: nodes,
-      links: links,
-      width: width,
-      height: height,
-    });
-  }
-
-  handleSankeyInteraction = (type, nodeName, id) => {
-    // this.setState({selected: nodeName});
-    this.props.handle(type, nodeName, id);
+  const handleSankeyInteraction = (type, nodeName, id) => {
+    props.handle(type, nodeName, id);
   };
 
-  render() {
-    let { nodes, links, width, height, selected } = this.state;
-    return (
-      <div className="sankeyWrapper">
-        <svg
-          className="sankeyDiagram"
-          ref={this.sankeyRef}
-          width={"100%"}
-          height={"100%"}
-          viewBox={`0 0 600 400`}
-        >
-          <g style={{ mixBlendMode: "multiply" }}>
-            {nodes.map((node) => {
-              //add nodes
+  useEffect(() => {
+    // Calculate bounding box of the generated content
+    const svgContent = document.getElementById("sankey-content");
+    if (svgContent) {
+      const { x, y, width, height } = svgContent.getBBox();
+      const newViewBox = `${x} ${y} ${width} ${height}`;
+      setViewBox(newViewBox);
+    }
+  }, [nodes, links]);
 
-              return (
-                <Nodes
-                  key={node.idx}
-                  node
-                  {...node}
-                  width={width}
-                  height={height}
-                  isSelected={node.name === selected}
-                  handle={this.handleSankeyInteraction}
-                />
-              );
-            })}
-            {links.map((link, index) => (
-              <Links key={index} link {...link} />
-            ))}
-          </g>
-        </svg>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="sankeyWrapper">
+      <svg
+        className="sankeyDiagram"
+        ref={sankeyRef}
+        width={"100%"}
+        height={"100%"}
+        viewBox={viewBox}
+      >
+        <g style={{ mixBlendMode: "multiply" }} id={'sankey-content'}>
+          {nodes.map((node) => (
+            <Nodes
+              key={node.idx}
+              node
+              {...node}
+              width={width}
+              height={height}
+              isSelected={node.name === selected}
+              handle={handleSankeyInteraction}
+            />
+          ))}
+          {links.map((link, index) => (
+            <Links key={index} link {...link} />
+          ))}
+        </g>
+      </svg>
+    </div>
+  );
+};
 
 export default SankeyDiagram;

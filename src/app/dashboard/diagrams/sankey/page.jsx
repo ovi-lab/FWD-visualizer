@@ -2,25 +2,16 @@
 import React, { useState } from "react";
 import SankeyDiagram from "./sankeyDiagram";
 
-function SankeySelector({ data, selected, handleInteraction}) {
+function SankeySelector({ selected, handleInteraction}) {
   const [dataDirection, setDataDirection] = useState("haru-user");
-  const [nodes, setNodes] = useState(data.nodes);
-  const [links, setLinks] = useState(data.links.haru);
 
   // Event handler for radio button change
   const handleRadioChange = (event) => {
     setDataDirection(event.target.value);
-    if (event.target.value === "haru-user") {
-      setLinks(data.links.haru);
-      console.log("1")
-    } else {
-      setLinks(data.links.user);
-      console.log("2")
-    }
   };
 
   return (
-    <div>
+    <div className="p-5">
       <h3 style={{float:"left"}}>Sankey Diagram</h3>
       <input
         type="radio"
@@ -46,7 +37,7 @@ function SankeySelector({ data, selected, handleInteraction}) {
       <label className="btn btn-outline-success" htmlFor="user-haru">
         Child to Haru
       </label>
-      <SankeyDiagram nodeData={nodes} linkData={links} selected={selected} handle={handleInteraction}/>
+      <SankeyDiagram dataDirection={dataDirection} selected={selected} handle={handleInteraction}/>
     </div>
   );
 }

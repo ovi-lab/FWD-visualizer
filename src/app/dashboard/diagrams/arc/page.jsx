@@ -55,7 +55,13 @@ export default function ArcDiagram(props) {
   const [isLoading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [scales, setScales] = useState({});
+  const [viewBox, setViewBox] = useState([])
   const previousSelected = useRef(null);
+
+  const handleNodeSelect = (type, nodeName, id) => {
+    setSelected(nodeName);
+    props.handleInteraction(type, nodeName, id);
+  };
 
   useEffect(() => {
     if (props.selected !== previousSelected.current) {
@@ -74,9 +80,8 @@ export default function ArcDiagram(props) {
 
         // A linear scale to position the nodes on the X axis
         let x = d3.scalePoint().range([0, arcWidth]).domain(allNodes);
-        console.log("XSCALE CHECK: " + x);
 
-        // A linear scale for node size
+       
         let size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
 
         setScales({ scalePoint: x });
@@ -107,28 +112,38 @@ export default function ArcDiagram(props) {
               ",",
               arcHeight - 30,
             ].join(" ");
-
             return { ...link, d };
           });
+
+        
         setNodes(data.nodes);
         setLinks(calculatedLinks);
         setLoading(false);
       });
   }, []);
 
-  const handleNodeSelect = (type, nodeName, id) => {
-    setSelected(nodeName);
-    props.handleInteraction(type, nodeName, id);
-  };
+  useEffect(() => {
+    // Calculate bounding box of the generated content
+    const svgContent = document.getElementById("arc-content");
+    if (svgContent) {
+      const { x, y, width, height } = svgContent.getBBox();
+      const newViewBox = `${x} ${y} ${width} ${height}`;
+      setViewBox(newViewBox);
+    }
+  }, [nodes, links]);
+  
 
+  
+  // A linear scale for node size
   const size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
 
   if (isLoading) return <p>loading...</p>;
   return (
-    <div className="arcWrapper">
+    <div className="p-6 arcWrapper">
       <h3 style={{ textAlign: "left" }}>Arc Diagram</h3>
-      <svg width={"100%"} height={"100%"} viewBox={`0 0 750 450`}>
-        <g transform={`translate(${100},${-100})`}>
+      <svg width={"100%"} height={"100%"} viewBox={viewBox}>
+        <g id="arc-content">
+        {/* <g transform={`translate(${100},${-100})`}> */}
           {/* Render links on the diagram */}
           {links.map((link) => (
             <Link link={link} key={link.id} />

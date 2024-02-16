@@ -49,6 +49,7 @@ export default function ThreadList({ data, selected, anchorClick }) {
     }
 
     return itemsArray.unshift([numConversations, interact])
+    // return itemsArray.push([numConversations, interact])
   });
 
   const handleClick = (anchorId) => {

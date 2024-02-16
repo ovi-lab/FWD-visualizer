@@ -23,7 +23,7 @@ function SankeySelector({ selected, handleInteraction}) {
         onChange={handleRadioChange}
       />
       <label className="btn btn-outline-success" htmlFor="haru-user">
-        Haru to Child
+        Haru to User
       </label>
       <input
         type="radio"
@@ -35,7 +35,7 @@ function SankeySelector({ selected, handleInteraction}) {
         onChange={handleRadioChange}
       />
       <label className="btn btn-outline-success" htmlFor="user-haru">
-        Child to Haru
+        User to Haru
       </label>
       <SankeyDiagram dataDirection={dataDirection} selected={selected} handle={handleInteraction}/>
     </div>

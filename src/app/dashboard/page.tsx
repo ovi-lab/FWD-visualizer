@@ -5,6 +5,7 @@ import ArcDiagram from "./diagrams/arc/page";
 import Chatbox from "./chat/page";
 import SankeySelector from "./diagrams/sankey/page";
 
+
 export const DataContext = createContext({});
 
 const Dashboard = () => {
@@ -19,7 +20,7 @@ const Dashboard = () => {
   }, []);
 
   const loadData = () => {
-    fetch("../data/new_robot_data.json")
+    fetch("../data/new_robot_data_2_15.json")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");

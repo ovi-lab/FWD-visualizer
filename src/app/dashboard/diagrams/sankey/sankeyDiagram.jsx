@@ -40,6 +40,7 @@ const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle }) => {
       <title>`${name}`</title>
       <text
         key={id}
+        fontSize={"0.75em"}
         x={x0 < width / 2 ? x1 + 6 : x0 - 6}
         y={(y1 + y0) / 2}
         dy={"0.35em"}
@@ -81,7 +82,7 @@ const SankeyDiagram = (props) => {
 
   useEffect(() => {
     let selectedLinks = ""
-    fetch("../../../data/new_robot_data.json")
+    fetch("../../../data/new_robot_data_2_15.json")
       .then((res) => res.json())
       .then((data) => {
         if (props.dataDirection === "haru-user") {
@@ -102,7 +103,7 @@ const SankeyDiagram = (props) => {
         setWidth(newWidth);
         setHeight(newHeight);
       });
-  }, []);
+  }, [props.dataDirection]);
 
   const handleSankeyInteraction = (type, nodeName, id) => {
     props.handle(type, nodeName, id);

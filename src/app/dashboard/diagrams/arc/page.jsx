@@ -71,7 +71,7 @@ export default function ArcDiagram(props) {
   }, [props.selected, previousSelected]);
 
   useEffect(() => {
-    fetch("../../../data/new_robot_data.json")
+    fetch("../../../data/new_robot_data_2_15.json")
       .then((res) => res.json())
       .then((data) => {
         const allNodes = data.nodes.map((d) => d.name);
@@ -137,7 +137,7 @@ export default function ArcDiagram(props) {
   const size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
 
   if (isLoading) return <p>loading...</p>;
-  
+
   return (
     <div className="p-6 arcWrapper">
       <h3 style={{ textAlign: "left" }}>Arc Diagram</h3>
@@ -154,7 +154,7 @@ export default function ArcDiagram(props) {
               key={node.id}
               xPosition={scales.scalePoint(node.name)}
               node={node}
-              size={size(Math.pow(1.1, node.n))}
+              size={size(Math.pow(1.22, node.n))}
               arcHeight={450}
               isSelected={node.name === selected}
               handle={handleNodeSelect}

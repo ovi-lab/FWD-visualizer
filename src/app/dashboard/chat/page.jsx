@@ -2,8 +2,7 @@
 import React, {use, useContext, useEffect, useRef, useState } from "react";
 import "./chatBox.css";
 import { scaleLinear } from "d3";
-import { DataContext } from "../page";
-import {getData} from "../../lib/utils/getData";
+
 /**
 * Separates chat segments by the threadList identified in the conversation
 * @param stmt The current statement to check for new thread
@@ -66,7 +65,7 @@ export default function Chatbox(props) {
   let AnchorRef = useRef(null);
   
   useEffect(() => {
-    fetch('../../data/new_robot_data.json')
+    fetch('../api/data', {method: 'POST'})
       .then((res) => res.json())
       .then((data) => {
         setNodes(data.nodes)

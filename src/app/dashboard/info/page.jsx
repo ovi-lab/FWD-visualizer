@@ -8,7 +8,7 @@ const InfoPanel = (props) => {
   const [selected, setSelected] = useState("");
 
   useEffect(() => {
-    fetch("../../data/new_robot_data.json")
+    fetch("../../data/new_robot_data_2_15.json")
       .then((res) => res.json())
       .then((data) => {
         setNodes(data.nodes);

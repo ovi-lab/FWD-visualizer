@@ -1,7 +1,8 @@
 "use client";
-import React, {use, useContext, useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import "./chatBox.css";
 import { scaleLinear } from "d3";
+import { useChatAnchor } from "../contexts/chatContext";
 
 /**
 * Separates chat segments by the threadList identified in the conversation
@@ -61,11 +62,11 @@ export default function Chatbox(props) {
   const [isLoading, setLoading] = useState(true)
   const [threads, setThreads] = useState([]);
   const [statements, setStatements] = useState([]);
-  const [chatAnchor, setChatAnchor] = useState(null);
+  const {chatAnchor} = useChatAnchor();
   let AnchorRef = useRef(null);
   
   useEffect(() => {
-    fetch('../api/data', {method: 'POST'})
+    fetch('../../data/new_robot_data_2_15.json')
       .then((res) => res.json())
       .then((data) => {
         setNodes(data.nodes)
@@ -102,9 +103,9 @@ export default function Chatbox(props) {
   }, [nodes])
   
   useEffect(() => {
-    if (props.chatAnchor !== AnchorRef) {
+    if (chatAnchor !== AnchorRef) {
       
-      const targetElement = document.getElementById(props.chatAnchor);
+      const targetElement = document.getElementById(chatAnchor);
       const targetContainer = document.getElementById("chatboxContent");
 
       if (targetElement && targetContainer) {
@@ -116,10 +117,10 @@ export default function Chatbox(props) {
           document.getElementById(AnchorRef.current).style.border = "none";
         }
         targetElement.style.border = "5px solid #a5faee";
-        AnchorRef.current = props.chatAnchor
+        AnchorRef.current = chatAnchor
       }
     }
-  }, [props.chatAnchor, chatAnchor, AnchorRef]);
+  }, [chatAnchor]);
 
   if (isLoading) return <p>Loading...</p>
   return (
@@ -133,7 +134,7 @@ export default function Chatbox(props) {
         >
           {statements.map((stmt, idx, arr) => {
             return (
-              <div key={idx}>
+              <div key={stmt.id}>
                 <ThreadSeparator stmt={stmt} idx={idx} arr={arr} />
                 <Bubble
                   stmt={stmt}

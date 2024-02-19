@@ -1,12 +1,14 @@
 import { useState } from "react";
 import "./infoStyles.css";
+import { SYSTEM_ENTRYPOINTS } from "next/dist/shared/lib/constants";
 
-function InfoButton({ interact, conversationNum, handleClick }) {
+function InfoButton({ interact, conversationNum, handleClick, isClicked }) {
   // Set a maximum length for the response
   const maxLength = 50;
   const response = interact.sentence;
   const id = interact.idx;
   const threadId = interact.index;
+  const color = isClicked ? 'rgb(204 251 241)' : 'rgb(245 245 244)'
 
   // Truncate the response if it exceeds the maximum length
   const truncatedResponse =
@@ -16,8 +18,9 @@ function InfoButton({ interact, conversationNum, handleClick }) {
 
   return (
     <button
-      className="info-button"
-      onClick={() => handleClick(`response${id}`)}
+      className={"info-button"}
+      onClick={() => handleClick(id)}
+      style={{backgroundColor: color}}
     >
       <p style={{ fontSize: "0.75em" }}>
         {" "}
@@ -35,6 +38,7 @@ function InfoButton({ interact, conversationNum, handleClick }) {
 export default function ThreadList({ data, selected, anchorClick }) {
   // Find the selected node in the data array
   const selectedNode = data.find((node) => node.name === selected);
+  const [clickedButton, setClickedButton] = useState(""); 
 
   if (!selectedNode) {
     return <p>Selected node not found in the data</p>;
@@ -52,8 +56,15 @@ export default function ThreadList({ data, selected, anchorClick }) {
     // return itemsArray.push([numConversations, interact])
   });
 
-  const handleClick = (anchorId) => {
-    anchorClick(anchorId);
+  /**
+   * handles clicking a response in the threadlist. 
+   * This not only sends the anchor to context for scrolling the chatbox component to the selected dialog, 
+   * but also ads the id of the selected button to state for changing its color
+   * @param {*} responseClicked The response that is clicked in the list
+   */
+  const handleListClick = (clickedID) => {
+    setClickedButton(clickedID)
+    anchorClick(`response${clickedID}`);
   };
 
   return (
@@ -68,7 +79,7 @@ export default function ThreadList({ data, selected, anchorClick }) {
           <ul id="listItems">
             {itemsArray.map((interact) => (
               <li key={interact[1].id}>
-                <InfoButton interact={interact[1]} conversationNum={interact[0]} handleClick={handleClick} />
+                <InfoButton interact={interact[1]} conversationNum={interact[0]} handleClick={handleListClick} isClicked={clickedButton === interact[1].idx}/>
               </li>
             ))}
           </ul>

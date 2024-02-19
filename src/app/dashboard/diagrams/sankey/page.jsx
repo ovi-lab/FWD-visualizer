@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import SankeyDiagram from "./sankeyDiagram";
 
-function SankeySelector({ selected, handleInteraction}) {
+function SankeySelector() {
   const [dataDirection, setDataDirection] = useState("haru-user");
 
   // Event handler for radio button change
@@ -12,32 +12,52 @@ function SankeySelector({ selected, handleInteraction}) {
 
   return (
     <div className="p-5 w-100% h-100%">
-      <h3 style={{float:"left"}}>Sankey Diagram</h3>
-      <input
-        type="radio"
-        className="btn-check"
-        name="options-outlined"
-        id="haru-user"
-        value={"haru-user"}
-        checked={dataDirection === "haru-user"}
-        onChange={handleRadioChange}
+      <div className="pb-4">
+        <h3 className="float-left text-lg font-bold mr-4">
+          Select Data Direction:
+        </h3>
+        <input
+          type="radio"
+          id="haru-user"
+          className="hidden"
+          name="data-direction"
+          value="haru-user"
+          checked={dataDirection === "haru-user"}
+          onChange={handleRadioChange}
+        />
+        <label
+          htmlFor="haru-user"
+          className={`btn m-4 p-2 ${
+            dataDirection === "haru-user"
+              ? "btn-active border-2 border-sky-500 "
+              : "btn-outline-success border border-gray-500"
+          }`}
+        >
+          Haru to User
+        </label>
+        <input
+          type="radio"
+          id="user-haru"
+          className="hidden"
+          name="data-direction"
+          value="user-haru"
+          checked={dataDirection === "user-haru"}
+          onChange={handleRadioChange}
+        />
+        <label
+          htmlFor="user-haru"
+          className={`btn mr-4 p-2 ${
+            dataDirection === "user-haru"
+              ? "btn-active border-2 border-sky-500 "
+              : "btn-outline-success border border-gray-500"
+          }`}
+        >
+          User to Haru
+        </label>
+      </div>
+      <SankeyDiagram
+        dataDirection={dataDirection}
       />
-      <label className="btn btn-outline-success" htmlFor="haru-user">
-        Haru to User
-      </label>
-      <input
-        type="radio"
-        className="btn-check"
-        name="options-outlined"
-        id="user-haru"
-        value={"user-haru"}
-        checked={dataDirection === "user-haru"}
-        onChange={handleRadioChange}
-      />
-      <label className="btn btn-outline-success" htmlFor="user-haru">
-        User to Haru
-      </label>
-      <SankeyDiagram dataDirection={dataDirection} selected={selected} handle={handleInteraction}/>
     </div>
   );
 }

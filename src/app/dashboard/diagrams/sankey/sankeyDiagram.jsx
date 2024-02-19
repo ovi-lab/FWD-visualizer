@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   sankey as d3sankey,
   sankeyCenter,
@@ -6,6 +6,7 @@ import {
 } from "d3-sankey";
 import "../graphStyles.css";
 import { scaleOrdinal, schemeSet3 } from "d3";
+import { useSelected } from "../../contexts/selectedContext";
 
 const width = 600;
 const height = 400;
@@ -70,15 +71,15 @@ const Links = (link) => {
   );
 };
 
-// TODO: convert to functional component
+
 const SankeyDiagram = (props) => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  const [selected, setSelected] = useState(null);
   const [viewBox, setViewBox] = useState(`0 0 600 400`)
   const sankeyRef = React.useRef();
+  const {selected, setSelected} = useSelected();
 
   useEffect(() => {
     let selectedLinks = ""
@@ -91,8 +92,8 @@ const SankeyDiagram = (props) => {
           selectedLinks = data.links.user
           }
         const { nodes, links } = sankeyGenerator({
-          nodes: data.nodes.map((d) => Object.assign({}, d)),
-          links: selectedLinks.map((d) => Object.assign({}, d)),
+          nodes: data.nodes.map((d) => ({ ...d})),
+          links: selectedLinks.map((d) => ({ ...d})),
         });
 
         const { width: newWidth, height: newHeight } =
@@ -106,7 +107,7 @@ const SankeyDiagram = (props) => {
   }, [props.dataDirection]);
 
   const handleSankeyInteraction = (type, nodeName, id) => {
-    props.handle(type, nodeName, id);
+    setSelected(nodeName)
   };
 
   useEffect(() => {

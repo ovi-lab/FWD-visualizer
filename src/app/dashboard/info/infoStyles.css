@@ -8,7 +8,6 @@
   }
 
   .info-button {
-    background-color: #b7c5da;
     color: rgb(26, 26, 26);
     border: none;
     padding: 10px 20px;
@@ -19,10 +18,11 @@
     margin: 2px;
     cursor: pointer;
     border-radius: 12px;
+    
   }
   
   .info-button:hover {
-    background-color: #dae8fc;
+    box-shadow: 0 0 3px #6bb9f5;
   }
 
 

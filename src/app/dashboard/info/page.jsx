@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ThreadList from "./threadList";
 import "./infoStyles.css";
+import { useSelected } from "../contexts/selectedContext";
+import { useChatAnchor } from "../contexts/chatContext";
 
 const InfoPanel = (props) => {
   const [nodes, setNodes] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [selected, setSelected] = useState("");
+  const {selected} = useSelected();
+  const {setChatAnchor} = useChatAnchor();
 
   useEffect(() => {
     fetch("../../data/new_robot_data_2_15.json")
@@ -16,12 +19,9 @@ const InfoPanel = (props) => {
       });
   }, []);
 
-  useEffect(() => {
-    setSelected(props.selected);
-  }, [props.selected]);
 
   const anchorButtonClick = (anchorId) => {
-    props.anchorSelect(anchorId);
+    setChatAnchor(anchorId)
   };
 
   if (isLoading) return <p>loading...</p>;

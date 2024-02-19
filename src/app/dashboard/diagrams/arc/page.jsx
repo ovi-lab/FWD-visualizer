@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
+import { useSelected } from "../../contexts/selectedContext";
 
 // Create subcomponents for nodes, links, and labels
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
@@ -53,22 +54,14 @@ export default function ArcDiagram(props) {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(null);
   const [scales, setScales] = useState({});
   const [viewBox, setViewBox] = useState([])
-  const previousSelected = useRef(null);
+  const {selected, setSelected} = useSelected();
 
   const handleNodeSelect = (type, nodeName, id) => {
     setSelected(nodeName);
-    props.handleInteraction(type, nodeName, id);
   };
 
-  useEffect(() => {
-    if (props.selected !== previousSelected.current) {
-      setSelected(props.selected);
-      previousSelected.current = props.selected;
-    }
-  }, [props.selected, previousSelected]);
 
   useEffect(() => {
     fetch("../../../data/new_robot_data_2_15.json")

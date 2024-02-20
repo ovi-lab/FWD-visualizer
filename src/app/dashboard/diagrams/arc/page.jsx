@@ -2,7 +2,7 @@
 import React, { useState, useEffect} from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
-import { useSelected } from "../../contexts/selectedContext";
+import { useSelected } from "../../../contexts/selectedContext";
 
 // Create subcomponents for nodes, links, and labels
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
@@ -64,7 +64,7 @@ export default function ArcDiagram(props) {
 
 
   useEffect(() => {
-    fetch("../../../data/new_robot_data_2_15.json")
+    fetch("../../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
         const allNodes = data.nodes.map((d) => d.name);

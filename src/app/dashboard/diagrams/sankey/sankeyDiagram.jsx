@@ -6,7 +6,7 @@ import {
 } from "d3-sankey";
 import "../graphStyles.css";
 import { scaleOrdinal, schemeSet3 } from "d3";
-import { useSelected } from "../../contexts/selectedContext";
+import { useSelected } from "../../../contexts/selectedContext";
 
 const width = 600;
 const height = 400;
@@ -83,7 +83,7 @@ const SankeyDiagram = (props) => {
 
   useEffect(() => {
     let selectedLinks = ""
-    fetch("../../../data/new_robot_data_2_15.json")
+    fetch("../../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
         if (props.dataDirection === "haru-user") {

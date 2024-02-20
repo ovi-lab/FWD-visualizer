@@ -2,7 +2,7 @@
 import React, {useEffect, useRef, useState } from "react";
 import "./chatBox.css";
 import { scaleLinear } from "d3";
-import { useChatAnchor } from "../contexts/chatContext";
+import { useChatAnchor } from "../../contexts/chatContext";
 
 /**
 * Separates chat segments by the threadList identified in the conversation
@@ -66,7 +66,7 @@ export default function Chatbox(props) {
   let AnchorRef = useRef(null);
   
   useEffect(() => {
-    fetch('../../data/new_robot_data_2_15.json')
+    fetch('../../data/new_robot_data_2_20.json')
       .then((res) => res.json())
       .then((data) => {
         setNodes(data.nodes)

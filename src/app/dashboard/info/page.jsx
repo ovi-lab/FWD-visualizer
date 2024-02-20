@@ -1,8 +1,9 @@
+'use client'
 import React, { useState, useEffect } from "react";
 import ThreadList from "./threadList";
 import "./infoStyles.css";
-import { useSelected } from "../contexts/selectedContext";
-import { useChatAnchor } from "../contexts/chatContext";
+import { useSelected } from "../../contexts/selectedContext";
+import { useChatAnchor } from "../../contexts/chatContext";
 
 const InfoPanel = (props) => {
   const [nodes, setNodes] = useState([]);
@@ -11,7 +12,7 @@ const InfoPanel = (props) => {
   const {setChatAnchor} = useChatAnchor();
 
   useEffect(() => {
-    fetch("../../data/new_robot_data_2_15.json")
+    fetch("../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
         setNodes(data.nodes);

@@ -8,11 +8,12 @@ export default function TimeLine() {
   const {currentTime, setCurrentTime} = useTime()
 
   useEffect(() => {
-    fetch("../data/new_robot_data_2_20.json")
+    fetch("../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
-        setStart(new Date(data.nodes.at(-1).timestamp));
-        const end = new Date(data.nodes.at(0).timestamp);
+        setStart(new Date(data.nodes.at(-1).interactions.at(-1).timestamp));
+        const end = new Date(data.nodes.at(0).interactions.at(0).timestamp);
+        console.log(end)
         setEnd(end);
         setSelectedTime(end);
       });

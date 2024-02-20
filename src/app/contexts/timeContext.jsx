@@ -4,10 +4,10 @@ import React, { createContext, useState, useContext } from 'react';
 const TimeContext = createContext();
 
 export const TimeProvider = ({ children }) => {
-  const [currentTime, setCurrentTime] = useState('')
+  const [selectedTime, setSelectedTime] = useState('')
 
   return (
-    <TimeContext.Provider value={{ currentTime, setCurrentTime }}>
+    <TimeContext.Provider value={{ selectedTime, setSelectedTime }}>
       {children}
     </TimeContext.Provider>
   );

@@ -7,6 +7,7 @@ import {
 import "../graphStyles.css";
 import { scaleOrdinal, schemeSet3 } from "d3";
 import { useSelected } from "../../../contexts/selectedContext";
+import { useTime } from "@/app/contexts/timeContext";
 
 const width = 600;
 const height = 400;
@@ -23,7 +24,8 @@ const sankeyGenerator = d3sankey()
 
 const color = scaleOrdinal(schemeSet3);
 
-const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle }) => {
+const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle, timeSelected }) => {
+  
   return (
     <g key={id}>
       <rect
@@ -53,7 +55,10 @@ const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle }) => {
   );
 };
 
-const Links = (link) => {
+const Links = (link, timeSelected) => {
+  if (Date.parse(timeSelected) > Date.parse(link.timestamp))
+  return
+  
   return (
     <g>
       <path
@@ -80,6 +85,7 @@ const SankeyDiagram = (props) => {
   const [viewBox, setViewBox] = useState(`0 0 600 400`)
   const sankeyRef = React.useRef();
   const {selected, setSelected} = useSelected();
+  const {selectedTime} = useTime()
 
   useEffect(() => {
     let selectedLinks = ""
@@ -93,7 +99,7 @@ const SankeyDiagram = (props) => {
           }
         const { nodes, links } = sankeyGenerator({
           nodes: data.nodes.map((d) => ({ ...d})),
-          links: selectedLinks.map((d) => ({ ...d})),
+          links: selectedLinks.filter(link => Date.parse(link.timestamp) < Date.parse(selectedTime)).map((d) => ({ ...d})),
         });
 
         const { width: newWidth, height: newHeight } =
@@ -104,9 +110,9 @@ const SankeyDiagram = (props) => {
         setWidth(newWidth);
         setHeight(newHeight);
       });
-  }, [props.dataDirection]);
+  }, [props.dataDirection, selectedTime]);
 
-  const handleSankeyInteraction = (type, nodeName, id) => {
+  const handleSankeyInteraction = (nodeName) => {
     setSelected(nodeName)
   };
 
@@ -130,9 +136,9 @@ const SankeyDiagram = (props) => {
         viewBox={viewBox}
       >
         <g style={{ mixBlendMode: "multiply" }} id={'sankey-content'}>
-          {nodes.map((node) => (
+          {nodes.map((node, index) => (
             <Nodes
-              key={node.idx}
+              key={index}
               node
               {...node}
               width={width}
@@ -142,7 +148,7 @@ const SankeyDiagram = (props) => {
             />
           ))}
           {links.map((link, index) => (
-            <Links key={index} link {...link} />
+            <Links key={index} link {...link}/>
           ))}
         </g>
       </svg>

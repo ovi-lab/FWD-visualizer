@@ -5,6 +5,7 @@ import SankeyDiagram from "./sankeyDiagram";
 function SankeySelector() {
   const [dataDirection, setDataDirection] = useState("haru-user");
 
+
   // Event handler for radio button change
   const handleRadioChange = (event) => {
     setDataDirection(event.target.value);

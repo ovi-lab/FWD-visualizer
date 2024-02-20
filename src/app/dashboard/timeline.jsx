@@ -1,27 +1,36 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { useTime } from '../contexts/timeContext'
+
 export default function TimeLine() {
-  const [start, setStart] = useState(1);
-  const [end, setEnd] = useState(2);
-  const [selectedTime, setSelectedTime] = useState("");
-  const {currentTime, setCurrentTime} = useTime()
+  const [start, setStart] = useState('');
+  const [end, setEnd] = useState('');
+  const [steps, setSteps] = useState(0)
+  const {selectedTime, setSelectedTime} = useTime()
 
   useEffect(() => {
     fetch("../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
-        setStart(new Date(data.nodes.at(-1).interactions.at(-1).timestamp));
-        const end = new Date(data.nodes.at(0).interactions.at(0).timestamp);
-        console.log(end)
-        setEnd(end);
-        setSelectedTime(end);
+        const start = data.nodes.at(-1).interactions.at(-1)
+        const final = data.nodes.at(0).interactions.at(0)
+        setStart(start.timestamp);
+        setEnd(final.timestamp);
+        setSelectedTime(final.timestamp);
+        const range = Date.parse(final.timestamp)-Date.parse(start.timestamp)
+        setSteps(Math.ceil(range/(final.index/start.index)))
       });
   }, []);
-
-  const minTime = Date.parse(start);
-  const maxTime = Date.parse(end);
-  const timeStep = maxTime/minTime;
+  
+  const handleTimeSelect = (e) => {
+   // Parse the input value as a date string
+  const selectedDate = new Date(Number(e.target.value));
+  // Check if the parsed date is valid
+  if (!isNaN(selectedDate.getTime())) {
+    // If the date is valid, update the selected time in the context
+    setSelectedTime(selectedDate.toString()); 
+  }
+  }
 
   return (
     <div className="">
@@ -30,28 +39,30 @@ export default function TimeLine() {
           htmlFor="steps-range"
           className="text-sm font-medium text-gray-900 mr-auto"
         >
-          Left Text
+          {start}
         </label>
         <label
           htmlFor="steps-range"
           className="text-sm font-medium text-gray-900 mx-auto"
         >
-          Center Text
+          {(selectedTime)}
         </label>
         <label
           htmlFor="steps-range"
           className="text-sm font-medium text-gray-900 ml-auto"
         >
-          Right Text
+          {end}
         </label>
       </div>
       <input
         id="steps-range"
         type="range"
-        min={minTime}
-        max={maxTime}
-        step={timeStep}
+        min={Date.parse(start)}
+        max={Date.parse(end)}
+        step={steps}
+        defaultValue={Date.parse(selectedTime)}
         className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer"
+        onChange={handleTimeSelect}
       />
     </div>
   );

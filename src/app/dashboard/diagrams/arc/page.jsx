@@ -137,7 +137,7 @@ export default function ArcDiagram() {
           {/* Render links on the diagram */}
           {links
             .filter(
-              (item) => Date.parse(item.timestamp) < Date.parse(selectedTime)
+              (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
             )
 
             .map((link) => (
@@ -146,7 +146,7 @@ export default function ArcDiagram() {
           {/* Render the nodes on the diagram */}
           {nodes
             .filter(
-              (item) => Date.parse(item.timestamp) < Date.parse(selectedTime)
+              (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
             )
             .map((node) => (
               <Node

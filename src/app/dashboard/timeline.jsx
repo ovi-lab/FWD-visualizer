@@ -19,7 +19,7 @@ export default function TimeLine() {
         setEnd(final.timestamp);
         setSelectedTime(final.timestamp);
         const range = Date.parse(final.timestamp)-Date.parse(start.timestamp)
-        setSteps(Math.ceil((final.index/start.index)))
+        setSteps(Math.ceil((final.index-start.index)/1000))
         setLoading(false)
       });
   }, []);

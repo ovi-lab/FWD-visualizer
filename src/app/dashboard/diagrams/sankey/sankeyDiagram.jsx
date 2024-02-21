@@ -136,7 +136,7 @@ const SankeyDiagram = (props) => {
         viewBox={viewBox}
       >
         <g style={{ mixBlendMode: "multiply" }} id={'sankey-content'}>
-          {nodes.filter(node => Date.parse(node.timestamp) < Date.parse(selectedTime)).map((node, index) => (
+          {nodes.filter(node => Date.parse(node.timestamp) <= Date.parse(selectedTime)).map((node, index) => (
             <Nodes
               key={index}
               node
@@ -147,7 +147,7 @@ const SankeyDiagram = (props) => {
               handle={handleSankeyInteraction}
             />
           ))}
-          {links.filter(link => Date.parse(link.timestamp) < Date.parse(selectedTime)).map((link, index) => (
+          {links.filter(link => Date.parse(link.timestamp) <= Date.parse(selectedTime)).map((link, index) => (
             <Links key={index} link {...link}/>
           ))}
         </g>

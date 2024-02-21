@@ -59,7 +59,7 @@ export default function Chatbox() {
     const statementList = [];
 
     nodes
-      .filter((node) => Date.parse(node.timestamp) < Date.parse(selectedTime))
+      .filter((node) => Date.parse(node.timestamp) <= Date.parse(selectedTime))
       .map((interaction) => {
         const threadId = interaction.index;
         const speaker = interaction.Turn;

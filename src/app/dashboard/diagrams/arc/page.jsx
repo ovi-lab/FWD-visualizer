@@ -1,28 +1,49 @@
 "use client";
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
 import { useSelected } from "../../../contexts/selectedContext";
+import { useTime } from "@/app/contexts/timeContext";
 
 // Create subcomponents for nodes, links, and labels
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
-  <circle
-    className="node arcNode"
-    cx={xPosition}
-    cy={arcHeight - 30}
-    id={node.name}
-    r={size}
-    fill={
-      isSelected ? "green" : node.name.includes("haru:") ? "#80b1d3" : "#fb8072"
-    }
-    stroke="grey"
-    onClick={() => handle("node", node.name, node.id)}
-  />
+  <g>
+    <circle
+      className="node arcNode"
+      cx={xPosition}
+      cy={arcHeight - 30}
+      id={node.name}
+      r={size}
+      fill={
+        isSelected
+          ? "green"
+          : node.name.includes("haru:")
+          ? "#80b1d3"
+          : "#fb8072"
+      }
+      stroke="grey"
+      onClick={() => handle(node.name)}
+    />
+    <text
+      x={xPosition}
+      y={arcHeight - 15}
+      transform={`rotate(-45)`}
+      style={{
+        textAnchor: "end",
+        transformOrigin: `${xPosition}px ${arcHeight - 5}px`,
+        fontSize: "0.75rem",
+      }}
+      key={node.name}
+      className="label arcLabel"
+    >
+      {node.name}
+    </text>
+  </g>
 );
 
-const Link = ({ link, key }) => (
+const Link = ({ link }) => (
   <path
-    key={key}
+    key={link.name}
     d={link.d}
     fill="none"
     stroke="grey"
@@ -32,36 +53,18 @@ const Link = ({ link, key }) => (
   />
 );
 
-const Label = ({ xPosition, node, arcHeight }) => (
-  <text
-    x={xPosition}
-    y={arcHeight - 15}
-    transform={`rotate(-45)`}
-    style={{
-      textAnchor: "end",
-      transformOrigin: `${xPosition}px ${arcHeight - 5}px`,
-      fontSize: "0.75rem",
-    }}
-    key={node.name}
-    className="label arcLabel"
-  >
-    {node.name}
-  </text>
-);
-
-// Begin ArcDiagram Component
-export default function ArcDiagram(props) {
+export default function ArcDiagram() {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [scales, setScales] = useState({});
-  const [viewBox, setViewBox] = useState([])
-  const {selected, setSelected} = useSelected();
+  const [viewBox, setViewBox] = useState([]);
+  const { selected, setSelected } = useSelected();
+  const { selectedTime } = useTime();
 
-  const handleNodeSelect = (type, nodeName, id) => {
+  const handleNodeSelect = (nodeName) => {
     setSelected(nodeName);
   };
-
 
   useEffect(() => {
     fetch("../../../data/new_robot_data_2_20.json")
@@ -72,10 +75,7 @@ export default function ArcDiagram(props) {
         const arcHeight = 450;
 
         // A linear scale to position the nodes on the X axis
-        let x = d3.scalePoint().range([0, arcWidth]).domain(allNodes);
-
-       
-        let size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
+        const x = d3.scalePoint().range([arcWidth, 0]).domain(allNodes);
 
         setScales({ scalePoint: x });
 
@@ -108,7 +108,6 @@ export default function ArcDiagram(props) {
             return { ...link, d };
           });
 
-        
         setNodes(data.nodes);
         setLinks(calculatedLinks);
         setLoading(false);
@@ -125,7 +124,6 @@ export default function ArcDiagram(props) {
     }
   }, [nodes, links]);
 
-  
   // A linear scale for node size
   const size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
 
@@ -136,32 +134,31 @@ export default function ArcDiagram(props) {
       <h3 style={{ textAlign: "left" }}>Arc Diagram</h3>
       <svg width={"100%"} height={"100%"} viewBox={viewBox}>
         <g id="arc-content">
-        {/* <g transform={`translate(${100},${-100})`}> */}
           {/* Render links on the diagram */}
-          {links.map((link) => (
-            <Link link={link} key={link.id} />
-          ))}
+          {links
+            .filter(
+              (item) => Date.parse(item.timestamp) < Date.parse(selectedTime)
+            )
+
+            .map((link) => (
+              <Link link={link} key={link.id} />
+            ))}
           {/* Render the nodes on the diagram */}
-          {nodes.map((node) => (
-            <Node
-              key={node.id}
-              xPosition={scales.scalePoint(node.name)}
-              node={node}
-              size={size(Math.pow(1.22, node.n))}
-              arcHeight={450}
-              isSelected={node.name === selected}
-              handle={handleNodeSelect}
-            />
-          ))}
-          {/* Render Labels on the diagram */}
-          {nodes.map((node) => (
-            <Label
-              key={node.id}
-              xPosition={scales.scalePoint(node.name)}
-              node={node}
-              arcHeight={450}
-            />
-          ))}
+          {nodes
+            .filter(
+              (item) => Date.parse(item.timestamp) < Date.parse(selectedTime)
+            )
+            .map((node) => (
+              <Node
+                key={node.id}
+                xPosition={scales.scalePoint(node.name)}
+                node={node}
+                size={size(Math.pow(1.22, node.n))}
+                arcHeight={450}
+                isSelected={node.name === selected}
+                handle={handleNodeSelect}
+              />
+            ))}
         </g>
       </svg>
     </div>

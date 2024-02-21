@@ -1,8 +1,9 @@
 "use client";
 import React, {useEffect, useRef, useState } from "react";
 import "./chatBox.css";
-import { scaleLinear } from "d3";
 import { useChatAnchor } from "../../contexts/chatContext";
+import Bubble from "./chatBubble"
+import { useTime } from "@/app/contexts/timeContext";
 
 /**
 * Separates chat segments by the threadList identified in the conversation
@@ -28,42 +29,14 @@ const ThreadSeparator = ({ stmt, idx, arr }) => {
     return;
   }
 };
-/**
- * Creates a chat bubble for the current exchange
- * @param {*} stmt The dialog statement to display in this bubble
- * @param id The ID of the exchange displayed
- * @returns 
- */
-const Bubble = ({stmt, id}) => {
-  const speaker = stmt.speaker === "haru" ? "Haru" : "User";
-  const color = scaleLinear()
-    .domain([-1, 0, 1])
-    .range(["#dc3723", "white", "#99e699"]);
-
-  return (
-    <div className="bubbleContainer" id={`response${id}`}>
-      {" "}
-      <div className={`timestamp ${speaker}`}>{stmt.timestamp}</div>
-      <div className={`bubble ${speaker}`}>
-        <div
-          className={`message`}
-          style={{ backgroundColor: `${color(stmt.sentiment_score)}` }}
-        >
-          <div className={`speaker ${speaker}`}>{speaker}</div>
-          <div className={`text ${speaker}`}>{stmt.text}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default function Chatbox(props) {
   const [nodes, setNodes] = useState([])
   const [isLoading, setLoading] = useState(true)
-  const [threads, setThreads] = useState([]);
   const [statements, setStatements] = useState([]);
   const {chatAnchor} = useChatAnchor();
   let AnchorRef = useRef(null);
+  const {timeSelected} = useTime()
   
   useEffect(() => {
     fetch('../../data/new_robot_data_2_20.json')
@@ -75,32 +48,27 @@ export default function Chatbox(props) {
   }, [])
 
   useEffect(() => {
-    const nodeList = nodes
-    const threadList = {};
     const statementList = {};
-    nodeList.map((entry) => {
+    nodes.filter(node => Date.parse(node.timestamp) < Date.parse(timeSelected)).map((entry) => {
       entry.interactions.map((interaction) => {
         const threadId = interaction.index;
         const speaker = interaction.turn;
-        if (!threadList[threadId]) {
-          threadList[threadId] = [];
-        }
-        // Change here if data format is modified
-        threadList[threadId].push(interaction.idx);
         statementList[interaction.idx] = {
           id: interaction.idx,
           speaker: speaker,
           text: interaction.sentence,
+          sentiment_label: interaction.sentiment_label,
           sentiment_score: interaction.sentiment_score,
+          emotion_label: interaction.emotion_label,
+          emotion_score: interaction.emotion_score,
           timestamp: interaction.timestamp,
           threadId: threadId,
         };
       });
       
     });
-    setThreads(threadList);
     setStatements(Object.values(statementList));
-  }, [nodes])
+  }, [nodes, timeSelected])
   
   useEffect(() => {
     if (chatAnchor !== AnchorRef) {

@@ -3,10 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import { useTime } from '../contexts/timeContext'
 
 export default function TimeLine() {
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
+  const [start, setStart] = useState('1970-01-01 16:26:30');
+  const [end, setEnd] = useState('1970-01-01');
   const [steps, setSteps] = useState(0)
   const {selectedTime, setSelectedTime} = useTime()
+  const [isLoading, setLoading] = useState(true)
 
   useEffect(() => {
     fetch("../../data/new_robot_data_2_20.json")
@@ -19,6 +20,7 @@ export default function TimeLine() {
         setSelectedTime(final.timestamp);
         const range = Date.parse(final.timestamp)-Date.parse(start.timestamp)
         setSteps(Math.ceil(range/(final.index/start.index)))
+        setLoading(false)
       });
   }, []);
   
@@ -31,6 +33,9 @@ export default function TimeLine() {
     setSelectedTime(selectedDate.toString()); 
   }
   }
+console.log(Date.parse(start))
+
+if (isLoading) return <p> Loading</p>
 
   return (
     <div className="">

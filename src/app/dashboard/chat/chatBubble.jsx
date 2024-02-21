@@ -18,7 +18,7 @@ function sentimentColor(label, score) {
   return colorScale(score);
 }
 
-function emotionDisplay(label, score) {
+function emotionDisplay(label) {
   let emotion = ":|";
   switch (label) {
     case "anger":
@@ -63,11 +63,13 @@ const Bubble = ({ stmt, id }) => {
       <div className={`timestamp ${speaker}`}>{stmt.timestamp}</div>
       <div className={`bubble flex items-start ${speaker}`}>
         <div className="profile h-8 w-8 rounded-full bg-gray-100 mr-2 text-center">
-            {emotionDisplay(stmt.emotion_label)}
+          {emotionDisplay(stmt.emotion_label)}
         </div>
 
-        <div className={`message rounded-lg p-2`}
-        style={{ backgroundColor: `${color}` }}>
+        <div
+          className={`message rounded-lg p-2`}
+          style={{ backgroundColor: `${color}` }}
+        >
           <div className={`speaker text-sm font-bold ${speaker}`}>
             {speaker}
           </div>

@@ -30,33 +30,37 @@ const ThreadSeparator = ({ stmt, idx, arr }) => {
   }
 };
 
+
+
 export default function Chatbox(props) {
   const [nodes, setNodes] = useState([])
   const [isLoading, setLoading] = useState(true)
   const [statements, setStatements] = useState([]);
   const {chatAnchor} = useChatAnchor();
   let AnchorRef = useRef(null);
-  const {timeSelected} = useTime()
+  const {selectedTime} = useTime()
   
   useEffect(() => {
-    fetch('../../data/new_robot_data_2_20.json')
+    fetch('../../data/raw/log-02-20.json')
       .then((res) => res.json())
       .then((data) => {
-        setNodes(data.nodes)
+        console.log('data', data)
+        setNodes(data)
         setLoading(false)
       })
   }, [])
 
   useEffect(() => {
-    const statementList = {};
-    nodes.filter(node => Date.parse(node.timestamp) < Date.parse(timeSelected)).map((entry) => {
-      entry.interactions.map((interaction) => {
+    const statementList = [];
+    
+    nodes.filter(node => Date.parse(node.timestamp) < Date.parse(selectedTime)).map((interaction) => {
+      
         const threadId = interaction.index;
-        const speaker = interaction.turn;
+        const speaker = interaction.Turn;
         statementList[interaction.idx] = {
           id: interaction.idx,
           speaker: speaker,
-          text: interaction.sentence,
+          text: interaction.Sentence,
           sentiment_label: interaction.sentiment_label,
           sentiment_score: interaction.sentiment_score,
           emotion_label: interaction.emotion_label,
@@ -64,18 +68,18 @@ export default function Chatbox(props) {
           timestamp: interaction.timestamp,
           threadId: threadId,
         };
-      });
       
     });
     setStatements(Object.values(statementList));
-  }, [nodes, timeSelected])
-  
-  useEffect(() => {
+    anchorMove(`response${statementList.id}`)
+  }, [nodes, selectedTime])
+
+  function anchorMove(chatAnchor) {
     if (chatAnchor !== AnchorRef) {
-      
+        
       const targetElement = document.getElementById(chatAnchor);
       const targetContainer = document.getElementById("chatboxContent");
-
+  
       if (targetElement && targetContainer) {
         const scrollPosition =
           targetElement.offsetTop -
@@ -88,6 +92,10 @@ export default function Chatbox(props) {
         AnchorRef.current = chatAnchor
       }
     }
+  }
+  
+  useEffect(() => {
+    anchorMove(chatAnchor)
   }, [chatAnchor]);
 
   if (isLoading) return <p>Loading...</p>

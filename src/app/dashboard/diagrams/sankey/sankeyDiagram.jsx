@@ -24,7 +24,7 @@ const sankeyGenerator = d3sankey()
 
 const color = scaleOrdinal(schemeSet3);
 
-const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle, timeSelected }) => {
+const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle}) => {
   
   return (
     <g key={id}>
@@ -37,7 +37,7 @@ const Nodes = ({ name, id, y1, y0, x1, x0, width, isSelected, handle, timeSelect
         stroke={"black"}
         fill={isSelected ? "green" : color(name.match(/:(.*)/)[1].trim())}
         onClick={() => {
-          handle("node", name, id);
+          handle(name);
         }}
       />
       <title>`${name}`</title>
@@ -99,7 +99,7 @@ const SankeyDiagram = (props) => {
           }
         const { nodes, links } = sankeyGenerator({
           nodes: data.nodes.map((d) => ({ ...d})),
-          links: selectedLinks.filter(link => Date.parse(link.timestamp) < Date.parse(selectedTime)).map((d) => ({ ...d})),
+          links: selectedLinks.map((d) => ({ ...d})),
         });
 
         const { width: newWidth, height: newHeight } =
@@ -136,7 +136,7 @@ const SankeyDiagram = (props) => {
         viewBox={viewBox}
       >
         <g style={{ mixBlendMode: "multiply" }} id={'sankey-content'}>
-          {nodes.map((node, index) => (
+          {nodes.filter(node => Date.parse(node.timestamp) < Date.parse(selectedTime)).map((node, index) => (
             <Nodes
               key={index}
               node
@@ -147,7 +147,7 @@ const SankeyDiagram = (props) => {
               handle={handleSankeyInteraction}
             />
           ))}
-          {links.map((link, index) => (
+          {links.filter(link => Date.parse(link.timestamp) < Date.parse(selectedTime)).map((link, index) => (
             <Links key={index} link {...link}/>
           ))}
         </g>

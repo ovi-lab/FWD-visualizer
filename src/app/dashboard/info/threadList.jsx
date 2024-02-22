@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./infoStyles.css";
-import { SYSTEM_ENTRYPOINTS } from "next/dist/shared/lib/constants";
+import { useTime } from "@/app/contexts/timeContext";
 
 function InfoButton({ interact, conversationNum, handleClick, isClicked }) {
   // Set a maximum length for the response
@@ -39,6 +39,7 @@ export default function ThreadList({ data, selected, anchorClick }) {
   // Find the selected node in the data array
   const selectedNode = data.find((node) => node.name === selected);
   const [clickedButton, setClickedButton] = useState(""); 
+  const {selectedTime} = useTime()
 
   if (!selectedNode) {
     return <p>Selected node not found in the data</p>;
@@ -47,7 +48,7 @@ export default function ThreadList({ data, selected, anchorClick }) {
   // Convert the properties of the selected node into an array of key-value pairs
   const itemsArray = [];
   let numConversations = 1;
-  selectedNode.interactions.map((interact) => {
+  selectedNode.interactions.filter(item => Date.parse(item.timestamp) <= Date.parse(selectedTime)).map((interact) => {
     if (interact.lastInteraction === true) {
       numConversations++;
     }

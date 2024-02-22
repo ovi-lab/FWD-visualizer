@@ -32,14 +32,14 @@ const ThreadSeparator = ({ stmt, idx, arr }) => {
 
 /**
  * Loads the conversation transcript and generates a chatbox component that displays the dialogue as if it were a text messaging conversation
- * 
+ *
  * @context chatAnchor - Uses the context value created by the infopanel to determine which message to scroll to
  * @context selectedTime - Uses the context value created by the timeline to determine up to what timestamp to filter for
- * 
+ *
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
-  const [nodes, setNodes] = useState([]);
+  const [lines, setLines] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [statements, setStatements] = useState([]);
   const { chatAnchor } = useChatAnchor();
@@ -50,7 +50,7 @@ export default function Chatbox() {
     fetch("../../data/raw/log-02-20.json")
       .then((res) => res.json())
       .then((data) => {
-        setNodes(data);
+        setLines(data);
         setLoading(false);
       });
   }, []);
@@ -58,31 +58,32 @@ export default function Chatbox() {
   useEffect(() => {
     const statementList = [];
 
-    nodes
-      .filter((node) => Date.parse(node.timestamp) <= Date.parse(selectedTime))
+    lines
+      .filter((line) => Date.parse(line.timestamp) <= Date.parse(selectedTime))
       .map((interaction) => {
-        const threadId = interaction.index;
-        const speaker = interaction.Turn;
         statementList[interaction.idx] = {
           id: interaction.idx,
-          speaker: speaker,
+          speaker: interaction.Turn,
           text: interaction.Sentence,
           sentiment_label: interaction.sentiment_label,
           sentiment_score: interaction.sentiment_score,
           emotion_label: interaction.emotion_label,
           emotion_score: interaction.emotion_score,
           timestamp: interaction.timestamp,
-          threadId: threadId,
+          threadId: interaction.index,
         };
       });
     setStatements(Object.values(statementList));
     anchorMove(`response${statementList.id}`);
-  }, [nodes, selectedTime]);
+  }, [lines, selectedTime]);
 
   function anchorMove(chatAnchor) {
     if (chatAnchor !== AnchorRef) {
       const targetElement = document.getElementById(chatAnchor);
       const targetContainer = document.getElementById("chatboxContent");
+      const currentElement = document.getElementById(AnchorRef.current);
+
+      if (targetElement === null) return;
 
       if (targetElement && targetContainer) {
         const scrollPosition =
@@ -90,7 +91,7 @@ export default function Chatbox() {
           (targetContainer.clientHeight - targetElement.clientHeight) / 2;
         targetContainer.scrollTo({ top: scrollPosition, behavior: "smooth" });
         if (AnchorRef.current) {
-          document.getElementById(AnchorRef.current).style.border = "none";
+          currentElement.style.border = "none";
         }
         targetElement.style.border = "5px solid #a5faee";
         AnchorRef.current = chatAnchor;

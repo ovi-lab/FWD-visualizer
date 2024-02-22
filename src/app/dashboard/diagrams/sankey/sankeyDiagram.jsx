@@ -139,8 +139,7 @@ const SankeyDiagram = (props) => {
           {nodes.filter(node => Date.parse(node.timestamp) <= Date.parse(selectedTime)).map((node, index) => (
             <Nodes
               key={index}
-              node
-              {...node}
+              node {...node}
               width={width}
               height={height}
               isSelected={node.name === selected}

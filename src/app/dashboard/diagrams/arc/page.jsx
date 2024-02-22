@@ -4,54 +4,7 @@ import * as d3 from "d3";
 import "../graphStyles.css";
 import { useSelected } from "../../../contexts/selectedContext";
 import { useTime } from "@/app/contexts/timeContext";
-
-// Create subcomponents for nodes, links, and labels
-const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
-  <g>
-    <circle
-      className="node arcNode"
-      cx={xPosition}
-      cy={arcHeight - 30}
-      id={node.name}
-      r={size}
-      fill={
-        isSelected
-          ? "green"
-          : node.name.includes("haru:")
-          ? "#80b1d3"
-          : "#fb8072"
-      }
-      stroke="grey"
-      onClick={() => handle(node.name)}
-    />
-    <text
-      x={xPosition}
-      y={arcHeight - 15}
-      transform={`rotate(-45)`}
-      style={{
-        textAnchor: "end",
-        transformOrigin: `${xPosition}px ${arcHeight - 5}px`,
-        fontSize: "0.75rem",
-      }}
-      key={node.name}
-      className="label arcLabel"
-    >
-      {node.name}
-    </text>
-  </g>
-);
-
-const Link = ({ link }) => (
-  <path
-    key={link.name}
-    d={link.d}
-    fill="none"
-    stroke="grey"
-    strokeWidth={4}
-    className="link arcLink"
-    id={link.name}
-  />
-);
+import { Node, Link } from "./diagramParts";
 
 export default function ArcDiagram() {
   const [nodes, setNodes] = useState([]);
@@ -70,25 +23,46 @@ export default function ArcDiagram() {
     fetch("../../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
-        const allNodes = data.nodes.map((d) => d.name);
         const arcWidth = 750;
         const arcHeight = 450;
+        const midPoint = arcWidth / 2;
+        const haruNodes = [];
+        const userNodes = [];
+        const allNodes = [];
+        const idToNode = {};
+
+        data.nodes.map((node) => {
+          allNodes.push(node.name);
+          idToNode[node.id] = node;
+          node.name.includes("haru:")
+            ? haruNodes.push(node)
+            : userNodes.push(node);
+        });
 
         // A linear scale to position the nodes on the X axis
-        const x = d3.scalePoint().range([arcWidth, 0]).domain(allNodes);
+        const xHaru = d3
+          .scalePoint()
+          .domain(haruNodes.map((node) => node.name))
+          .range([midPoint-15, 0]);
 
-        setScales({ scalePoint: x });
+        const xUser = d3
+          .scalePoint()
+          .domain(userNodes.map((node) => node.name))
+          .range([midPoint+15, arcWidth]);
 
-        const idToNode = {};
-        data.nodes.forEach((n) => {
-          idToNode[n.id] = n;
-        });
+        setScales({ haruScale: xHaru, userScale: xUser });
+
+        data.nodes.map((n) => {});
 
         const calculatedLinks = data.links.haru
           .concat(data.links.user)
           .map((link) => {
-            let start = x(idToNode[link.source].name);
-            let end = x(idToNode[link.target].name);
+            let start = idToNode[link.source].name.includes("haru:")
+              ? xHaru(idToNode[link.source].name)
+              : xUser(idToNode[link.source].name);
+            let end = idToNode[link.target].name.includes("haru:")
+              ? xHaru(idToNode[link.target].name)
+              : xUser(idToNode[link.target].name);
             let d = [
               "M",
               start,
@@ -125,7 +99,7 @@ export default function ArcDiagram() {
   }, [nodes, links]);
 
   // A linear scale for node size
-  const size = d3.scaleLinear().domain([1, 10]).range([2, 10]);
+  const size = d3.scaleLinear().domain([1, 10]).range([1, 20]).clamp(true);
 
   if (isLoading) return <p>loading...</p>;
 
@@ -139,9 +113,8 @@ export default function ArcDiagram() {
             .filter(
               (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
             )
-
             .map((link) => (
-              <Link link={link} key={link.id} />
+              <Link name={link.name} pathData={link.d} isConnectedNodeSelected={link.name.includes(selected)} key={link.id} />
             ))}
           {/* Render the nodes on the diagram */}
           {nodes
@@ -151,9 +124,13 @@ export default function ArcDiagram() {
             .map((node) => (
               <Node
                 key={node.id}
-                xPosition={scales.scalePoint(node.name)}
+                xPosition={
+                  node.name.includes("haru:")
+                    ? scales.haruScale(node.name)
+                    : scales.userScale(node.name)
+                }
                 node={node}
-                size={size(Math.pow(1.22, node.n))}
+                size={size(Math.pow(1.2, node.n))}
                 arcHeight={450}
                 isSelected={node.name === selected}
                 handle={handleNodeSelect}

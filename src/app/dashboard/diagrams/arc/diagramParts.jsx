@@ -14,16 +14,16 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
   <g>
   <line
     x1={xPosition}
-    y1={arcHeight - 30}
+    y1={arcHeight + size + 5}
     x2={xPosition}
-    y2={arcHeight + 10}
+    y2={arcHeight+30}
     stroke="grey"
     strokeWidth="1"
   />
     <circle
       className="node arcNode"
       cx={xPosition}
-      cy={arcHeight - 30}
+      cy={arcHeight}
       id={node.name}
       r={size}
       fill={
@@ -38,8 +38,8 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
     />
     
     <text
-      x={xPosition - 25}
-      y={arcHeight + 10}
+      x={xPosition - 30}
+      y={arcHeight + 30}
       transform={`rotate(-45)`}
       style={{
         textAnchor: "end",
@@ -67,6 +67,7 @@ const Link = ({name, pathData, isConnectedNodeSelected }) => (
     d={pathData}
     fill="none"
     stroke={isConnectedNodeSelected ? "red" : "grey"}
+    opacity={isConnectedNodeSelected ? "100%" : "50%"}
     strokeWidth={4}
     className="link arcLink"
     id={name}

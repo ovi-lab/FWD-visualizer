@@ -23,7 +23,7 @@ export default function ArcDiagram() {
     fetch("../../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
-        const arcWidth = 750;
+        const arcWidth = 1000;
         const arcHeight = 450;
         const midPoint = arcWidth / 2;
         const haruNodes = [];
@@ -52,8 +52,6 @@ export default function ArcDiagram() {
 
         setScales({ haruScale: xHaru, userScale: xUser });
 
-        data.nodes.map((n) => {});
-
         const calculatedLinks = data.links.haru
           .concat(data.links.user)
           .map((link) => {
@@ -66,7 +64,7 @@ export default function ArcDiagram() {
             let d = [
               "M",
               start,
-              arcHeight - 30,
+              arcHeight,
               "A",
               (start - end) / 2,
               ",",
@@ -77,7 +75,7 @@ export default function ArcDiagram() {
               start < end ? 1 : 0,
               end,
               ",",
-              arcHeight - 30,
+              arcHeight,
             ].join(" ");
             return { ...link, d };
           });

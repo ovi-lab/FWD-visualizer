@@ -10,15 +10,14 @@ export default function TimeLine() {
   const [isLoading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("../../data/new_robot_data_2_20.json")
+    fetch("../../data/raw/log-02-20.json")
       .then((res) => res.json())
       .then((data) => {
-        const start = data.nodes.at(-1).interactions.at(0)
-        const final = data.nodes.at(0).interactions.at(-1)
-        setStart(start.timestamp);
-        setEnd(final.timestamp);
-        setSelectedTime(final.timestamp);
-        const range = Date.parse(final.timestamp)-Date.parse(start.timestamp)
+        const start = data.at(-1).timestamp
+        const final = data.at(0).timestamp
+        setStart(start);
+        setEnd(final);
+        setSelectedTime(final);
         setSteps(Math.ceil((final.index-start.index)/1000))
         setLoading(false)
       });
@@ -33,7 +32,6 @@ export default function TimeLine() {
     setSelectedTime(selectedDate.toString()); 
   }
   }
-console.log(Date.parse(start))
 
 if (isLoading) return <p> Loading</p>
 

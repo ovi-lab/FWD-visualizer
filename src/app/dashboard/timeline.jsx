@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { useTime } from '../contexts/timeContext'
 
 export default function TimeLine() {
@@ -7,7 +7,7 @@ export default function TimeLine() {
   const [end, setEnd] = useState('1970-01-01');
   const [steps, setSteps] = useState(0)
   const {selectedTime, setSelectedTime} = useTime()
-  const [isLoading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetch("../../data/raw/log-02-20.json")
@@ -33,9 +33,9 @@ export default function TimeLine() {
   }
   }
 
-if (isLoading) return <p> Loading</p>
+if (loading) return <p> Loading</p>
 
-  return (
+else return (
     <div className="">
       <div className="flex items-center justify-between">
         <label

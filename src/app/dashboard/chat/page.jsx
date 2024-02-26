@@ -32,7 +32,6 @@ const ThreadSeparator = ({ stmt, idx, arr }) => {
 
 function checkForCollection(current, previous) {
   if (current.Turn === "haru") return false;
-  console.log(previous.entity_type_detection);
   return previous.entity_type_detection;
 }
 
@@ -117,15 +116,15 @@ export default function Chatbox() {
 
   if (loading) return <p>Loading...</p>;
   return (
-    <div className="col-span-2 chatbox-container">
+    <div className="col-span-2 chatbox-container ">
       <h1>Conversation Transcript</h1>
-      <div className="chatbox-body" style={{ overflow: "hidden" }}>
+      <div className="chatbox-body overflow-hidden h-full" >
         <div
-          className="chatbox-content"
+          className="chatbox-content h-full"
           id="chatboxContent"
           style={{ overflowY: "scroll" }}
         >
-          {statements.map((stmt, idx, arr) => {
+          {statements.map((stmt) => {
             return (
               <div key={stmt.id}>
                 {/* <ThreadSeparator stmt={stmt} idx={idx} arr={arr} /> */}

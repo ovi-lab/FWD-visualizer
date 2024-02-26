@@ -61,15 +61,12 @@ const Bubble = ({ stmt, id }) => {
   return (
     <div className="bubbleContainer" id={`response${id}`}>
       {stmt.timestamp ? (
-        
-        
         <div className={`timestamp ${speaker} flex justify-center relative`}>
-        <hr
-            className={`timestamp-border absolute justify-center w-60 border border-gray-300 border `}  
+          <hr
+            className={`timestamp-border absolute justify-center w-60 border border-gray-300 border `}
           />
           {stmt.timestamp}
         </div>
-        
       ) : null}
       <div className={`bubble flex items-start ${speaker}`}>
         {speaker === "Haru" ? (

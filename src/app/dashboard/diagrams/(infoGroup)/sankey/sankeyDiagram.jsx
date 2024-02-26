@@ -47,12 +47,8 @@ const SankeyDiagram = (props) => {
           links: selectedLinks.map((d) => ({ ...d })),
         });
 
-        const { width: newWidth, height: newHeight } =
-          sankeyRef.current.getBoundingClientRect();
         setNodes(nodes);
         setLinks(links);
-        setWidth(newWidth);
-        setHeight(newHeight);
       });
   }, [props.dataDirection, selectedTime]);
 
@@ -72,14 +68,8 @@ const SankeyDiagram = (props) => {
   }, [nodes, links]);
 
   return (
-    <div className="sankeyWrapper w-100% h-100%">
-      <svg
-        className="sankeyDiagram p-1"
-        ref={sankeyRef}
-        width={"100%"}
-        height={"100%"}
-        viewBox={viewBox}
-      >
+    <div className="sankeyWrapper w-full h-full max-w-full max-h-full overflow-hidden">
+      <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>
         <g style={{ mixBlendMode: "multiply" }} id={"sankey-content"}>
           {nodes
             .filter(

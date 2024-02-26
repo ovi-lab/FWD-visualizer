@@ -30,6 +30,17 @@ const ThreadSeparator = ({ stmt, idx, arr }) => {
   }
 };
 
+function checkForCollection(current, previous) {
+  if (current.Turn === "haru") return false;
+  console.log(previous.entity_type_detection);
+  return previous.entity_type_detection;
+}
+
+function includeTimestamp(current, previous) {
+  if (previous === undefined) return null
+  return current.Turn !== previous.Turn ? current.timestamp : null
+}
+
 /**
  * Loads the conversation transcript and generates a chatbox component that displays the dialogue as if it were a text messaging conversation
  *
@@ -40,7 +51,7 @@ const ThreadSeparator = ({ stmt, idx, arr }) => {
  */
 export default function Chatbox() {
   const [lines, setLines] = useState([]);
-  const [isLoading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [statements, setStatements] = useState([]);
   const { chatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
@@ -60,7 +71,7 @@ export default function Chatbox() {
 
     lines
       .filter((line) => Date.parse(line.timestamp) <= Date.parse(selectedTime))
-      .map((interaction) => {
+      .map((interaction, index) => {
         statementList[interaction.idx] = {
           id: interaction.idx,
           speaker: interaction.Turn,
@@ -69,7 +80,8 @@ export default function Chatbox() {
           sentiment_score: interaction.sentiment_score,
           emotion_label: interaction.emotion_label,
           emotion_score: interaction.emotion_score,
-          timestamp: interaction.timestamp,
+          was_data_collected: checkForCollection(interaction, lines[index + 1]),
+          timestamp: includeTimestamp(interaction, lines[index + 1]),
           threadId: interaction.index,
         };
       });
@@ -103,7 +115,7 @@ export default function Chatbox() {
     anchorMove(chatAnchor);
   }, [chatAnchor]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
   return (
     <div className="col-span-2 chatbox-container">
       <h1>Conversation Transcript</h1>
@@ -116,7 +128,7 @@ export default function Chatbox() {
           {statements.map((stmt, idx, arr) => {
             return (
               <div key={stmt.id}>
-                <ThreadSeparator stmt={stmt} idx={idx} arr={arr} />
+                {/* <ThreadSeparator stmt={stmt} idx={idx} arr={arr} /> */}
                 <Bubble stmt={stmt} id={stmt.id} />
               </div>
             );

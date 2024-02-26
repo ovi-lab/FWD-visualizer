@@ -4,7 +4,7 @@ import {
     sankeyLinkHorizontal
   } from "d3-sankey";
 
-const Node = ({ name, id, y1, y0, x1, x0, width, isSelected, handle}) => {
+const Node = ({ name, id, y1, y0, x1, x0, width, height, isSelected, handle}) => {
     return (
       <g key={id}>
         <rect

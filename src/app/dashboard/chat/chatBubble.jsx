@@ -57,10 +57,20 @@ function emotionDisplay(label) {
 const Bubble = ({ stmt, id }) => {
   const speaker = stmt.speaker === "haru" ? "Haru" : "User";
   const color = sentimentColor(stmt.sentiment_label, stmt.sentiment_score);
-
+  console.log("stmt.was_data_collected", stmt.was_data_collected);
   return (
     <div className="bubbleContainer" id={`response${id}`}>
-      <div className={`timestamp ${speaker}`}>{stmt.timestamp}</div>
+      {stmt.timestamp ? (
+        
+        
+        <div className={`timestamp ${speaker} flex justify-center relative`}>
+        <hr
+            className={`timestamp-border absolute justify-center w-60 border border-gray-300 border `}  
+          />
+          {stmt.timestamp}
+        </div>
+        
+      ) : null}
       <div className={`bubble flex items-start ${speaker}`}>
         {speaker === "Haru" ? (
           <div className="profile h-8 w-8 rounded-full bg-lime-400 mr-2 text-center">
@@ -77,12 +87,18 @@ const Bubble = ({ stmt, id }) => {
           </div>
           <div className={`text ${speaker}`}>{stmt.text}</div>
         </div>
+
         {speaker !== "Haru" ? (
           <div className="profile h-8 w-8 rounded-full bg-cyan-200 ml-2 text-center">
             {emotionDisplay(stmt.emotion_label)}
           </div>
         ) : null}
       </div>
+      {stmt.was_data_collected && stmt.text ? (
+        <div className={`data-collection flex justify-end`}>
+          User Data was collected
+        </div>
+      ) : null}
     </div>
   );
 };

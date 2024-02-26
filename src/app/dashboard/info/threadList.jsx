@@ -79,7 +79,7 @@ export default function ThreadList({ data, selected, anchorClick }) {
         <div className="threadList">
           <ul id="listItems">
             {itemsArray.map((interact) => (
-              <li key={interact[1].id}>
+              <li key={interact.id}>
                 <InfoButton interact={interact[1]} conversationNum={interact[0]} handleClick={handleListClick} isClicked={clickedButton === interact[1].idx}/>
               </li>
             ))}

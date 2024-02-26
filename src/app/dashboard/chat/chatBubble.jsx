@@ -62,9 +62,11 @@ const Bubble = ({ stmt, id }) => {
     <div className="bubbleContainer" id={`response${id}`}>
       <div className={`timestamp ${speaker}`}>{stmt.timestamp}</div>
       <div className={`bubble flex items-start ${speaker}`}>
-        <div className="profile h-8 w-8 rounded-full bg-gray-100 mr-2 text-center">
-          {emotionDisplay(stmt.emotion_label)}
-        </div>
+        {speaker === "Haru" ? (
+          <div className="profile h-8 w-8 rounded-full bg-lime-400 mr-2 text-center">
+            {emotionDisplay(stmt.emotion_label)}
+          </div>
+        ) : null}
 
         <div
           className={`message rounded-lg p-2`}
@@ -75,6 +77,11 @@ const Bubble = ({ stmt, id }) => {
           </div>
           <div className={`text ${speaker}`}>{stmt.text}</div>
         </div>
+        {speaker !== "Haru" ? (
+          <div className="profile h-8 w-8 rounded-full bg-cyan-200 ml-2 text-center">
+            {emotionDisplay(stmt.emotion_label)}
+          </div>
+        ) : null}
       </div>
     </div>
   );

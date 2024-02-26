@@ -7,7 +7,7 @@ import { useChatAnchor } from "../../contexts/chatContext";
 
 const InfoPanel = (props) => {
   const [nodes, setNodes] = useState([]);
-  const [isLoading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const {selected} = useSelected();
   const {setChatAnchor} = useChatAnchor();
 
@@ -25,7 +25,7 @@ const InfoPanel = (props) => {
     setChatAnchor(anchorId)
   };
 
-  if (isLoading) return <p>loading...</p>;
+  if (loading) return <p>loading...</p>;
 
   return (
     <div className="col-span-1 infoPanel">

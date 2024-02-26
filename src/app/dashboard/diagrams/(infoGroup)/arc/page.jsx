@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
-import { useSelected } from "../../../contexts/selectedContext";
+import { useSelected } from "../../../../contexts/selectedContext";
 import { useTime } from "@/app/contexts/timeContext";
 import { Node, Link } from "./diagramParts";
 

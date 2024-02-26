@@ -28,10 +28,10 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
       r={size}
       fill={
         isSelected
-          ? "green"
-          : node.name.includes("haru:")
+          ? "rgb(139, 227, 139)"
+          : (node.name.includes("haru:")
           ? "#80b1d3"
-          : "#fb8072"
+          : "#fb8072")
       }
       stroke="grey"
       onClick={() => handle(node.name)}
@@ -67,7 +67,7 @@ const Link = ({name, pathData, isConnectedNodeSelected }) => (
     d={pathData}
     fill="none"
     stroke={isConnectedNodeSelected ? "red" : "grey"}
-    opacity={isConnectedNodeSelected ? "100%" : "50%"}
+    opacity={isConnectedNodeSelected ? "100%" : "20%"}
     strokeWidth={4}
     className="link arcLink"
     id={name}

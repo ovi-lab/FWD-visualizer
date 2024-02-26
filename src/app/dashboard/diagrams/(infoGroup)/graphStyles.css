@@ -1,7 +1,7 @@
 /* Handle Hovering of links */
-.link:hover {
+/* .link:hover {
   stroke: rgb(139, 227, 139);
-}
+} */
 
 .node:hover {
   fill:rgb(139, 227, 139);

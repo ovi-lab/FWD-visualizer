@@ -78,6 +78,17 @@ const SankeyDiagram = (props) => {
     <div className="sankeyWrapper w-full h-full max-w-full max-h-full overflow-hidden">
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>
         <g style={{ mixBlendMode: "multiply" }} id={"sankey-content"}>
+          
+          {links.map((link) => (
+            <Link
+              key={link.name}
+              linkID={link.id}
+              dValue={sankeyLinkHorizontal()(link)}
+              linkSourceName={link.source.name.match(/:(.*)/)[1].trim()}
+              linkedNodeSelected={link.name.includes(selectedNode)}
+              linkWidth={link.width}
+            />
+          ))}
           {nodes.map((node) =>
             node.show === true ? (
               <Node
@@ -92,16 +103,6 @@ const SankeyDiagram = (props) => {
               />
             ) : null
           )}
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              linkID={link.id}
-              dValue={sankeyLinkHorizontal()(link)}
-              linkSourceName={link.source.name.match(/:(.*)/)[1].trim()}
-              linkedNodeSelected={link.name.includes(selectedNode)}
-              linkWidth={link.width}
-            />
-          ))}
         </g>
       </svg>
     </div>

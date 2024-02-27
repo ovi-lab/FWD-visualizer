@@ -65,7 +65,7 @@ const Bubble = ({ stmt, id }) => {
           {stmt.timestamp}
         </div>
       ) : null}
-      <div className={`bubble flex items-start ${speaker}`}>
+      <div className={`bubble items-start ${speaker}`}>
         {speaker === "Haru" ? (
           <div className="profile h-8 w-8 rounded-full bg-lime-400 mr-2 text-center">
             {emotionDisplay(stmt.emotion_label)}

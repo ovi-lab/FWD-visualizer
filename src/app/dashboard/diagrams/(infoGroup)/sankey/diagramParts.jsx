@@ -16,7 +16,7 @@ const Node = ({ name, id, y1, y0, x1, x0, width, height, isSelected, handle}) =>
             handle(name);
           }}
         />
-        <title>`${name}`</title>
+        <title>{name}</title>
         <text
           key={id}
           fontSize={"0.50em"}

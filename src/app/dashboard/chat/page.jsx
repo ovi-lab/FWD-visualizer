@@ -1,9 +1,10 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import "./chatBox.css";
 import { useChatAnchor } from "../../contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
+// import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 /**
  * Separates chat segments by the threadList identified in the conversation
@@ -55,6 +56,34 @@ export default function Chatbox() {
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
   const { selectedTime } = useTime();
+  // const {setSelectedNode} = useSelectedNode();
+
+  const anchorMoveCallback = useCallback((anchorRef) => {
+    return function(anchor) {
+      if (anchor !== anchorRef.current) {
+        const targetElement = document.getElementById(anchor);
+        const targetContainer = document.getElementById("chatboxContent");
+        const currentElement = document.getElementById(anchorRef.current);
+  
+        if (targetElement === null) return;
+  
+        if (targetElement && targetContainer) {
+          const scrollPosition =
+            targetElement.offsetTop -
+            (targetContainer.clientHeight - targetElement.clientHeight) / 2;
+          targetContainer.scrollTo({ top: scrollPosition, behavior: "smooth" });
+          if (currentElement !== null) {
+            currentElement.style.border = "none";
+          }
+          targetElement.style.border = "5px solid #a5faee";
+          anchorRef.current = anchor;
+          setChatAnchor(anchor);
+        }
+      }
+    }
+  }, [setChatAnchor]);
+
+  const anchorMove = anchorMoveCallback(AnchorRef);
 
 useEffect(() => {
     fetch("../../data/raw/log-02-20.json")
@@ -101,29 +130,6 @@ useEffect(() => {
     });
     setStatements(Object.values(statementList));
   }, [lines]);
-//TODO: useCallback
-  function anchorMove(anchor) {
-    if (anchor !== AnchorRef) {
-      const targetElement = document.getElementById(anchor);
-      const targetContainer = document.getElementById("chatboxContent");
-      const currentElement = document.getElementById(AnchorRef.current);
-
-      if (targetElement === null) return;
-
-      if (targetElement && targetContainer) {
-        const scrollPosition =
-          targetElement.offsetTop -
-          (targetContainer.clientHeight - targetElement.clientHeight) / 2;
-        targetContainer.scrollTo({ top: scrollPosition, behavior: "smooth" });
-        if (currentElement !== null) {
-          currentElement.style.border = "none";
-        }
-        targetElement.style.border = "5px solid #a5faee";
-        AnchorRef.current = anchor;
-        setChatAnchor(anchor)
-      }
-    }
-  }
 
   useEffect(() => {
     anchorMove(chatAnchor);

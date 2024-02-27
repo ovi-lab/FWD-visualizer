@@ -5,7 +5,7 @@ import SankeySelector from "./diagrams/(infoGroup)/sankey/page";
 
 export default function Dashboard() {
   return (
-    <div >  
+    <div>  
         <div className="grid grid-cols-7 row data-row">
           <InfoPanel
 

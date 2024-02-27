@@ -39,7 +39,7 @@ export default function TimeLine() {
 if (loading) return <p> Loading</p>
 
 else return (
-    <div className="">
+    <div >
       <div className="flex items-center justify-between">
         <label
           htmlFor="steps-range"

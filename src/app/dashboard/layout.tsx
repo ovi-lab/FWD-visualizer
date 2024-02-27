@@ -12,7 +12,7 @@ export default function Layout({
       <div className="w-full flex-none md:w-56">
         <SideBar />
       </div>
-      <div className="flex-row p-3  md:px-4 md:py-6">
+      <div className="flex-grow p-3 md:px-4 md:py-6 overflow-y-auto">
      <TimeProvider>
       <TimeLine />
         <ChatProvider>

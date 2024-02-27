@@ -4,7 +4,7 @@ import { useTime } from '../contexts/timeContext'
 
 export default function TimeLine() {
   const [start, setStart] = useState('1970-01-01 16:26:30');
-  const [end, setEnd] = useState('1970-01-01');
+  const [end, setEnd] = useState('1970-01-01 16:26:31');
   const [steps, setSteps] = useState(0)
   const {selectedTime, setSelectedTime} = useTime()
   const [loading, setLoading] = useState(true)
@@ -15,13 +15,16 @@ export default function TimeLine() {
       .then((data) => {
         const start = data.at(-1).timestamp
         const final = data.at(0).timestamp
+        console.log('Date.parse(start)', Date.parse(start))
+        console.log('Date.parse(final)', Date.parse(final))
+        console.log('Date.parse(final)', )
         setStart(start);
         setEnd(final);
         setSelectedTime(final);
-        setSteps(Math.ceil((final.index-start.index)/1000))
+        setSteps(Math.ceil(((Date.parse(final)-Date.parse(start))/data.length)/1000))
         setLoading(false)
       });
-  }, []);
+  }, [setSelectedTime]);
   
   const handleTimeSelect = (e) => {
    // Parse the input value as a date string
@@ -32,7 +35,7 @@ export default function TimeLine() {
     setSelectedTime(selectedDate.toString()); 
   }
   }
-
+  console.log('steps', steps)
 if (loading) return <p> Loading</p>
 
 else return (

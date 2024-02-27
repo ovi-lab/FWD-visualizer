@@ -31,13 +31,13 @@ const ThreadSeparator = ({ stmt, idx, arr }) => {
 };
 
 function checkForCollection(current, previous) {
-  if (current.Turn === "haru") return false;
+  if (current.turn === "haru" || previous === undefined) return false;
   return previous.entity_type_detection;
 }
 
 function includeTimestamp(current, previous) {
-  if (previous === undefined) return null
-  return current.Turn !== previous.Turn ? current.timestamp : null
+  if (previous === undefined || current.turn === "haru") return null;
+  return current.turn !== previous.turn ? current.timestamp : null;
 }
 
 /**
@@ -52,45 +52,59 @@ export default function Chatbox() {
   const [lines, setLines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statements, setStatements] = useState([]);
-  const { chatAnchor } = useChatAnchor();
+  const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
   const { selectedTime } = useTime();
 
-  useEffect(() => {
+useEffect(() => {
     fetch("../../data/raw/log-02-20.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setLines(data);
+    .then((res) => res.json())
+    .then((data) => {
+      const filteredLines = [];
+      data
+      .filter(
+        (line) => Date.parse(line.timestamp) <= Date.parse(selectedTime)
+        )
+        .map((interaction, index) => {
+          filteredLines[index] = interaction;
+          });
+        setLines(filteredLines);
         setLoading(false);
       });
-  }, []);
+    }, [selectedTime]);
+
+    useEffect(() => {
+      // Scroll to the last line whenever lines change
+      if (lines.length > 0) {
+        anchorMove(`response${lines.length-1}`);
+      }
+    }, [lines, anchorMove]);
+    
 
   useEffect(() => {
     const statementList = [];
-
-    lines
-      .filter((line) => Date.parse(line.timestamp) <= Date.parse(selectedTime))
-      .map((interaction, index) => {
-        statementList[interaction.idx] = {
-          id: interaction.idx,
-          speaker: interaction.Turn,
-          text: interaction.Sentence,
-          sentiment_label: interaction.sentiment_label,
-          sentiment_score: interaction.sentiment_score,
-          emotion_label: interaction.emotion_label,
-          emotion_score: interaction.emotion_score,
-          was_data_collected: checkForCollection(interaction, lines[index + 1]),
-          timestamp: includeTimestamp(interaction, lines[index + 1]),
-          threadId: interaction.index,
-        };
-      });
+    let latestIndex = 0;
+    lines.map((interaction, index) => {
+      if (index === 0) latestIndex = interaction.idx;
+      statementList[interaction.idx] = {
+        id: interaction.idx,
+        speaker: interaction.turn,
+        text: interaction.sentence,
+        sentiment_label: interaction.sentiment_label,
+        sentiment_score: interaction.sentiment_score,
+        emotion_label: interaction.emotion_label,
+        emotion_score: interaction.emotion_score,
+        was_data_collected: checkForCollection(interaction, lines[index + 1]),
+        timestamp: includeTimestamp(interaction, lines[index + 1]),
+        threadId: interaction.index,
+      };
+    });
     setStatements(Object.values(statementList));
-    anchorMove(`response${statementList.id}`);
-  }, [lines, selectedTime]);
-
-  function anchorMove(chatAnchor) {
-    if (chatAnchor !== AnchorRef) {
-      const targetElement = document.getElementById(chatAnchor);
+  }, [lines]);
+//TODO: useCallback
+  function anchorMove(anchor) {
+    if (anchor !== AnchorRef) {
+      const targetElement = document.getElementById(anchor);
       const targetContainer = document.getElementById("chatboxContent");
       const currentElement = document.getElementById(AnchorRef.current);
 
@@ -101,11 +115,12 @@ export default function Chatbox() {
           targetElement.offsetTop -
           (targetContainer.clientHeight - targetElement.clientHeight) / 2;
         targetContainer.scrollTo({ top: scrollPosition, behavior: "smooth" });
-        if (AnchorRef.current) {
+        if (currentElement !== null) {
           currentElement.style.border = "none";
         }
         targetElement.style.border = "5px solid #a5faee";
-        AnchorRef.current = chatAnchor;
+        AnchorRef.current = anchor;
+        setChatAnchor(anchor)
       }
     }
   }
@@ -118,7 +133,7 @@ export default function Chatbox() {
   return (
     <div className="col-span-2 chatbox-container ">
       <h1>Conversation Transcript</h1>
-      <div className="chatbox-body overflow-hidden h-full" >
+      <div className="chatbox-body overflow-hidden h-full">
         <div
           className="chatbox-content h-full"
           id="chatboxContent"

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
-import { useSelected } from "../../../../contexts/selectedContext";
+import { useSelectedNode } from "../../../../contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
 import { Node, Link } from "./diagramParts";
 
@@ -12,11 +12,11 @@ export default function ArcDiagram() {
   const [isLoading, setLoading] = useState(true);
   const [scales, setScales] = useState({});
   const [viewBox, setViewBox] = useState([]);
-  const { selected, setSelected } = useSelected();
+  const { selectedNode, setSelectedNode } = useSelectedNode();
   const { selectedTime } = useTime();
 
   const handleNodeSelect = (nodeName) => {
-    setSelected(nodeName);
+    setSelectedNode(nodeName);
   };
 
   useEffect(() => {
@@ -89,7 +89,6 @@ export default function ArcDiagram() {
             (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
           )
           .map((d) => nodes.push(d));
-        console.log("nodes", nodes);
         setNodes(nodes);
         setLinks(calculatedLinks);
         setLoading(false);
@@ -113,7 +112,7 @@ export default function ArcDiagram() {
 
   return (
     <div className="p-6 arcWrapper">
-      <h3 style={{ textAlign: "left" }}>Arc Diagram</h3>
+      <h3 className="float-left text-md font-bold mr-4">Arc Diagram</h3>
       <svg width={"100%"} height={"100%"} viewBox={viewBox}>
         <g id="arc-content">
           {/* Render links on the diagram */}
@@ -121,7 +120,7 @@ export default function ArcDiagram() {
             <Link
               name={link.name}
               pathData={link.d}
-              isConnectedNodeSelected={link.name.includes(selected)}
+              isConnectedNodeSelected={link.name.includes(selectedNode)}
               key={link.id}
             />
           ))}
@@ -137,7 +136,7 @@ export default function ArcDiagram() {
               node={node}
               size={size(Math.pow(1.2, node.n))}
               arcHeight={450}
-              isSelected={node.name === selected}
+              isSelected={node.name === selectedNode}
               handle={handleNodeSelect}
             />
           ))}

@@ -2,14 +2,15 @@
 import React, { useState, useEffect } from "react";
 import ThreadList from "./threadList";
 import "./infoStyles.css";
-import { useSelected } from "../../contexts/selectedContext";
+import { useSelectedNode } from "../../contexts/selectedNodeContext";
 import { useChatAnchor } from "../../contexts/chatContext";
 
-const InfoPanel = (props) => {
+const InfoPanel = () => {
   const [nodes, setNodes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {selected} = useSelected();
-  const {setChatAnchor} = useChatAnchor();
+  const {selectedNode} = useSelectedNode();
+  const {chatAnchor, setChatAnchor} = useChatAnchor();
+  const [selectedLine, setSelectedLine] = useState(""); 
 
   useEffect(() => {
     fetch("../../data/new_robot_data_2_20.json")
@@ -20,9 +21,13 @@ const InfoPanel = (props) => {
       });
   }, []);
 
+  useEffect(() => {
+    
+  }, [chatAnchor])
 
-  const anchorButtonClick = (anchorId) => {
-    setChatAnchor(anchorId)
+  const anchorButtonClick = (clickedID) => {
+    setChatAnchor(`response${clickedID}`)
+    setSelectedLine(clickedID)
   };
 
   if (loading) return <p>loading...</p>;
@@ -30,16 +35,17 @@ const InfoPanel = (props) => {
   return (
     <div className="col-span-1 infoPanel">
       <h3>Information Panel</h3>
-      {!selected ? (
+      {!selectedNode ? (
         <p>Select an item on either diagram to get started</p>
       ) : (
         <div>
-          <h4>{selected}</h4>
+          <h4>{selectedNode}</h4>
           <p>Here are the items attached to the selected node:</p>
           <ThreadList
             data={nodes}
-            selected={selected}
+            selected={selectedNode}
             anchorClick={anchorButtonClick}
+            selectedLine={selectedLine}
           />
         </div>
       )}

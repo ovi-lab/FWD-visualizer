@@ -32,7 +32,7 @@ const Node = ({ name, id, y1, y0, x1, x0, width, height, isSelected, handle}) =>
   };
   
   const Link = ({linkID, dValue, linkSourceName, linkedNodeSelected, linkWidth}) => {
-    console.log('linkedNodeSelected', linkedNodeSelected)
+    // console.log('linkedNodeSelected', linkedNodeSelected)
     return (
       <g>
         <path

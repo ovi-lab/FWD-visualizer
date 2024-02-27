@@ -57,13 +57,11 @@ function emotionDisplay(label) {
 const Bubble = ({ stmt, id }) => {
   const speaker = stmt.speaker === "haru" ? "Haru" : "User";
   const color = sentimentColor(stmt.sentiment_label, stmt.sentiment_score);
+  console.log('stmt', stmt)
   return (
     <div className="bubbleContainer" id={`response${id}`}>
       {stmt.timestamp ? (
         <div className={`timestamp ${speaker} flex justify-center relative`}>
-          <hr
-            className={`timestamp-border absolute justify-center w-60 border border-gray-300 border `}
-          />
           {stmt.timestamp}
         </div>
       ) : null}
@@ -92,7 +90,7 @@ const Bubble = ({ stmt, id }) => {
       </div>
       {stmt.was_data_collected && stmt.text ? (
         <div className={`data-collection flex justify-end`}>
-          User Data was collected
+          Response saved
         </div>
       ) : null}
     </div>

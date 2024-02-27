@@ -35,11 +35,11 @@ function InfoButton({ interact, conversationNum, handleClick, isClicked }) {
   );
 }
 
-export default function ThreadList({ data, selected, anchorClick }) {
+export default function ThreadList({ data, selected, anchorClick, selectedLine }) {
   // Find the selected node in the data array
   const selectedNode = data.find((node) => node.name === selected);
-  const [clickedButton, setClickedButton] = useState(""); 
   const {selectedTime} = useTime()
+
 
   if (!selectedNode) {
     return <p>Selected node not found in the data</p>;
@@ -48,7 +48,7 @@ export default function ThreadList({ data, selected, anchorClick }) {
   // Convert the properties of the selected node into an array of key-value pairs
   const itemsArray = [];
   let numConversations = 1;
-  selectedNode.interactions.filter(item => Date.parse(item.timestamp) <= Date.parse(selectedTime)).map((interact) => {
+  selectedNode.interactions.filter(item => Date.parse(item.timestamp) <= Date.parse(selectedTime)).map((interact, index) => {
     if (interact.lastInteraction === true) {
       numConversations++;
     }
@@ -64,8 +64,8 @@ export default function ThreadList({ data, selected, anchorClick }) {
    * @param {*} responseClicked The response that is clicked in the list
    */
   const handleListClick = (clickedID) => {
-    setClickedButton(clickedID)
-    anchorClick(`response${clickedID}`);
+
+    anchorClick(clickedID);
   };
 
   return (
@@ -80,7 +80,7 @@ export default function ThreadList({ data, selected, anchorClick }) {
           <ul id="listItems">
             {itemsArray.map((interact) => (
               <li key={interact.id}>
-                <InfoButton interact={interact[1]} conversationNum={interact[0]} handleClick={handleListClick} isClicked={clickedButton === interact[1].idx}/>
+                <InfoButton interact={interact[1]} conversationNum={interact[0]} handleClick={handleListClick} isClicked={selectedLine === interact[1].idx}/>
               </li>
             ))}
           </ul>

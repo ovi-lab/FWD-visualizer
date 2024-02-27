@@ -5,7 +5,7 @@ import {
   sankeyLinkHorizontal,
 } from "d3-sankey";
 import "../graphStyles.css";
-import { useSelected } from "../../../../contexts/selectedContext";
+import { useSelectedNode } from "../../../../contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
 import { Node, Link } from "./diagramParts";
 
@@ -25,11 +25,9 @@ const sankeyGenerator = d3sankey()
 const SankeyDiagram = (props) => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
   const [viewBox, setViewBox] = useState(`0 0 600 400`);
   const sankeyRef = React.useRef();
-  const { selected, setSelected } = useSelected();
+  const { selectedNode, setSelectedNode } = useSelectedNode();
   const { selectedTime } = useTime();
 
   useEffect(() => {
@@ -63,7 +61,7 @@ const SankeyDiagram = (props) => {
 
   const handleSankeyInteraction = (nodeName) => {
     console.log("nodeName", nodeName);
-    setSelected(nodeName);
+    setSelectedNode(nodeName);
   };
 
   useEffect(() => {
@@ -81,14 +79,14 @@ const SankeyDiagram = (props) => {
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>
         <g style={{ mixBlendMode: "multiply" }} id={"sankey-content"}>
           {nodes.map((node) =>
-            node.show === "true" ? (
+            node.show === true ? (
               <Node
                 key={node.id}
                 node
                 {...node}
                 width={width}
                 height={height}
-                isSelected={node.name === selected}
+                isSelected={node.name === selectedNode}
                 handle={handleSankeyInteraction}
                 show={node.show}
               />
@@ -100,7 +98,7 @@ const SankeyDiagram = (props) => {
               linkID={link.id}
               dValue={sankeyLinkHorizontal()(link)}
               linkSourceName={link.source.name.match(/:(.*)/)[1].trim()}
-              linkedNodeSelected={link.name.includes(selected)}
+              linkedNodeSelected={link.name.includes(selectedNode)}
               linkWidth={link.width}
             />
           ))}

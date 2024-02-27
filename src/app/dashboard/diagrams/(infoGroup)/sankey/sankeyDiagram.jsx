@@ -42,9 +42,18 @@ const SankeyDiagram = (props) => {
         } else {
           selectedLinks = data.links.user;
         }
+
         const { nodes, links } = sankeyGenerator({
-          nodes: data.nodes.map((d) => ({ ...d })),
-          links: selectedLinks.map((d) => ({ ...d })),
+          nodes: data.nodes
+            .filter(
+              (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
+            )
+            .map((d) => ({ ...d })),
+          links: selectedLinks
+            .filter(
+              (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
+            )
+            .map((d) => ({ ...d })),
         });
 
         setNodes(nodes);
@@ -71,38 +80,30 @@ const SankeyDiagram = (props) => {
     <div className="sankeyWrapper w-full h-full max-w-full max-h-full overflow-hidden">
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>
         <g style={{ mixBlendMode: "multiply" }} id={"sankey-content"}>
-          {nodes
-            .filter(
-              (node) => Date.parse(node.timestamp) <= Date.parse(selectedTime)
-            )
-            .map((node) =>
-              node.show === "true" ? (
-                <Node
-                  key={node.id}
-                  node
-                  {...node}
-                  width={width}
-                  height={height}
-                  isSelected={node.name === selected}
-                  handle={handleSankeyInteraction}
-                  show={node.show}
-                />
-              ) : null
-            )}
-          {links
-            .filter(
-              (link) => Date.parse(link.timestamp) <= Date.parse(selectedTime)
-            )
-            .map((link) => (
-              <Link
-                key={link.name}
-                linkID={link.id}
-                dValue={sankeyLinkHorizontal()(link)}
-                linkSourceName={link.source.name.match(/:(.*)/)[1].trim()}
-                linkedNodeSelected={link.name.includes(selected)}
-                linkWidth={link.width}
+          {nodes.map((node) =>
+            node.show === "true" ? (
+              <Node
+                key={node.id}
+                node
+                {...node}
+                width={width}
+                height={height}
+                isSelected={node.name === selected}
+                handle={handleSankeyInteraction}
+                show={node.show}
               />
-            ))}
+            ) : null
+          )}
+          {links.map((link) => (
+            <Link
+              key={link.name}
+              linkID={link.id}
+              dValue={sankeyLinkHorizontal()(link)}
+              linkSourceName={link.source.name.match(/:(.*)/)[1].trim()}
+              linkedNodeSelected={link.name.includes(selected)}
+              linkWidth={link.width}
+            />
+          ))}
         </g>
       </svg>
     </div>

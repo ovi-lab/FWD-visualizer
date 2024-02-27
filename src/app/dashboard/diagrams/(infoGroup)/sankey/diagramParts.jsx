@@ -1,8 +1,5 @@
 import { scaleOrdinal, schemeSet3 } from "d3";
 const color = scaleOrdinal(schemeSet3);
-import {
-    sankeyLinkHorizontal
-  } from "d3-sankey";
 
 const Node = ({ name, id, y1, y0, x1, x0, width, height, isSelected, handle}) => {
     return (

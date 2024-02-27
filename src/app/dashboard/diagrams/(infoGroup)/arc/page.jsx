@@ -43,17 +43,20 @@ export default function ArcDiagram() {
         const xHaru = d3
           .scalePoint()
           .domain(haruNodes.map((node) => node.name))
-          .range([midPoint-15, 0]);
+          .range([midPoint - 15, 0]);
 
         const xUser = d3
           .scalePoint()
           .domain(userNodes.map((node) => node.name))
-          .range([midPoint+15, arcWidth]);
+          .range([midPoint + 15, arcWidth]);
 
         setScales({ haruScale: xHaru, userScale: xUser });
 
         const calculatedLinks = data.links.haru
           .concat(data.links.user)
+          .filter(
+            (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
+          )
           .map((link) => {
             let start = idToNode[link.source].name.includes("haru:")
               ? xHaru(idToNode[link.source].name)
@@ -80,11 +83,18 @@ export default function ArcDiagram() {
             return { ...link, d };
           });
 
-        setNodes(data.nodes);
+        const nodes = [];
+        data.nodes
+          .filter(
+            (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
+          )
+          .map((d) => nodes.push(d));
+        console.log("nodes", nodes);
+        setNodes(nodes);
         setLinks(calculatedLinks);
         setLoading(false);
       });
-  }, []);
+  }, [selectedTime]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content
@@ -107,33 +117,30 @@ export default function ArcDiagram() {
       <svg width={"100%"} height={"100%"} viewBox={viewBox}>
         <g id="arc-content">
           {/* Render links on the diagram */}
-          {links
-            .filter(
-              (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
-            )
-            .map((link) => (
-              <Link name={link.name} pathData={link.d} isConnectedNodeSelected={link.name.includes(selected)} key={link.id} />
-            ))}
+          {links.map((link) => (
+            <Link
+              name={link.name}
+              pathData={link.d}
+              isConnectedNodeSelected={link.name.includes(selected)}
+              key={link.id}
+            />
+          ))}
           {/* Render the nodes on the diagram */}
-          {nodes
-            .filter(
-              (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
-            )
-            .map((node) => (
-              <Node
-                key={node.id}
-                xPosition={
-                  node.name.includes("haru:")
-                    ? scales.haruScale(node.name)
-                    : scales.userScale(node.name)
-                }
-                node={node}
-                size={size(Math.pow(1.2, node.n))}
-                arcHeight={450}
-                isSelected={node.name === selected}
-                handle={handleNodeSelect}
-              />
-            ))}
+          {nodes.map((node) => (
+            <Node
+              key={node.id}
+              xPosition={
+                node.name.includes("haru:")
+                  ? scales.haruScale(node.name)
+                  : scales.userScale(node.name)
+              }
+              node={node}
+              size={size(Math.pow(1.2, node.n))}
+              arcHeight={450}
+              isSelected={node.name === selected}
+              handle={handleNodeSelect}
+            />
+          ))}
         </g>
       </svg>
     </div>

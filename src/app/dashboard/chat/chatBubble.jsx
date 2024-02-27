@@ -57,7 +57,6 @@ function emotionDisplay(label) {
 const Bubble = ({ stmt, id }) => {
   const speaker = stmt.speaker === "haru" ? "Haru" : "User";
   const color = sentimentColor(stmt.sentiment_label, stmt.sentiment_score);
-  console.log("stmt.was_data_collected", stmt.was_data_collected);
   return (
     <div className="bubbleContainer" id={`response${id}`}>
       {stmt.timestamp ? (

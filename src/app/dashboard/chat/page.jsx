@@ -6,30 +6,6 @@ import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 // import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
-/**
- * Separates chat segments by the threadList identified in the conversation
- * @param stmt The current statement to check for new thread
- * @returns Thread ID Separator JSX component
- **/
-const ThreadSeparator = ({ stmt, idx, arr }) => {
-  if (idx === 0 || stmt.threadId !== arr[idx - 1].threadId) {
-    return (
-      <div>
-        <hr
-          id={`thread${stmt.threadId}`}
-          style={{
-            width: "100%",
-            border: "1px solid #000", // You can customize the line style
-            margin: 0,
-          }}
-        />
-        <p>{`Thread ${stmt.threadId}`}</p>
-      </div>
-    );
-  } else {
-    return;
-  }
-};
 
 function checkForCollection(current, previous) {
   if (current.turn === "haru" || previous === undefined) return false;
@@ -103,7 +79,7 @@ useEffect(() => {
     }, [selectedTime]);
 
     useEffect(() => {
-      // Scroll to the last line whenever lines change
+      // Scroll to the last line whenever a new last line is added
       if (lines.length > 0) {
         anchorMove(`response${lines.length-1}`);
       }
@@ -148,7 +124,6 @@ useEffect(() => {
           {statements.map((stmt) => {
             return (
               <div key={stmt.id}>
-                {/* <ThreadSeparator stmt={stmt} idx={idx} arr={arr} /> */}
                 <Bubble stmt={stmt} id={stmt.id} />
               </div>
             );

@@ -35,7 +35,7 @@ export default function TimeLine() {
     setSelectedTime(selectedDate.toString()); 
   }
   }
-  console.log('steps', steps)
+  // console.log('steps', steps)
 if (loading) return <p> Loading</p>
 
 else return (

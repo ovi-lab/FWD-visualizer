@@ -22,6 +22,12 @@ const sankeyGenerator = d3sankey()
     [width, height - 5],
   ]);
 
+function filterTimestamp(input, time) {
+  return input
+    .filter((item) => Date.parse(item.timestamp) <= Date.parse(time))
+    .map((d) => ({ ...d }));
+}
+
 const SankeyDiagram = (props) => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
@@ -31,31 +37,28 @@ const SankeyDiagram = (props) => {
   const { selectedTime } = useTime();
 
   useEffect(() => {
-    let selectedLinks = "";
+    let filteredLinks = "";
     fetch("../../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
+        const filteredNodes = filterTimestamp(data.nodes, selectedTime);
+
         if (props.dataDirection === "haru-user") {
-          selectedLinks = data.links.haru;
+          filteredLinks = filterTimestamp(data.links.haru, selectedTime);
         } else {
-          selectedLinks = data.links.user;
+          filteredLinks = filterTimestamp(data.links.user, selectedTime);
         }
-
-        const { nodes, links } = sankeyGenerator({
-          nodes: data.nodes
-            .filter(
-              (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
-            )
-            .map((d) => ({ ...d })),
-          links: selectedLinks
-            .filter(
-              (item) => Date.parse(item.timestamp) <= Date.parse(selectedTime)
-            )
-            .map((d) => ({ ...d })),
-        });
-
-        setNodes(nodes);
-        setLinks(links);
+        try {
+          const { nodes, links } = sankeyGenerator({
+            nodes: filteredNodes,
+            links: filteredLinks,
+          });
+          setNodes(nodes);
+          setLinks(links);
+        } catch (error) {
+          // D3 Sankey seems to throw a RangeError but functionality is not affected.
+          // console.log("error", error);
+        }
       });
   }, [props.dataDirection, selectedTime]);
 
@@ -69,16 +72,15 @@ const SankeyDiagram = (props) => {
     const svgContent = document.getElementById("sankey-content");
     if (svgContent) {
       const { x, y, width, height } = svgContent.getBBox();
-      const newViewBox = `${x} ${y} ${width} ${height}`;
+      const newViewBox = `${x - 1} ${y - 1} ${width + 2} ${height + 2}`;
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
 
   return (
-    <div className="sankeyWrapper w-full h-full max-w-full max-h-full overflow-hidden">
+    <div className="sankeyWrapper">
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>
         <g style={{ mixBlendMode: "multiply" }} id={"sankey-content"}>
-          
           {links.map((link) => (
             <Link
               key={link.name}

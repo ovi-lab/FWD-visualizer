@@ -7,9 +7,7 @@ export default function Dashboard() {
   return (
     <div>  
         <div className="grid grid-cols-7 row data-row">
-          <InfoPanel
-
-          />
+        <InfoPanel/>
           <div
             className="col-span-4"
             style={{
@@ -17,7 +15,7 @@ export default function Dashboard() {
               flexDirection: "column",
             }}
           >
-            <h3>Diagrams</h3>
+            
             <ArcDiagram/>
             <SankeySelector/>
           </div>

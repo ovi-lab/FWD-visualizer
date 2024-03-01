@@ -7,7 +7,7 @@ import {
 import "../graphStyles.css";
 import { useSelectedNode } from "../../../../contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
-import { Node, Link } from "./diagramParts";
+import { Node, Link } from "./sankeyParts";
 
 const width = 600;
 const height = 400;

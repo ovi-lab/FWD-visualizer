@@ -13,10 +13,11 @@ function SankeySelector() {
 
   return (
     <div className="p-5 w-100% h-100%">
-      <div className="pb-4">
+      <div className="pb-4 mb-6">
         <h3 className="float-left text-md font-bold mr-4">
           Sankey Diagram
         </h3>
+        <div className="direction-selector float-right "> 
         <input
           type="radio"
           id="haru-user"
@@ -55,6 +56,7 @@ function SankeySelector() {
         >
           User to Haru
         </label>
+        </div>
       </div>
       <SankeyDiagram
         dataDirection={dataDirection}

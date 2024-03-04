@@ -1,6 +1,6 @@
 "use client";
-import Chatbox from "../../chat/page";
-import InfoPanel from "../../info/page";
+import Chatbox from "../chat/page";
+import InfoPanel from "../info/page";
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

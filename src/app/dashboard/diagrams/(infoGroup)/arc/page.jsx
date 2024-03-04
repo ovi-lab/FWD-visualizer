@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import "../graphStyles.css";
 import { useSelectedNode } from "../../../../contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
-import { Node, Link } from "./diagramParts";
+import { Node, Link } from "./arcParts";
 
 export default function ArcDiagram() {
   const [nodes, setNodes] = useState([]);

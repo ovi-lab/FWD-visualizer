@@ -1,7 +1,7 @@
 import SideBar from "../ui/sideBar";
 import { SelectedNodeProvider } from "../contexts/selectedNodeContext";
 import {ChatProvider} from '../contexts/chatContext'
-import TimeLine from './timeline'
+import TimeLine from '../ui/timeline'
 import { TimeProvider } from "../contexts/timeContext";
 
 export default function Layout({

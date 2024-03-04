@@ -88,9 +88,7 @@ useEffect(() => {
 
   useEffect(() => {
     const statementList = [];
-    let latestIndex = 0;
     lines.map((interaction, index) => {
-      if (index === 0) latestIndex = interaction.idx;
       statementList[interaction.idx] = {
         id: interaction.idx,
         speaker: interaction.turn,

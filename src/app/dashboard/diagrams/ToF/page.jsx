@@ -38,8 +38,8 @@ export default function TiersOfFriendship() {
       {rows.map(
         (rowNodes, index) =>
           // Only render the row if it has nodes
-          rowNodes.length > 0 && (
-            <div key={index} className="flex justify-center">
+          rowNodes[index] !== undefined && (
+            <div key={rowNodes[index].name} className="flex justify-center">
               {rowNodes.map((node) => (
                 <Topic key={node.topic} nodeTopic={node.topic} />
               ))}

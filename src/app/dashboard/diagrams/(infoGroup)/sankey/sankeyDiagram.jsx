@@ -12,6 +12,7 @@ import { Node, Link } from "./sankeyParts";
 const width = 600;
 const height = 400;
 
+// This const is a D3 sankey generator used to generate the data needed for the nodes and links to display properly in an SVG
 const sankeyGenerator = d3sankey()
   .nodeWidth(15)
   .nodePadding(10)
@@ -37,17 +38,19 @@ const SankeyDiagram = (props) => {
   const { selectedTime } = useTime();
 
   useEffect(() => {
-    let filteredLinks = "";
+    let rawLinks = [];
     fetch("../../../data/new_robot_data_2_20.json")
       .then((res) => res.json())
       .then((data) => {
         const filteredNodes = filterTimestamp(data.nodes, selectedTime);
 
         if (props.dataDirection === "haru-user") {
-          filteredLinks = filterTimestamp(data.links.haru, selectedTime);
+          rawLinks = data.links.haru;
         } else {
-          filteredLinks = filterTimestamp(data.links.user, selectedTime);
+          rawLinks = data.links.user;
         }
+        const filteredLinks = filterTimestamp(rawLinks, selectedTime)
+
         try {
           const { nodes, links } = sankeyGenerator({
             nodes: filteredNodes,

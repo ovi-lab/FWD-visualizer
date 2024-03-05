@@ -4,6 +4,7 @@ import "./chatBox.css";
 import { useChatAnchor } from "../../contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
+import { useFilter } from "@/app/contexts/filterContext";
 // import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 function checkForCollection(current, previous) {
@@ -31,6 +32,7 @@ export default function Chatbox() {
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
   const { selectedTime } = useTime();
+  const { selectedFilters } = useFilter();
   // const {setSelectedNode} = useSelectedNode();
 
   const anchorMoveCallback = useCallback(
@@ -66,22 +68,39 @@ export default function Chatbox() {
 
   const anchorMove = anchorMoveCallback(AnchorRef);
 
+  function filter(data, time, filters) {
+    const filteredLines = [];
+    data
+      .filter((line) =>
+        filters.turn !== "" ? line.turn === filters.turn : true
+      )
+      .filter((line) =>
+        filters.emotion !== "" ? line.emotion_label === filters.emotion : true
+      )
+      .filter((line) =>
+        filters.sentiment !== "" ? line.sentiment_label.substring(0,3) === filters.sentiment : true
+      )
+      .filter((line) =>
+        filters.topic !== "" ? line.topic === filters.topic : true
+      )
+      .filter((line) => Date.parse(line.timestamp) <= Date.parse(time))
+      .map((interaction, index) => {
+        filteredLines[index] = interaction;
+      });
+    console.log("filteredLines", filters.turn);
+    return filteredLines;
+  }
+
   useEffect(() => {
     fetch("../../data/raw/log-02-20.json")
       .then((res) => res.json())
       .then((data) => {
-        const filteredLines = [];
-        data
-          .filter(
-            (line) => Date.parse(line.timestamp) <= Date.parse(selectedTime)
-          )
-          .map((interaction, index) => {
-            filteredLines[index] = interaction;
-          });
+        console.log("selectedFilters", selectedFilters);
+        const filteredLines = filter(data, selectedTime, selectedFilters);
         setLines(filteredLines);
         setLoading(false);
       });
-  }, [selectedTime]);
+  }, [selectedFilters, selectedTime]);
 
   useEffect(() => {
     // Scroll to the last line whenever a new last line is added
@@ -115,9 +134,9 @@ export default function Chatbox() {
 
   if (loading) return <p>Loading...</p>;
   return (
-    <div className="flex col-span-2 chatbox-container ">
+    <div className="flex w-full col-span-2 chatbox-container">
       <div className="chatbox-body overflow-hidden rounded-lg">
-        <div className="flex rounded-lg items-center justify-center bg-cyan-100 p-2">
+        <div className="flex rounded-lg items-center justify-center bg-cyan-100">
           <h2 className="text-lg font-semibold">Conversation Transcript</h2>
         </div>
         <div

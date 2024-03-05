@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFilter } from "../contexts/filterContext";
-
+import TimeLine from "./timeline";
 
 // Example predefined keywords
 const predefinedKeywords = ["keyword1", "keyword2", "keyword3"];
@@ -13,6 +13,7 @@ const ControlPanel = () => {
   const [sentimentFilter, setSentimentFilter] = useState("");
   const [emotionFilter, setEmotionFilter] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("");
+  const [availableTopics, setAvailableTopics] = useState([])
   const [keywordFilter, setKeywordFilters] = useState(false);
   const { setSelectedFilters } = useFilter();
 
@@ -28,6 +29,16 @@ const ControlPanel = () => {
     "sadness",
     "surprise",
   ];
+
+  useEffect(() => {
+    fetch("../../../data/new_robot_data_2_20.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const topics = data.nodes.filter((node) => node.turn === 'haru').map((d) => d.topic)
+        setAvailableTopics(topics)
+      });
+  }, [])
+  
 
   const FilterCheckbox = ({
     labelText: labelText,
@@ -109,11 +120,11 @@ const ControlPanel = () => {
   };
 
   return (
-    <div className="control-panel rounded-lg bg-gray-700 p-0 shadow-md m-2">
+    <div className="control-panel rounded-lg bg-gray-700 p-0 shadow-md mx-2 pb-1">
       <div className="flex">
         {/* Speaker filter */}
         <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
-          <h3 className="m-3">Speaker</h3>
+          <h3 className="m-1 font-bold text-sm">Speaker</h3>
           {turns.map((turn) => (
             <FilterCheckbox
               key={turn}
@@ -128,7 +139,7 @@ const ControlPanel = () => {
 
         {/* Sentiment filter */}
         <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
-          <h3 className="m-3">Sentiment</h3>
+          <h3 className="m-1 font-bold text-sm">Sentiment</h3>
           {sentiments.map((senti) => (
             <FilterCheckbox
               key={senti}
@@ -142,7 +153,7 @@ const ControlPanel = () => {
         </div>
         {/* Emotion filter */}
         <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
-          <h3 className="m-3">Emotion</h3>
+          <h3 className="m-1 font-bold text-sm">Emotion</h3>
           {emotions.map((emo) => (
             <FilterCheckbox
               key={emo}
@@ -156,13 +167,15 @@ const ControlPanel = () => {
         </div>
         {/* Topic filter */}
         <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
-          <h3 className="m-3">Topic</h3>
+          <h3 className="m-1 font-bold text-sm">Topic</h3>
           <select
             value={selectedTopic}
-            onChange={(e) => setSelectedTopic(e.target.value)}
+            onChange={(e) => {
+              
+              setSelectedTopic(e.target.value)}}
           >
             <option value="">Select Topic</option>
-            {topics.map((topic) => (
+            {availableTopics.toReversed().map((topic) => (
               <option key={topic} value={topic}>
                 {topic}
               </option>
@@ -170,8 +183,10 @@ const ControlPanel = () => {
           </select>
         </div>
         {/* Keyword filter */}
-        <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
-          <h3 className="m-3">Filter with the safety list?</h3>
+        <div className="block rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
+          <h3 className="m-1 font-bold text-sm">
+            Use the safety list?
+          </h3>
           {["yes", "no"].map((keySelect) => (
             <FilterCheckbox
               key={keySelect}
@@ -183,21 +198,26 @@ const ControlPanel = () => {
             />
           ))}
         </div>
-      </div>
 
-      <div className="flex">
         {/* Button to apply filters */}
-        <div className="rounded-lg bg-gray-100 p-1 shadow-md m-2">
-          <button className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
-     py-1 px-2 font-bold text-gray-700 text-sm">
-     Apply Filters
+        <div className="flex rounded-lg bg-gray-100 p-1 shadow-md m-2">
+          <button
+            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
+     py-1 px-2 font-bold text-gray-700 text-sm" onClick={applyFilters}
+          >
+            Apply
           </button>
-          <button className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
-     py-1 px-2 font-bold text-gray-700 text-sm" onClick={resetFilters}>
-            Reset Filters
+          <button
+            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
+     py-1 px-2 font-bold text-gray-700 text-sm"
+            onClick={resetFilters}
+          >
+            Reset
           </button>
         </div>
       </div>
+
+      <TimeLine />
     </div>
   );
 };

@@ -19,8 +19,8 @@ export default function Layout({
     <TimeProvider>
       <FilterProvider>
         <div className="flex flex-col h-full">
-          <div className="p-3 md:px-4 md:py-6 overflow-y-auto flex-grow">
-            <TimeLine />
+          <div className="p-3 md:px-4 md:py-3 overflow-y-auto flex">
+            
             <ChatProvider>
               <SelectedNodeProvider>
                 {children}

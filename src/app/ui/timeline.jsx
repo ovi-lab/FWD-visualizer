@@ -43,7 +43,7 @@ export default function TimeLine() {
   if (loading) return <p> Loading</p>;
   else
     return (
-      <div>
+      <div className=" rounded-lg bg-gray-100 p-1 shadow-md m-2">
         <div className="flex items-center justify-between">
           <label
             htmlFor="steps-range"
@@ -71,7 +71,7 @@ export default function TimeLine() {
           max={Date.parse(end)}
           step={steps}
           defaultValue={Date.parse(selectedTime)}
-          className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer"
+          className="w-full h-2 bg-blue-300 rounded-lg appearance-none cursor-pointer"
           onChange={handleTimeSelect}
         />
       </div>

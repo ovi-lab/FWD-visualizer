@@ -1,5 +1,7 @@
 "use client";
-import React, { useState, useContext } from "react";
+import React, { useState} from "react";
+import { useFilter } from "../contexts/filterContext";
+import "./controlPanel.css"
 
 // Example predefined keywords
 const predefinedKeywords = ["keyword1", "keyword2", "keyword3"];
@@ -12,6 +14,7 @@ const ControlPanel = () => {
   const [emotionFilter, setEmotionFilter] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("");
   const [keywordFilter, setKeywordFilters] = useState(false);
+  const [setFilter] = useFilter();
 
   const topics = [1, 2, 3, 4, 5];
   const turns = ["haru", "user"];
@@ -27,6 +30,7 @@ const ControlPanel = () => {
   ];
 
   const FilterCheckbox = ({
+    labelText: labelText,
     filterType,
     filterValue,
     stateValue,
@@ -36,34 +40,24 @@ const ControlPanel = () => {
       <label
         htmlFor={`${filterValue}-filter`}
         className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
-     py-3 px-4 font-bold text-gray-700 transition-colors duration-200 ease-in-out peer-checked:bg-green-700 peer-checked:text-gray-900 peer-checked:border-gray-400 "
+     py-3 px-4 font-bold text-gray-700 transition-colors duration-200 ease-in-out has-[:checked]:bg-green-100 has-[:checked]:text-gray-700 has-[:checked]:border-gray-700 "
       >
         <input
           type="checkbox"
           id={`${filterValue}-filter`}
-          className="peer hidden"
+          className="peer hidden checked:bg-green-100"
           name="data-direction"
           value="haru-user"
           checked={stateValue === filterValue}
           onChange={() => onChange(filterType, filterValue)}
         />
-        {filterValue}
+        {labelText}
       </label>
     );
   };
 
   // Function to handle applying filters
-  const applyFilters = (resetFilter) => {
-    if (resetFilter) {
-      const filters = {
-        turn: '',
-        sentiment: '',
-        emotion: '',
-        topic: '',
-        keywords: false,
-      };
-      return
-    }
+  const applyFilters = () => {
     // Combine all filter selections into one object
     const filters = {
       turn: turnFilter,
@@ -72,6 +66,7 @@ const ControlPanel = () => {
       topic: selectedTopic,
       keywords: keywordFilter,
     };
+    setFilter(filters)
     // Put filters into context
     // You can use this context in child components to access filter selections
     // Remember to wrap your app with FilterContext.Provider
@@ -80,13 +75,19 @@ const ControlPanel = () => {
   };
 
   const resetFilters = () => {
-    setTurnFilter('')
-    setSentimentFilter('')
-    setEmotionFilter('')
-    setSelectedTopic('')
-    setKeywordFilters(false)
-    applyFilters(true)
-  }
+    setTurnFilter("");
+    setSentimentFilter("");
+    setEmotionFilter("");
+    setSelectedTopic("");
+    setKeywordFilters(false);
+    const filters = {
+      turn: turnFilter,
+      sentiment: sentimentFilter,
+      emotion: emotionFilter,
+      topic: selectedTopic,
+      keywords: keywordFilter,
+    };
+  };
 
   const handleCheck = (filter, value) => {
     switch (filter) {
@@ -100,7 +101,7 @@ const ControlPanel = () => {
         setEmotionFilter(value);
         break;
       case "keywords":
-        setKeywordFilters(value === 'yes' ? true : false)
+        setKeywordFilters(value);
       default:
         break;
     }
@@ -114,6 +115,7 @@ const ControlPanel = () => {
         {turns.map((turn) => (
           <FilterCheckbox
             key={turn}
+            labelText={turn}
             filterType={"turn"}
             filterValue={turn}
             stateValue={turnFilter}
@@ -128,8 +130,9 @@ const ControlPanel = () => {
         {sentiments.map((senti) => (
           <FilterCheckbox
             key={senti}
+            labelText={senti}
             filterType={"sentiment"}
-            filterValue={senti}
+            filterValue={senti.substring(0,3)} //storing the value as the first 3 chars to keep parity with backend
             stateValue={sentimentFilter}
             onChange={handleCheck}
           />
@@ -142,6 +145,7 @@ const ControlPanel = () => {
         {emotions.map((emo) => (
           <FilterCheckbox
             key={emo}
+            labelText={emo}
             filterType={"emotion"}
             filterValue={emo}
             stateValue={emotionFilter}
@@ -169,24 +173,22 @@ const ControlPanel = () => {
       {/* Keyword filter */}
       <div>
         <h3 className="m-3">Filter by the keywords in the safety list?</h3>
+        {['yes', 'no'].map((keySelect) => (
           <FilterCheckbox
-            filterType={"keywords"}
-            filterValue={'yes'}
-            stateValue={sentimentFilter}
-            onChange={handleCheck}
-          />
-        <FilterCheckbox
-            filterType={"keywords"}
-            filterValue={'no'}
-            stateValue={sentimentFilter}
-            onChange={handleCheck}
-          />
+          key={keySelect}
+          labelText={keySelect}
+          filterType={"keywords"}
+          filterValue={keySelect === 'yes' ? true : false}
+          stateValue={keywordFilter}
+          onChange={handleCheck}
+        />
+        ))}
       </div>
 
       {/* Button to apply filters */}
       <div className="m-3">
-      <button onClick={applyFilters(false)}>Apply Filters</button>
-      <button onClick={resetFilters}>Reset Filters</button>
+        <button className="controlButton" onClick={applyFilters}>Apply Filters</button>
+        <button className="controlButton" onClick={resetFilters}>Reset Filters</button>
       </div>
     </div>
   );

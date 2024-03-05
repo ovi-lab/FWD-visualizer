@@ -2,17 +2,17 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface FilterContextType {
-  selectedFilter: string;
-  setSelectedFilter: React.Dispatch<React.SetStateAction<string>>;
+  selectedFilters: string;
+  setSelectedFilters: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export const FilterProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [selectedFilter, setSelectedFilter] = useState<string>('');
+  const [selectedFilters, setSelectedFilters] = useState<string>('');
 
   return (
-    <FilterContext.Provider value={{ selectedFilter, setSelectedFilter }}>
+    <FilterContext.Provider value={{ selectedFilters, setSelectedFilters }}>
       {children}
     </FilterContext.Provider>
   );

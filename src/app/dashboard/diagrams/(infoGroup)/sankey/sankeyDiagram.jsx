@@ -32,6 +32,7 @@ function filterTimestamp(input, time) {
 const SankeyDiagram = (props) => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
+  const [dimensions, setDimensions] = useState([600, 400])
   const [viewBox, setViewBox] = useState(`0 0 600 400`);
   const sankeyRef = React.useRef();
   const { selectedNode, setSelectedNode } = useSelectedNode();
@@ -76,12 +77,13 @@ const SankeyDiagram = (props) => {
     if (svgContent) {
       const { x, y, width, height } = svgContent.getBBox();
       const newViewBox = `${x - 1} ${y - 1} ${width + 2} ${height + 2}`;
+      setDimensions([width, height])
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
 
   return (
-    <div className="sankeyWrapper">
+    <div className="sankeyContainer" id="sankey-container">
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>
         <g style={{ mixBlendMode: "multiply" }} id={"sankey-content"}>
           {links.map((link) => (

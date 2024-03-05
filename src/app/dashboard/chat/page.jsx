@@ -6,7 +6,6 @@ import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 // import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
-
 function checkForCollection(current, previous) {
   if (current.turn === "haru" || previous === undefined) return false;
   return previous.entity_type_detection;
@@ -34,57 +33,62 @@ export default function Chatbox() {
   const { selectedTime } = useTime();
   // const {setSelectedNode} = useSelectedNode();
 
-  const anchorMoveCallback = useCallback((anchorRef) => {
-    return function(anchor) {
-      if (anchor !== anchorRef.current) {
-        const targetElement = document.getElementById(anchor);
-        const targetContainer = document.getElementById("chatboxContent");
-        const currentElement = document.getElementById(anchorRef.current);
-  
-        if (targetElement === null) return;
-  
-        if (targetElement && targetContainer) {
-          const scrollPosition =
-            targetElement.offsetTop -
-            (targetContainer.clientHeight - targetElement.clientHeight) / 2;
-          targetContainer.scrollTo({ top: scrollPosition, behavior: "smooth" });
-          if (currentElement !== null) {
-            currentElement.style.border = "none";
+  const anchorMoveCallback = useCallback(
+    (anchorRef) => {
+      return function (anchor) {
+        if (anchor !== anchorRef.current) {
+          const targetElement = document.getElementById(anchor);
+          const targetContainer = document.getElementById("chatboxContent");
+          const currentElement = document.getElementById(anchorRef.current);
+
+          if (targetElement === null) return;
+
+          if (targetElement && targetContainer) {
+            const scrollPosition =
+              targetElement.offsetTop -
+              (targetContainer.clientHeight - targetElement.clientHeight) / 2;
+            targetContainer.scrollTo({
+              top: scrollPosition,
+              behavior: "smooth",
+            });
+            if (currentElement !== null) {
+              currentElement.style.border = "none";
+            }
+            targetElement.style.border = "5px solid #a5faee";
+            anchorRef.current = anchor;
+            setChatAnchor(anchor);
           }
-          targetElement.style.border = "5px solid #a5faee";
-          anchorRef.current = anchor;
-          setChatAnchor(anchor);
         }
-      }
-    }
-  }, [setChatAnchor]);
+      };
+    },
+    [setChatAnchor]
+  );
 
   const anchorMove = anchorMoveCallback(AnchorRef);
 
-useEffect(() => {
+  useEffect(() => {
     fetch("../../data/raw/log-02-20.json")
-    .then((res) => res.json())
-    .then((data) => {
-      const filteredLines = [];
-      data
-      .filter(
-        (line) => Date.parse(line.timestamp) <= Date.parse(selectedTime)
-        )
-        .map((interaction, index) => {
-          filteredLines[index] = interaction;
+      .then((res) => res.json())
+      .then((data) => {
+        const filteredLines = [];
+        data
+          .filter(
+            (line) => Date.parse(line.timestamp) <= Date.parse(selectedTime)
+          )
+          .map((interaction, index) => {
+            filteredLines[index] = interaction;
           });
         setLines(filteredLines);
         setLoading(false);
       });
-    }, [selectedTime]);
+  }, [selectedTime]);
 
-    useEffect(() => {
-      // Scroll to the last line whenever a new last line is added
-      if (lines.length > 0) {
-        anchorMove(`response${lines.length-1}`);
-      }
-    }, [lines, anchorMove]);
-    
+  useEffect(() => {
+    // Scroll to the last line whenever a new last line is added
+    if (lines.length > 0) {
+      anchorMove(`response${lines.length - 1}`);
+    }
+  }, [lines, anchorMove]);
 
   useEffect(() => {
     const statementList = [];
@@ -111,11 +115,13 @@ useEffect(() => {
 
   if (loading) return <p>Loading...</p>;
   return (
-    <div className="col-span-2 chatbox-container ">
-      <h1>Conversation Transcript</h1>
-      <div className="chatbox-body overflow-hidden h-full">
+    <div className="flex col-span-2 chatbox-container ">
+      <div className="chatbox-body overflow-hidden rounded-lg">
+        <div className="flex rounded-lg items-center justify-center bg-cyan-100 p-2">
+          <h2 className="text-lg font-semibold">Conversation Transcript</h2>
+        </div>
         <div
-          className="chatbox-content h-full"
+          className="chatbox-content"
           id="chatboxContent"
           style={{ overflowY: "scroll" }}
         >

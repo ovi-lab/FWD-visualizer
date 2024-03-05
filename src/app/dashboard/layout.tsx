@@ -11,20 +11,29 @@ export default function Layout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
-      <div className="w-full flex-none md:w-56">
-        <SideBar />
-      </div>
-      <div className="flex-grow p-3 md:px-4 md:py-6 overflow-y-auto">
-        <TimeProvider>
-          <FilterProvider>
+  <div className="w-full flex-none md:w-56">
+    <SideBar />
+  </div>
+
+  <div className="flex-grow">
+    <TimeProvider>
+      <FilterProvider>
+        <div className="flex flex-col h-full">
+          <div className="p-3 md:px-4 md:py-6 overflow-y-auto flex-grow">
             <TimeLine />
             <ChatProvider>
-              <SelectedNodeProvider>{children}</SelectedNodeProvider>
+              <SelectedNodeProvider>
+                {children}
+              </SelectedNodeProvider>
             </ChatProvider>
+          </div>
+          <div className="mr-5">
             <ControlPanel />
-          </FilterProvider>
-        </TimeProvider>
-      </div>
-    </div>
+          </div>
+        </div>
+      </FilterProvider>
+    </TimeProvider>
+  </div>
+</div>
   );
 }

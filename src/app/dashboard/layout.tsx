@@ -1,8 +1,10 @@
 import SideBar from "../ui/sideBar";
+import ControlPanel from "../ui/controlPanel"
 import { SelectedNodeProvider } from "../contexts/selectedNodeContext";
-import {ChatProvider} from '../contexts/chatContext'
-import TimeLine from '../ui/timeline'
+import { ChatProvider } from "../contexts/chatContext";
+import TimeLine from "../ui/timeline";
 import { TimeProvider } from "../contexts/timeContext";
+import { FilterProvider } from "../contexts/filterContext";
 
 export default function Layout({
   children,
@@ -13,12 +15,15 @@ export default function Layout({
         <SideBar />
       </div>
       <div className="flex-grow p-3 md:px-4 md:py-6 overflow-y-auto">
-     <TimeProvider>
-      <TimeLine />
-        <ChatProvider>
-        <SelectedNodeProvider>{children}</SelectedNodeProvider>
-        </ChatProvider>
-     </TimeProvider>
+        <TimeProvider>
+          <FilterProvider>
+            <TimeLine />
+            <ChatProvider>
+              <SelectedNodeProvider>{children}</SelectedNodeProvider>
+            </ChatProvider>
+            <ControlPanel />
+          </FilterProvider>
+        </TimeProvider>
       </div>
     </div>
   );

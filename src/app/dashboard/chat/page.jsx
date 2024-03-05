@@ -5,6 +5,7 @@ import { useChatAnchor } from "../../contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
+import { METHODS } from "http";
 // import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 function checkForCollection(current, previous) {
@@ -92,10 +93,9 @@ export default function Chatbox() {
   }
 
   useEffect(() => {
-    fetch("../../data/raw/log-02-20.json")
+    fetch("http://127.0.0.1:6400/api/rawjson", {method:'GET'})
       .then((res) => res.json())
       .then((data) => {
-        console.log("selectedFilters", selectedFilters);
         const filteredLines = filter(data, selectedTime, selectedFilters);
         setLines(filteredLines);
         setLoading(false);

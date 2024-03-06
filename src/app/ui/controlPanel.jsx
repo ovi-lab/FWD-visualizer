@@ -154,7 +154,7 @@ const ControlPanel = () => {
         {/* Emotion filter */}
         <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
           <h3 className="m-1 font-bold text-sm">Emotion</h3>
-          {emotions.map((emo) => (
+          {emotions.map((emo, index) => (
             <FilterCheckbox
               key={emo}
               labelText={emo}
@@ -200,7 +200,7 @@ const ControlPanel = () => {
         </div>
 
         {/* Button to apply filters */}
-        <div className="flex rounded-lg bg-gray-100 p-1 shadow-md m-2">
+        <div className="flex-left rounded-lg bg-gray-100 p-1 shadow-md m-2">
           <button
             className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
      py-1 px-2 font-bold text-gray-700 text-sm" onClick={applyFilters}

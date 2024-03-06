@@ -5,7 +5,7 @@ import { useChatAnchor } from "../../contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import { METHODS } from "http";
+import {filterSequentialData} from "@/app/dashboard/utils/filters"
 // import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 function checkForCollection(current, previous) {
@@ -69,38 +69,15 @@ export default function Chatbox() {
 
   const anchorMove = anchorMoveCallback(AnchorRef);
 
-  function filter(data, time, filters) {
-    const filteredLines = [];
-    data
-      .filter((line) =>
-        filters.turn !== "" ? line.turn === filters.turn : true
-      )
-      .filter((line) =>
-        filters.emotion !== "" ? line.emotion_label === filters.emotion : true
-      )
-      .filter((line) =>
-        filters.sentiment !== "" ? line.sentiment_label.substring(0,3) === filters.sentiment : true
-      )
-      .filter((line) =>
-        filters.topic !== "" ? line.topic === filters.topic : true
-      )
-      .filter((line) => Date.parse(line.timestamp) <= Date.parse(time))
-      .map((interaction, index) => {
-        filteredLines[index] = interaction;
-      });
-    console.log("filteredLines", filters.turn);
-    return filteredLines;
-  }
-
   useEffect(() => {
     fetch("http://127.0.0.1:6400/api/rawjson", {method:'GET'})
       .then((res) => res.json())
       .then((data) => {
-        const filteredLines = filter(data, selectedTime, selectedFilters);
+        const filteredLines = filterSequentialData(data, selectedTime, selectedFilters);
         setLines(filteredLines);
         setLoading(false);
       });
-  }, [selectedFilters, selectedTime]);
+  }, [selectedTime, selectedFilters]);
 
   useEffect(() => {
     // Scroll to the last line whenever a new last line is added

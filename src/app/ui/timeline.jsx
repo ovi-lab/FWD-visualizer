@@ -10,7 +10,7 @@ export default function TimeLine() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("../../data/raw/log-02-20.json")
+    fetch("http://127.0.0.1:6400/api/rawjson", {method:'GET'})
       .then((res) => res.json())
       .then((data) => {
         const start = data.at(-1).timestamp;

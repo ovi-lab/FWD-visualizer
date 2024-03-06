@@ -5,7 +5,7 @@ import { useChatAnchor } from "../../contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import {filterSequentialData} from "@/app/dashboard/utils/filters"
+import {filterData} from "@/app/dashboard/utils/filters"
 // import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 function checkForCollection(current, previous) {
@@ -73,22 +73,22 @@ export default function Chatbox() {
     fetch("http://127.0.0.1:6400/api/rawjson", {method:'GET'})
       .then((res) => res.json())
       .then((data) => {
-        const filteredLines = filterSequentialData(data, selectedTime, selectedFilters);
-        setLines(filteredLines);
+        setLines(data);
         setLoading(false);
       });
-  }, [selectedTime, selectedFilters]);
+  }, []);
 
   useEffect(() => {
     // Scroll to the last line whenever a new last line is added
     if (lines.length > 0) {
-      anchorMove(`response${lines.length - 1}`);
+      anchorMove(`response${statements.length - 1}`);
     }
-  }, [lines, anchorMove]);
+  }, [statements, anchorMove]);
 
   useEffect(() => {
     const statementList = [];
-    lines.map((interaction, index) => {
+    const filteredLines = filterData(lines, selectedTime, selectedFilters);
+    filteredLines.map((interaction, index) => {
       statementList[interaction.idx] = {
         id: interaction.idx,
         speaker: interaction.turn,
@@ -103,7 +103,7 @@ export default function Chatbox() {
       };
     });
     setStatements(Object.values(statementList));
-  }, [lines]);
+  }, [lines, selectedTime, selectedFilters]);
 
   useEffect(() => {
     anchorMove(chatAnchor);

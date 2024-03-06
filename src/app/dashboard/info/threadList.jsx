@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./infoStyles.css";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import { filterDiagramNodes } from "../utils/filters";
+import { filterData } from "../utils/filters";
 
 function InfoButton({ interact, conversationNum, handleClick, isClicked }) {
   // Set a maximum length for the response
@@ -51,7 +51,7 @@ export default function ThreadList({ data, selected, anchorClick, selectedLine }
   // Convert the properties of the selected node into an array of key-value pairs
   const itemsArray = [];
   let numConversations = 1;
-  filterDiagramNodes(selectedNode.interactions, selectedTime, selectedFilters).map((interact, index) => {
+  filterData(selectedNode.interactions, selectedTime, selectedFilters).map((interact, index) => {
     if (interact.lastInteraction === true) {
       numConversations++;
     }

@@ -80,7 +80,7 @@ export default function Chatbox() {
 
   useEffect(() => {
     // Scroll to the last line whenever a new last line is added
-    if (lines.length > 0) {
+    if (statements.length > 0) {
       anchorMove(`response${statements.length - 1}`);
     }
   }, [statements, anchorMove]);
@@ -112,7 +112,7 @@ export default function Chatbox() {
   if (loading) return <p>Loading...</p>;
   return (
     <div className="flex w-full col-span-2 chatbox-container">
-      <div className="chatbox-body overflow-hidden rounded-lg">
+      <div className="chatbox-body overflow-hidden rounded-lg pb-10">
         <div className="flex rounded-lg items-center justify-center bg-cyan-100">
           <h2 className="text-lg font-semibold">Conversation Transcript</h2>
         </div>

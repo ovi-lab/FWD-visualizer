@@ -51,6 +51,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
     >
       {node.name}
     </text>
+    
   </g>
 );
 

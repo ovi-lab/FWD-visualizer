@@ -67,7 +67,6 @@ export default function ThreadList({ data, selected, anchorClick, selectedLine }
    * @param {*} responseClicked The response that is clicked in the list
    */
   const handleListClick = (clickedID) => {
-
     anchorClick(clickedID);
   };
 

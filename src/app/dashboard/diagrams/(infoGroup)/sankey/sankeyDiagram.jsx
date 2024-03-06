@@ -45,7 +45,6 @@ const SankeyDiagram = (props) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log('data', data.nodes)
         setData({nodes: data.nodes, links: data.links});
         setLoading(false);
       });
@@ -110,7 +109,7 @@ const SankeyDiagram = (props) => {
           {nodes.map((node) =>
             node.show === true ? (
               <Node
-                key={node.id}
+                key={node.name}
                 node
                 {...node}
                 width={width}

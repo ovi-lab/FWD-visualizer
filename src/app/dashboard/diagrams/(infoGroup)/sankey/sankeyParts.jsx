@@ -33,7 +33,7 @@ const Node = ({
       />
       <title>{name}</title>
       <text
-        key={id}
+        key={`${id}a`}
         fontSize={"0.50em"}
         x={x0 < width / 2 ? x1 + 6 : x0 - 6}
         y={(y1 + y0) / 2}
@@ -43,7 +43,7 @@ const Node = ({
         {name.split(": ")[0]}:
       </text>
       <text
-        key={id}
+        key={`${id}b`}
         fontSize={"0.50em"}
         x={x0 < width / 2 ? x1 + 6 : x0 - 6}
         y={((y1 + y0) / 2) + 10}

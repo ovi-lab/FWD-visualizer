@@ -52,7 +52,6 @@ const SankeyDiagram = (props) => {
 
   useEffect(() => {
     if (!loading) {
-    console.log('data', data.nodes)
     let rawLinks = [];
     const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
 

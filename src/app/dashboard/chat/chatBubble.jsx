@@ -1,5 +1,6 @@
 import { scaleLinear } from "d3";
-import {UserAvatar, HaruAvatar} from "./avatars";
+import { UserAvatar, HaruAvatar } from "./avatars";
+
 
 function sentimentColor(label, score) {
   let colorScale;
@@ -21,46 +22,57 @@ function sentimentColor(label, score) {
 
 function EmotionDisplay({ label, speaker }) {
   let emotion = ":|";
-  let color = '#a3e635';
+  let color = "#a3e635";
   switch (label) {
     case "anger":
       emotion = ">:(";
-      color = '#ff7866'; // Red
+      color = "#ff7866"; // Red
       break;
     case "disgust":
       emotion = ">:P";
-      color = '#8B4513'; // Brown
+      color = "#8B4513"; // Brown
       break;
     case "fear":
       emotion = ":{";
-      color = '#cdabff'; // Purple
+      color = "#cdabff"; // Purple
       break;
     case "joy":
       emotion = ":D";
-      color = '#57cd57'; // Green
+      color = "#57cd57"; // Green
       break;
-      case "neutral":
-        emotion = ":)";
-        color = '#a3e635'; // Lime
-        break;
-        case "sadness":
-          emotion = ":(";
-          color = '#63b8ff'; // Blue
-          break;
-          case "surprise":
-            emotion = ":o";
-            color = '#FFD700'; // Gold/Yellow
+    case "neutral":
+      emotion = ":)";
+      color = "#a3e635"; // Lime
+      break;
+    case "sadness":
+      emotion = ":(";
+      color = "#63b8ff"; // Blue
+      break;
+    case "surprise":
+      emotion = ":o";
+      color = "#FFD700"; // Gold/Yellow
       break;
     default:
-        break;
+      break;
   }
   return (
     <div className="">
-      <div className="profile h-8 w-8 rounded-full  mx-2 text-center" style={{backgroundColor:color}}>
+   
+
+      <div
+        className="profile h-8 w-8 rounded-full  mx-2 text-center"
+        style={{ backgroundColor: color }}
+      >
         {emotion}
       </div>
+    
+      
       <div className="mt-2 ml-2">
-        {speaker === "Haru" ? <HaruAvatar size={30} /> : <UserAvatar size={30} />}
+        {speaker === "Haru" ? (
+          <HaruAvatar size={30} />
+        ) : (
+          <UserAvatar size={30} />
+        )}
       </div>
     </div>
   );
@@ -99,11 +111,11 @@ const Bubble = ({ stmt, id }) => {
       {speaker === "Haru" ? (
         <div className={`bubble items-start ${speaker}`}>
           <EmotionDisplay label={stmt.emotion_label} speaker={speaker} />
-          <MessageDisplay speaker={speaker} color={color} message={stmt.text}/>
+          <MessageDisplay speaker={speaker} color={color} message={stmt.text} />
         </div>
       ) : (
         <div className={`bubble items-start ${speaker}`}>
-          <MessageDisplay speaker={speaker} color={color} message={stmt.text}/>
+          <MessageDisplay speaker={speaker} color={color} message={stmt.text} />
           <EmotionDisplay label={stmt.emotion_label} speaker={speaker} />
           {/* {stmt.was_data_collected && stmt.text ? (
             <div className={`data-collection flex justify-end`}>

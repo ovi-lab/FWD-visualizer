@@ -10,10 +10,10 @@ export default function TimeLine() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:6400/api/rawjson", {method:'GET'})
+    fetch("http://127.0.0.1:6400/api/rawjson", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
-        const start = data.at(-1).timestamp;
+        const start = data.at(-1).timestamp
         const final = data.at(0).timestamp;
         setStart(start);
         setEnd(final);
@@ -39,7 +39,6 @@ export default function TimeLine() {
 
   const handlePlay = (e) => {};
 
-  // console.log('steps', steps)
   if (loading) return <p> Loading</p>;
   else
     return (

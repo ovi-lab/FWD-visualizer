@@ -6,13 +6,13 @@ export default function SideBar() {
       className="fixed top-0 left-0 z-40 w-52 h-screen transition-transform -translate-x-full sm:translate-x-0"
       aria-label="Sidebar"
     >
-      <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+      <div className="h-full px-3 py-4 overflow-y-auto bg-gray-800">
         <ul className="space-y-2 font-medium">
-          <li className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white font-extrabold"><h1>Haru Chat Visualizer</h1></li>
+          <li className="flex items-center p-2 rounded-lg text-white font-extrabold"><h1>Haru Chat Visualizer</h1></li>
           <li>
             <a
               href="/dashboard"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +34,7 @@ export default function SideBar() {
           <li>
             <Link
               href="/dashboard/chat"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
             >
               <span className="ms-3">Chat View</span>
             </Link>
@@ -42,7 +42,7 @@ export default function SideBar() {
           <li>
             <Link
               href="/dashboard/diagrams/arc"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
             >
               <span className="ms-3">Arc Diagram</span>
             </Link>
@@ -50,7 +50,7 @@ export default function SideBar() {
           <li>
             <Link
               href="/dashboard/diagrams/sankey"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
             >
               <span className="ms-3">Sankey Diagram</span>
             </Link>
@@ -58,7 +58,7 @@ export default function SideBar() {
           <li>
             <Link
               href="/dashboard/diagrams/ToF"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
             >
               <span className="ms-3">Tiers of Friendship</span>
             </Link>
@@ -67,7 +67,7 @@ export default function SideBar() {
           <li>
             <Link
               href="/dashboard/upload"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
             >
               <span className="ms-3">Upload JSON</span>
             </Link>

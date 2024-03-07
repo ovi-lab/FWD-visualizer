@@ -61,12 +61,12 @@ export default function ArcDiagram() {
     const xHaru = d3
       .scalePoint()
       .domain(haruNodes.map((node) => node.name))
-      .range([midPoint - 15, 0]);
+      .range([midPoint - 30, 0]);
 
     const xUser = d3
       .scalePoint()
       .domain(userNodes.map((node) => node.name))
-      .range([midPoint + 15, arcWidth]);
+      .range([midPoint + 30, arcWidth]);
 
     setScales({ haruScale: xHaru, userScale: xUser });
 
@@ -75,14 +75,16 @@ export default function ArcDiagram() {
       selectedTime,
       selectedFilters
     );
-    const calculatedLinks = filteredLinks.map((link) => {
-      let start = idToNode[link.source].name.includes("haru:")
+    const calculatedLinks = data.links.haru.concat(data.links.user).map((link) => {
+      let d;
+      if (idToNode[link.source] !== undefined) {
+        const start = idToNode[link.source].name.includes("haru:")
         ? xHaru(idToNode[link.source].name)
         : xUser(idToNode[link.source].name);
-      let end = idToNode[link.target].name.includes("haru:")
+      const end = idToNode[link.target].name.includes("haru:")
         ? xHaru(idToNode[link.target].name)
         : xUser(idToNode[link.target].name);
-      let d = [
+      d = [
         "M",
         start,
         arcHeight,
@@ -98,6 +100,8 @@ export default function ArcDiagram() {
         ",",
         arcHeight,
       ].join(" ");
+      }
+      
       return { ...link, d };
     });
     setNodes(filteredNodes);

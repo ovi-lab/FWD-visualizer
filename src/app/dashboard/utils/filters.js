@@ -1,3 +1,4 @@
+
 function filterData(data, time, filters) {
     // Apply filters to the data
     const filteredData = data
@@ -9,9 +10,9 @@ function filterData(data, time, filters) {
           ? line.emotion_label === filters.emotion
           : true
       )
-      .filter((line) =>
+      .filter((line) => 
         filters.sentiment !== ""
-          ? line.sentiment_label.substring(0, 3) === filters.sentiment
+          ? line.sentiment_label === filters.sentiment
           : true
       )
       .filter((line) =>
@@ -20,7 +21,7 @@ function filterData(data, time, filters) {
           : true
       )
       .filter((line) => Date.parse(line.timestamp) <= Date.parse(time));
-
+  
     return filteredData;
 }
 

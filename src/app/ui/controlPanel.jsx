@@ -6,13 +6,7 @@ import TimeLine from "./timeline";
 // Example predefined keywords
 const predefinedKeywords = ["keyword1", "keyword2", "keyword3"];
 
-const FilterCheckbox = ({
-  title,
-  data,
-  filterType,
-  stateValue,
-  onChange,
-}) => {
+const FilterCheckbox = ({ title, data, filterType, stateValue, onChange }) => {
   return (
     <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
       <h3 className="m-1 font-bold text-sm">{title}</h3>
@@ -38,6 +32,7 @@ const FilterCheckbox = ({
     </div>
   );
 };
+
 // Component for the control panel
 const ControlPanel = () => {
   // States to store filter selections
@@ -49,7 +44,6 @@ const ControlPanel = () => {
   const [keywordFilter, setKeywordFilters] = useState(false);
   const { setSelectedFilters } = useFilter();
 
-  const topics = [1, 2, 3, 4, 5];
   const turns = ["haru", "user"];
   const sentiments = ["positive", "neutral", "negative"];
   const emotions = [
@@ -72,8 +66,6 @@ const ControlPanel = () => {
         setAvailableTopics(topics);
       });
   }, []);
-
-  
 
   // Function to handle applying filters
   const applyFilters = () => {
@@ -110,6 +102,8 @@ const ControlPanel = () => {
   };
 
   const handleCheck = (filter, value) => {
+    console.log('filter', filter)
+    console.log('value', value)
     switch (filter) {
       case "turn":
         setTurnFilter(value);
@@ -121,7 +115,7 @@ const ControlPanel = () => {
         setEmotionFilter(value);
         break;
       case "keywords":
-        console.log('value', value)
+        console.log("value", value);
         setKeywordFilters(value);
       default:
         break;
@@ -164,7 +158,7 @@ const ControlPanel = () => {
           <select
             value={selectedTopic}
             onChange={(e) => {
-              console.log(e.target.value)
+              console.log(e.target.value);
               setSelectedTopic(e.target.value);
             }}
           >
@@ -176,8 +170,8 @@ const ControlPanel = () => {
             ))}
           </select>
         </div>
-        {/* Keyword filter */}
 
+        {/* Keyword filter */}
         <FilterCheckbox
           data={["yes", "no"]}
           title={"Use the safety list?"}

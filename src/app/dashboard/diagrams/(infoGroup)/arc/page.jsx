@@ -75,7 +75,7 @@ export default function ArcDiagram() {
       selectedTime,
       selectedFilters
     );
-    const calculatedLinks = data.links.haru.concat(data.links.user).map((link) => {
+    const calculatedLinks = filteredLinks.map((link) => {
       let d;
       if (idToNode[link.source] !== undefined) {
         const start = idToNode[link.source].name.includes("haru:")

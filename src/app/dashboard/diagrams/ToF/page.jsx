@@ -1,7 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Topic } from "./tofParts";
 import { useTime } from "@/app/contexts/timeContext";
+import { useFilter } from "@/app/contexts/filterContext";
+import { filterData } from "../../utils/filters";
 
 function filter(input, time) {
   return input
@@ -11,30 +13,40 @@ function filter(input, time) {
 
 export default function TiersOfFriendship() {
   const [nodes, setNodes] = useState([]);
+  const [rows, setRows] = useState([])
   const { selectedTime } = useTime();
+  const { selectedFilters } = useFilter();
+
+useEffect(() => { 
+  fetch("http://127.0.0.1:6400/api/diagramjson?" +
+  new URLSearchParams({ selection: 'nodes' }),
+  { method: "GET" })
+  .then((res) => res.json())
+  .then((nodes) => {
+    const userNodes = nodes.filter((node) => node.turn === 'user' ? true : false) 
+    setNodes(userNodes); 
+  });
+}, [])
+
 
   useEffect(() => {
-    fetch("http://127.0.0.1:6400/api/diagramjson?" +
-    new URLSearchParams({ selection: 'both' }),
-  { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        const filteredNodes = filter(data.nodes, selectedTime);
+    const filteredNodes = filterData(nodes, selectedTime, selectedFilters)
+    const newRows = [[], [], []]; // Initialize an array to hold nodes for each row
+    const node_buffer = []
+    filteredNodes.map((node) => {
+      const topic_category = node.topic.match(/[A-Za-z]+/)[0]
+      if (node.topic === "topic-intro") {
+        newRows[0].push(node);
+      } else if (topic_category !== 'command' && topic_category !== 'system') {
+        newRows[1].push(node);
+      }
+    });
+    setRows(newRows)
+  }, [nodes, selectedTime, selectedFilters, setRows])
 
-        setNodes(filteredNodes);
-      });
-  }, [selectedTime]);
 
-  const rows = [[], [], []]; // Initialize an array to hold nodes for each row
-
-  nodes.forEach((node) => {
-    if (node.topic === "topic-intro") {
-      rows[0].push(node);
-    } else if (node.topic.match(/[A-Za-z]+/)[0] !== 'command') {
-      rows[1].push(node);
-    }
-  });
-
+  if (!nodes || !rows) return <div>Loading...</div>
+  
   return (
     <div className="flex flex-col h-full">
       {rows.map(

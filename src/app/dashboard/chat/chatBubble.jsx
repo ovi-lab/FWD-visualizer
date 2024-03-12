@@ -117,11 +117,11 @@ const Bubble = ({ stmt, id }) => {
         <div className={`bubble items-start ${speaker}`}>
           <MessageDisplay speaker={speaker} color={color} message={stmt.text} />
           <EmotionDisplay label={stmt.emotion_label} speaker={speaker} />
-          {/* {stmt.was_data_collected && stmt.text ? (
-            <div className={`data-collection flex justify-end`}>
+          {stmt.was_data_collected && stmt.text ? (
+            <div className={`flex data-collection`}>
               Response saved
             </div>
-          ) : null} */}
+          ) : null}
         </div>
       )}
     </div>

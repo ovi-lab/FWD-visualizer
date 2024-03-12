@@ -70,7 +70,7 @@ export default function Chatbox() {
   const anchorMove = anchorMoveCallback(AnchorRef);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:6400/api/rawjson", {method:'GET'})
+    fetch("http://127.0.0.1:6400/api/chatjson", {method:'GET', next: {revalidate:1}})
       .then((res) => res.json())
       .then((data) => {
         setLines(data);

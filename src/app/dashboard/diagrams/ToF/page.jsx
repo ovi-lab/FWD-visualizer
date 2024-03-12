@@ -14,7 +14,9 @@ export default function TiersOfFriendship() {
   const { selectedTime } = useTime();
 
   useEffect(() => {
-    fetch("../../../data/new_robot_data_2_20.json")
+    fetch("http://127.0.0.1:6400/api/diagramjson?" +
+    new URLSearchParams({ selection: 'both' }),
+  { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
         const filteredNodes = filter(data.nodes, selectedTime);

@@ -39,7 +39,7 @@ const SankeyDiagram = (props) => {
 
   useEffect(() => {
     fetch(
-      "http://127.0.0.1:6400/api/diagramFormat?" +
+      "http://127.0.0.1:6400/api/diagramjson?" +
         new URLSearchParams({ selection: "both" }),
       { method: "GET" }
     )

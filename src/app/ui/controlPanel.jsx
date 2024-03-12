@@ -57,10 +57,12 @@ const ControlPanel = () => {
   ];
 
   useEffect(() => {
-    fetch("../../../data/new_robot_data_2_20.json")
+    fetch("http://127.0.0.1:6400/api/diagramjson?" +
+    new URLSearchParams({ selection: 'nodes' }),
+  { method: "GET" })
       .then((res) => res.json())
-      .then((data) => {
-        const topics = data.nodes
+      .then((nodes) => {
+        const topics = nodes
           .filter((node) => node.turn === "haru")
           .map((d) => d.topic);
         setAvailableTopics(topics);
@@ -82,7 +84,6 @@ const ControlPanel = () => {
     // You can use this context in child components to access filter selections
     // Remember to wrap your app with FilterContext.Provider
     // e.g., <FilterContext.Provider value={filters}><App /></FilterContext.Provider>
-    console.log("Filters:", filters);
   };
 
   const resetFilters = () => {
@@ -158,7 +159,6 @@ const ControlPanel = () => {
           <select
             value={selectedTopic}
             onChange={(e) => {
-              console.log(e.target.value);
               setSelectedTopic(e.target.value);
             }}
           >

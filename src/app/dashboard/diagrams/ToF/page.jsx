@@ -32,7 +32,6 @@ useEffect(() => {
   useEffect(() => {
     const filteredNodes = filterData(nodes, selectedTime, selectedFilters)
     const newRows = [[], [], []]; // Initialize an array to hold nodes for each row
-    const node_buffer = []
     filteredNodes.map((node) => {
       const topic_category = node.topic.match(/[A-Za-z]+/)[0]
       if (node.topic === "topic-intro") {
@@ -55,7 +54,7 @@ useEffect(() => {
           rowNodes[index] !== undefined && (
             <div key={rowNodes[index].name} className="flex justify-center">
               {rowNodes.map((node) => (
-                <Topic key={node.topic} nodeTopic={node.topic} />
+                <Topic key={node.topic} nodeTopic={node.topic} nodeSlots={node.slots}/>
               ))}
             </div>
           )

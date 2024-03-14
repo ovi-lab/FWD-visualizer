@@ -18,7 +18,7 @@ export const TimeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-export const useTime = (): TimeContextType => {
+export const useTime = (): TimeContextType | undefined => {
   const context = useContext(TimeContext);
   if (!context) {
     throw new Error('useTime must be used within a TimeProvider');

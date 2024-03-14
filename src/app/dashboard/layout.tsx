@@ -2,9 +2,8 @@ import SideBar from "../ui/sideBar";
 import ControlPanel from "../ui/controlPanel"
 import { SelectedNodeProvider } from "../contexts/selectedNodeContext";
 import { ChatProvider } from "../contexts/chatContext";
-import TimeLine from "../ui/timeline";
-import { TimeProvider } from "../contexts/timeContext";
-import { FilterProvider } from "../contexts/filterContext";
+import { TimeProvider } from "@/app/contexts/timeContext";
+import { FilterProvider } from "@/app/contexts/filterContext";
 
 export default function Layout({
   children,

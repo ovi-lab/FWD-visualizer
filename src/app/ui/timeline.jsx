@@ -1,31 +1,42 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useTime } from "../contexts/timeContext";
+import io from "socket.io-client";
 
 export default function TimeLine() {
+  const [data, setData] = useState([]);
   const [start, setStart] = useState("1970-01-01 16:26:30");
   const [end, setEnd] = useState("1970-01-01 16:26:31");
   const [steps, setSteps] = useState(0);
   const { selectedTime, setSelectedTime } = useTime();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:6400/api/chatjson", { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        const start = data.at(-1).timestamp
-        const final = data.at(0).timestamp;
-        setStart(start);
-        setEnd(final);
-        setSelectedTime(final);
-        setSteps(
-          Math.ceil(
-            (Date.parse(final) - Date.parse(start)) / data.length / 1000
-          )
-        );
-        setLoading(false);
-      });
-  }, [setSelectedTime]);
+
+    const socket = io(":6400", {cors: {origin: 'http://127.0.0.1:6400', methods: ['GET', 'POST']}});
+    // Listen for data updates from the Flask server
+    socket.on("linear_updates", (newData) => {
+      console.log('newData', newData)
+      setData(newData);
+    });
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("data", data);
+    if (!data || data.length === 0) return;
+    const start = data.at(-1).timestamp;
+    const final = data.at(0).timestamp;
+    setStart(start);
+    setEnd(final);
+    setSelectedTime(final);
+    setSteps(
+      Math.ceil((Date.parse(final) - Date.parse(start)) / data.length / 1000)
+    );
+  }, [data, setSelectedTime]);
 
   const handleTimeSelect = (e) => {
     // Parse the input value as a date string
@@ -39,7 +50,10 @@ export default function TimeLine() {
 
   const handlePlay = (e) => {};
 
-  if (loading) return <p> Loading</p>;
+  if (!data || data.length === 0)
+    return (
+      <div className=" rounded-lg bg-gray-100 p-1 shadow-md m-2">Loading</div>
+    );
   else
     return (
       <div className=" rounded-lg bg-gray-100 p-1 shadow-md m-2">

@@ -6,7 +6,7 @@ import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import {filterData} from "@/app/dashboard/utils/filters"
-// import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
+import { io } from "socket.io-client";
 
 function checkForCollection(current, previous) {
   if (current.turn === "haru" || previous === undefined) return false;
@@ -27,7 +27,7 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
-  const [lines, setLines] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
@@ -70,12 +70,18 @@ export default function Chatbox() {
   const anchorMove = anchorMoveCallback(AnchorRef);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:6400/api/chatjson", {method:'GET', next: {revalidate:1}})
-      .then((res) => res.json())
-      .then((data) => {
-        setLines(data);
-        setLoading(false);
-      });
+
+    const socket = io(":6400", {cors: {origin: 'http://127.0.0.1:6400', methods: ['GET', 'POST']}});
+    // Listen for data updates from the Flask server
+    socket.on("linear_updates", (newData) => {
+      console.log('newData', newData)
+      setData(newData);
+    });
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -87,7 +93,7 @@ export default function Chatbox() {
 
   useEffect(() => {
     const statementList = [];
-    const filteredLines = filterData(lines, selectedTime, selectedFilters);
+    const filteredLines = filterData(data, selectedTime, selectedFilters);
     filteredLines.map((interaction, index) => {
       statementList[interaction.idx] = {
         id: interaction.idx,
@@ -97,19 +103,19 @@ export default function Chatbox() {
         sentiment_score: interaction.sentiment_score,
         emotion_label: interaction.emotion_label,
         emotion_score: interaction.emotion_score,
-        was_data_collected: checkForCollection(interaction, lines[index + 1]),
-        timestamp: includeTimestamp(interaction, lines[index + 1]),
+        was_data_collected: checkForCollection(interaction, data[index + 1]),
+        timestamp: includeTimestamp(interaction, data[index + 1]),
         threadId: interaction.index,
       };
     });
     setStatements(Object.values(statementList));
-  }, [lines, selectedTime, selectedFilters]);
+  }, [data, selectedTime, selectedFilters]);
 
   useEffect(() => {
     anchorMove(chatAnchor);
   }, [chatAnchor]);
 
-  if (loading) return <p>Loading...</p>;
+  if (!data) return <p>Loading...</p>;
   return (
     <div className="flex w-full col-span-2 chatbox-container">
       <div className="chatbox-body overflow-hidden rounded-lg pb-10">

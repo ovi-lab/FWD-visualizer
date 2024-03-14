@@ -56,18 +56,18 @@ const ControlPanel = () => {
     "surprise",
   ];
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:6400/api/diagramjson?" +
-    new URLSearchParams({ selection: 'nodes' }),
-  { method: "GET" })
-      .then((res) => res.json())
-      .then((nodes) => {
-        const topics = nodes
-          .filter((node) => node.turn === "haru")
-          .map((d) => d.topic);
-        setAvailableTopics(topics);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://127.0.0.1:6400/api/diagramjson?" +
+  //   new URLSearchParams({ selection: 'nodes' }),
+  // { method: "GET" })
+  //     .then((res) => res.json())
+  //     .then((nodes) => {
+  //       const topics = nodes
+  //         .filter((node) => node.turn === "haru")
+  //         .map((d) => d.topic);
+  //       setAvailableTopics(topics);
+  //     });
+  // }, []);
 
   // Function to handle applying filters
   const applyFilters = () => {

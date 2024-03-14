@@ -20,7 +20,7 @@ export default function TiersOfFriendship() {
 useEffect(() => { 
   fetch("http://127.0.0.1:6400/api/diagramjson?" +
   new URLSearchParams({ selection: 'nodes' }),
-  { method: "GET" })
+  { method: "GET" }, {next: {revalidate: 2}})
   .then((res) => res.json())
   .then((nodes) => {
     const userNodes = nodes.filter((node) => node.turn === 'user' ? true : false) 

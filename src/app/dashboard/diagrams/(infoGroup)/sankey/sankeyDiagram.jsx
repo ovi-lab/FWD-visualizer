@@ -90,7 +90,7 @@ const SankeyDiagram = (props) => {
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <div>Loading...</div>;
   return (
     <div className="sankeyContainer" id="sankey-container">
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>

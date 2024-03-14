@@ -6,10 +6,10 @@ const DataSourceContext = createContext();
 const defaultDataSource = "staticFetch"
 
 export const DataSourceProvider = ({ children }) => {
-  const [selectedDataSource, setSelectedDataSource] = useState(defaultDataSource);
+  const [dataSource, setDataSource] = useState(defaultDataSource);
 
   return (
-    <DataSourceContext.Provider value={{ selectedDataSource, setSelectedDataSource }}>
+    <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
       {children}
     </DataSourceContext.Provider>
   );

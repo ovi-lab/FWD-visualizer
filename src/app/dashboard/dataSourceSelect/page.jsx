@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useState } from "react";
-import {SelectionForm} from './selectionForm'
+import { SelectionForm } from "./selectionForm";
 
 const SelectionButton = ({
   title,
@@ -32,34 +32,34 @@ const SelectionButton = ({
 );
 
 const DataSourceSelector = () => {
-  const [dataSource, setDataSource] = useState('');
+  const [dataSource, setDataSource] = useState("");
 
   const handleRadioChange = (event) => {
     setDataSource(event.target.value);
   };
 
   return (
-    <div className="flex items-center justify-center h-screen w-full">
-        <div className="flex items-center justify-center h-screen w-full">
-
-        <h3 className="float-left text-md font-bold mr-4">Sankey Diagram</h3>
-        <SelectionButton
-          title={"Load Data From a File"}
-          value={"static"}
-          currentDataSource={dataSource}
-          handleRadioChange={handleRadioChange}
-        />
-        <SelectionButton
-          title={"Connect Directly to the Server"}
-          value={"dynamic"}
-          currentDataSource={dataSource}
-          handleRadioChange={handleRadioChange}
-        />
-        </div>
-        <div className="flex items-center justify-center">
-            <SelectionForm selected={dataSource}/>
-        </div>
-    </div>
+    
+    <div className="flex flex-col items-center justify-center h-screen w-full">
+  <div className="flex items-center justify-center mb-8">
+    <h3 className="text-md font-bold mr-4">Sankey Diagram</h3>
+    <SelectionButton
+      title={"Load Data From a File"}
+      value={"static"}
+      currentDataSource={dataSource}
+      handleRadioChange={handleRadioChange}
+    />
+    <SelectionButton
+      title={"Connect Directly to the Server"}
+      value={"dynamic"}
+      currentDataSource={dataSource}
+      handleRadioChange={handleRadioChange}
+    />
+  </div>
+  <div className="bg-blue-100 shadow-md rounded p-8">
+    <SelectionForm selected={dataSource}/>
+  </div>
+</div>
   );
 };
 

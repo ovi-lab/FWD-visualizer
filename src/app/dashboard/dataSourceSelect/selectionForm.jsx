@@ -1,91 +1,29 @@
 "use client";
 import { useDataSource } from "@/app/contexts/dataSourceContext";
-import { useState } from "react";
-
-function StaticForm() {
-  
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("selection", "static");
-
-    try {
-      const response = await fetch("https://your-api-url", {
-        method: "POST",
-        body: formData,
-      });
-      if (response.ok) {
-        setSelectedDataSource("staticFetch");
-        router.push("/dashboard/chat");
-      } else {
-        console.error("Failed to upload file");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input type="file" onChange={handleFileChange} />
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
-
-function DynamicForm() {
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const params = new URLSearchParams({
-      selection: "dynamic",
-      data: inputValue,
-    });
-
-    try {
-      const response = await fetch(`https://your-api-url?${params.toString()}`);
-      if (response.ok) {
-      } else {
-        console.error("Failed to connect to dynamic data source");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-      />
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
+import dynamic from "next/dynamic";
+import { useState, useEffect } from "react";
 
 export function SelectionForm({ selected }) {
   const isStatic = selected === "static" || !selected;
   const [file, setFile] = useState(null);
-  const [inputValue, setInputValue] = useState("");
+  const [sourceURL, setSourceURL] = useState("");
+  const { dataSource, setDataSource } = useDataSource();
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  useEffect(() => {
+    setDataSource(selected)
+  }, [selected])
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const params = new URLSearchParams({
-      selection: "dynamic",
-      data: inputValue,
+      selection: dataSource,
+      data: sourceURL,
     });
 
     try {
-      const response = await fetch(`https://your-api-url?${params.toString()}`);
+      const response = await fetch(`https://${sourceURL}?${params.toString()}`);
       if (response.ok) {
       } else {
         console.error("Failed to connect to dynamic data source");
@@ -97,17 +35,44 @@ export function SelectionForm({ selected }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        id="serverAddress"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-      />
-      <label htmlFor="serverAddress">
-        Input the server address
-      </label>
-      {isStatic === true ? <input type="file" onChange={handleFileChange} /> : null}
-      <button type="submit">Submit</button>
+      <div className="mb-5">
+        <label className=" flex flex-column font-bold" htmlFor="serverAddress">
+          Input the server address
+        </label>
+        <input
+          className="flex flex-column "
+          type="text"
+          id="serverAddress"
+          placeholder={sourceURL}
+          value={sourceURL}
+          onChange={(e) => setSourceURL(e.target.value)}
+        />
+      </div>
+      {isStatic === true ? (
+        <div className="mb-3">
+          <label className="flex flex-column font-bold" htmlFor="fileUpload">
+            Upload the file you want to see on the dashboard (JSON or YAML
+            accepted)
+          </label>
+          <input
+            id="fileUpload"
+            className="flex flex-column "
+            accept=".json,.yml,.yaml"
+            type="file"
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+        </div>
+      ) : null}
+      <div className="mb-3">
+        <button
+          className='select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
+   py-1 px-2 font-bold text-gray-700 bg-white text-sm"
+   '
+          type="submit"
+        >
+          Submit
+        </button>
+      </div>
     </form>
   );
 }

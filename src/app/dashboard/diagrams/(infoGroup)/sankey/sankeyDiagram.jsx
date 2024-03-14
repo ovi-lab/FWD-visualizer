@@ -7,7 +7,9 @@ import {
 import "../graphStyles.css";
 import { useSelectedNode } from "../../../../contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
+import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./sankeyParts";
+import { filterData } from "@/app/dashboard/utils/filters";
 
 const width = 600;
 const height = 400;
@@ -23,47 +25,56 @@ const sankeyGenerator = d3sankey()
     [width, height - 5],
   ]);
 
-function filterTimestamp(input, time) {
-  return input
-    .filter((item) => Date.parse(item.timestamp) <= Date.parse(time))
-    .map((d) => ({ ...d }));
-}
 
 const SankeyDiagram = (props) => {
+  const [data, setData] = useState({nodes: [], links: []});
+  const [loading, setLoading] = useState(true);
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [viewBox, setViewBox] = useState(`0 0 600 400`);
   const sankeyRef = React.useRef();
   const { selectedNode, setSelectedNode } = useSelectedNode();
   const { selectedTime } = useTime();
+  const { selectedFilters } = useFilter();
 
   useEffect(() => {
-    let rawLinks = [];
-    fetch("../../../data/new_robot_data_2_20.json")
+    fetch(
+      "http://127.0.0.1:6400/api/diagramjson?" +
+        new URLSearchParams({ selection: "both" }),
+      { method: "GET" }
+    )
       .then((res) => res.json())
       .then((data) => {
-        const filteredNodes = filterTimestamp(data.nodes, selectedTime);
-
-        if (props.dataDirection === "haru-user") {
-          rawLinks = data.links.haru;
-        } else {
-          rawLinks = data.links.user;
-        }
-        const filteredLinks = filterTimestamp(rawLinks, selectedTime)
-
-        try {
-          const { nodes, links } = sankeyGenerator({
-            nodes: filteredNodes,
-            links: filteredLinks,
-          });
-          setNodes(nodes);
-          setLinks(links);
-        } catch (error) {
-          // D3 Sankey seems to throw a RangeError but functionality is not affected.
-          // console.log("error", error);
-        }
+        setData({nodes: data.nodes, links: data.links});
+        setLoading(false);
       });
-  }, [props.dataDirection, selectedTime]);
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+    let rawLinks = [];
+    const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
+
+    if (props.dataDirection === "haru-user") {
+      rawLinks = data.links.haru;
+    } else {
+      rawLinks = data.links.user;
+    } 
+    const filteredLinks = filterData(rawLinks, selectedTime, selectedFilters);
+
+    try {
+      const { nodes, links } = sankeyGenerator({
+        nodes: filteredNodes,
+        links: filteredLinks,
+      });
+      setNodes(nodes);
+      setLinks(links);
+    } catch (error) {
+      // D3 Sankey seems to throw a RangeError but functionality is not affected.
+      // console.log("error", error);
+    }
+  }
+  }, [data, selectedTime, selectedFilters, props.dataDirection, loading]);
 
   const handleSankeyInteraction = (nodeName) => {
     console.log("nodeName", nodeName);
@@ -79,9 +90,9 @@ const SankeyDiagram = (props) => {
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
-
+  if (loading) return <div>Loading...</div>;
   return (
-    <div className="sankeyWrapper">
+    <div className="sankeyContainer" id="sankey-container">
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>
         <g style={{ mixBlendMode: "multiply" }} id={"sankey-content"}>
           {links.map((link) => (
@@ -97,7 +108,7 @@ const SankeyDiagram = (props) => {
           {nodes.map((node) =>
             node.show === true ? (
               <Node
-                key={node.id}
+                key={node.name}
                 node
                 {...node}
                 width={width}

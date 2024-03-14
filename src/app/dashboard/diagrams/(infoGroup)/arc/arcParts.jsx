@@ -11,7 +11,7 @@
  * @returns {JSX.Element} - A JSX element representing the node.
  */
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
-  <g>
+  <g key={node.name}>
   <line
     x1={xPosition}
     y1={arcHeight + size + 5}
@@ -46,11 +46,12 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
         transformOrigin: `${xPosition}px ${arcHeight - 15}px`,
         fontSize: "0.8rem",
       }}
-      key={node.name}
+      
       className="label arcLabel"
     >
       {node.name}
     </text>
+    
   </g>
 );
 

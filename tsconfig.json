@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils/processJSON.jsx", "src/app/lib/utils/loadJSON.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils/processJSON.jsx", "src/app/lib/utils/loadJSON.jsx", "src/app/contexts/filterContext.jsx"],
   "exclude": ["node_modules"]
 }

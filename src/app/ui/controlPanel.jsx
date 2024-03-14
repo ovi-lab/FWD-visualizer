@@ -1,10 +1,37 @@
 "use client";
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import { useFilter } from "../contexts/filterContext";
-import "./controlPanel.css"
+import TimeLine from "./timeline";
 
 // Example predefined keywords
 const predefinedKeywords = ["keyword1", "keyword2", "keyword3"];
+
+const FilterCheckbox = ({ title, data, filterType, stateValue, onChange }) => {
+  return (
+    <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
+      <h3 className="m-1 font-bold text-sm">{title}</h3>
+      {data.map((filterCategory) => (
+        <label
+          key={filterCategory}
+          htmlFor={`${filterCategory}-filter`}
+          className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
+   py-1 px-2 font-bold text-gray-700 text-sm transition-colors duration-200 ease-in-out has-[:checked]:bg-green-100 has-[:checked]:text-gray-700 has-[:checked]:border-gray-700 "
+        >
+          <input
+            type="checkbox"
+            id={`${filterCategory}-filter`}
+            className="peer hidden checked:bg-green-100"
+            name="data-direction"
+            value="haru-user"
+            checked={stateValue === filterCategory}
+            onChange={() => onChange(filterType, filterCategory)}
+          />
+          {filterCategory}
+        </label>
+      ))}
+    </div>
+  );
+};
 
 // Component for the control panel
 const ControlPanel = () => {
@@ -13,10 +40,10 @@ const ControlPanel = () => {
   const [sentimentFilter, setSentimentFilter] = useState("");
   const [emotionFilter, setEmotionFilter] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("");
+  const [availableTopics, setAvailableTopics] = useState([]);
   const [keywordFilter, setKeywordFilters] = useState(false);
-  const [setFilter] = useFilter();
+  const { setSelectedFilters } = useFilter();
 
-  const topics = [1, 2, 3, 4, 5];
   const turns = ["haru", "user"];
   const sentiments = ["positive", "neutral", "negative"];
   const emotions = [
@@ -29,32 +56,18 @@ const ControlPanel = () => {
     "surprise",
   ];
 
-  const FilterCheckbox = ({
-    labelText: labelText,
-    filterType,
-    filterValue,
-    stateValue,
-    onChange,
-  }) => {
-    return (
-      <label
-        htmlFor={`${filterValue}-filter`}
-        className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
-     py-3 px-4 font-bold text-gray-700 transition-colors duration-200 ease-in-out has-[:checked]:bg-green-100 has-[:checked]:text-gray-700 has-[:checked]:border-gray-700 "
-      >
-        <input
-          type="checkbox"
-          id={`${filterValue}-filter`}
-          className="peer hidden checked:bg-green-100"
-          name="data-direction"
-          value="haru-user"
-          checked={stateValue === filterValue}
-          onChange={() => onChange(filterType, filterValue)}
-        />
-        {labelText}
-      </label>
-    );
-  };
+  // useEffect(() => {
+  //   fetch("http://127.0.0.1:6400/api/diagramjson?" +
+  //   new URLSearchParams({ selection: 'nodes' }),
+  // { method: "GET" })
+  //     .then((res) => res.json())
+  //     .then((nodes) => {
+  //       const topics = nodes
+  //         .filter((node) => node.turn === "haru")
+  //         .map((d) => d.topic);
+  //       setAvailableTopics(topics);
+  //     });
+  // }, []);
 
   // Function to handle applying filters
   const applyFilters = () => {
@@ -66,12 +79,11 @@ const ControlPanel = () => {
       topic: selectedTopic,
       keywords: keywordFilter,
     };
-    setFilter(filters)
+    setSelectedFilters(filters);
     // Put filters into context
     // You can use this context in child components to access filter selections
     // Remember to wrap your app with FilterContext.Provider
     // e.g., <FilterContext.Provider value={filters}><App /></FilterContext.Provider>
-    console.log("Filters:", filters);
   };
 
   const resetFilters = () => {
@@ -81,15 +93,18 @@ const ControlPanel = () => {
     setSelectedTopic("");
     setKeywordFilters(false);
     const filters = {
-      turn: turnFilter,
-      sentiment: sentimentFilter,
-      emotion: emotionFilter,
-      topic: selectedTopic,
-      keywords: keywordFilter,
+      turn: "",
+      sentiment: "",
+      emotion: "",
+      topic: "",
+      keywords: false,
     };
+    setSelectedFilters(filters);
   };
 
   const handleCheck = (filter, value) => {
+    console.log('filter', filter)
+    console.log('value', value)
     switch (filter) {
       case "turn":
         setTurnFilter(value);
@@ -101,6 +116,7 @@ const ControlPanel = () => {
         setEmotionFilter(value);
         break;
       case "keywords":
+        console.log("value", value);
         setKeywordFilters(value);
       default:
         break;
@@ -108,88 +124,82 @@ const ControlPanel = () => {
   };
 
   return (
-    <div className="control-panel">
-      {/* Speaker filter */}
-      <div>
-        <h3 className="m-3">Speaker</h3>
-        {turns.map((turn) => (
-          <FilterCheckbox
-            key={turn}
-            labelText={turn}
-            filterType={"turn"}
-            filterValue={turn}
-            stateValue={turnFilter}
-            onChange={handleCheck}
-          />
-        ))}
-      </div>
+    <div className="control-panel rounded-lg bg-gray-700 p-0 shadow-md mx-2 pb-1">
+      <div className="flex">
+        {/* Speaker filter */}
+        <FilterCheckbox
+          data={turns}
+          title={"Speaker"}
+          filterType={"turn"}
+          stateValue={turnFilter}
+          onChange={handleCheck}
+        />
 
-      {/* Sentiment filter */}
-      <div>
-        <h3 className="m-3">Sentiment</h3>
-        {sentiments.map((senti) => (
-          <FilterCheckbox
-            key={senti}
-            labelText={senti}
-            filterType={"sentiment"}
-            filterValue={senti.substring(0,3)} //storing the value as the first 3 chars to keep parity with backend
-            stateValue={sentimentFilter}
-            onChange={handleCheck}
-          />
-        ))}
-      </div>
+        {/* Sentiment filter */}
 
-      {/* Emotion filter */}
-      <div>
-        <h3 className="m-3">Emotion</h3>
-        {emotions.map((emo) => (
-          <FilterCheckbox
-            key={emo}
-            labelText={emo}
-            filterType={"emotion"}
-            filterValue={emo}
-            stateValue={emotionFilter}
-            onChange={handleCheck}
-          />
-        ))}
-      </div>
+        <FilterCheckbox
+          data={sentiments}
+          title={"Sentiment"}
+          filterType={"sentiment"}
+          stateValue={sentimentFilter}
+          onChange={handleCheck}
+        />
 
-      {/* Topic filter */}
-      <div>
-        <h3 className="m-3">Topic</h3>
-        <select
-          value={selectedTopic}
-          onChange={(e) => setSelectedTopic(e.target.value)}
-        >
-          <option value="">Select Topic</option>
-          {topics.map((topic) => (
-            <option key={topic} value={topic}>
-              {topic}
-            </option>
-          ))}
-        </select>
-      </div>
+        {/* Emotion filter */}
+        <FilterCheckbox
+          data={emotions}
+          title={"Emotion"}
+          filterType={"emotion"}
+          stateValue={emotionFilter}
+          onChange={handleCheck}
+        />
+        {/* Topic filter */}
+        <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
+          <h3 className="m-1 font-bold text-sm">Topic Filter</h3>
+          <select
+            value={selectedTopic}
+            onChange={(e) => {
+              setSelectedTopic(e.target.value);
+            }}
+          >
+            <option value="">Select Topic</option>
+            {availableTopics.toReversed().map((topic) => (
+              <option key={topic} value={topic}>
+                {topic}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* Keyword filter */}
-      <div>
-        <h3 className="m-3">Filter by the keywords in the safety list?</h3>
-        {['yes', 'no'].map((keySelect) => (
-          <FilterCheckbox
-          key={keySelect}
-          labelText={keySelect}
+        {/* Keyword filter */}
+        <FilterCheckbox
+          data={["yes", "no"]}
+          title={"Use the safety list?"}
           filterType={"keywords"}
-          filterValue={keySelect === 'yes' ? true : false}
           stateValue={keywordFilter}
           onChange={handleCheck}
         />
-        ))}
+
+        {/* Button to apply filters */}
+        <div className="flex-left rounded-lg bg-gray-100 p-1 shadow-md m-2">
+          <button
+            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
+     py-1 px-2 font-bold text-gray-700 text-sm"
+            onClick={applyFilters}
+          >
+            Apply
+          </button>
+          <button
+            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
+     py-1 px-2 font-bold text-gray-700 text-sm"
+            onClick={resetFilters}
+          >
+            Reset
+          </button>
+        </div>
       </div>
 
-      {/* Button to apply filters */}
-      <div className="m-3">
-        <button className="controlButton" onClick={applyFilters}>Apply Filters</button>
-        <button className="controlButton" onClick={resetFilters}>Reset Filters</button>
-      </div>
+      <TimeLine />
     </div>
   );
 };

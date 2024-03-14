@@ -4,8 +4,9 @@ import "./chatBox.css";
 import { useChatAnchor } from "../../contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
-// import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
-
+import { useFilter } from "@/app/contexts/filterContext";
+import {filterData} from "@/app/dashboard/utils/filters"
+import { io } from "socket.io-client";
 
 function checkForCollection(current, previous) {
   if (current.turn === "haru" || previous === undefined) return false;
@@ -26,69 +27,74 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
-  const [lines, setLines] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
   const { selectedTime } = useTime();
+  const { selectedFilters } = useFilter();
   // const {setSelectedNode} = useSelectedNode();
 
-  const anchorMoveCallback = useCallback((anchorRef) => {
-    return function(anchor) {
-      if (anchor !== anchorRef.current) {
-        const targetElement = document.getElementById(anchor);
-        const targetContainer = document.getElementById("chatboxContent");
-        const currentElement = document.getElementById(anchorRef.current);
-  
-        if (targetElement === null) return;
-  
-        if (targetElement && targetContainer) {
-          const scrollPosition =
-            targetElement.offsetTop -
-            (targetContainer.clientHeight - targetElement.clientHeight) / 2;
-          targetContainer.scrollTo({ top: scrollPosition, behavior: "smooth" });
-          if (currentElement !== null) {
-            currentElement.style.border = "none";
+  const anchorMoveCallback = useCallback(
+    (anchorRef) => {
+      return function (anchor) {
+        if (anchor !== anchorRef.current) {
+          const targetElement = document.getElementById(anchor);
+          const targetContainer = document.getElementById("chatboxContent");
+          const currentElement = document.getElementById(anchorRef.current);
+
+          if (targetElement === null) return;
+
+          if (targetElement && targetContainer) {
+            const scrollPosition =
+              targetElement.offsetTop -
+              (targetContainer.clientHeight - targetElement.clientHeight) / 2;
+            targetContainer.scrollTo({
+              top: scrollPosition,
+              behavior: "smooth",
+            });
+            if (currentElement !== null) {
+              currentElement.style.border = "none";
+            }
+            targetElement.style.border = "5px solid #a5faee";
+            anchorRef.current = anchor;
+            setChatAnchor(anchor);
           }
-          targetElement.style.border = "5px solid #a5faee";
-          anchorRef.current = anchor;
-          setChatAnchor(anchor);
         }
-      }
-    }
-  }, [setChatAnchor]);
+      };
+    },
+    [setChatAnchor]
+  );
 
   const anchorMove = anchorMoveCallback(AnchorRef);
 
-useEffect(() => {
-    fetch("../../data/raw/log-02-20.json")
-    .then((res) => res.json())
-    .then((data) => {
-      const filteredLines = [];
-      data
-      .filter(
-        (line) => Date.parse(line.timestamp) <= Date.parse(selectedTime)
-        )
-        .map((interaction, index) => {
-          filteredLines[index] = interaction;
-          });
-        setLines(filteredLines);
-        setLoading(false);
-      });
-    }, [selectedTime]);
+  useEffect(() => {
 
-    useEffect(() => {
-      // Scroll to the last line whenever a new last line is added
-      if (lines.length > 0) {
-        anchorMove(`response${lines.length-1}`);
-      }
-    }, [lines, anchorMove]);
-    
+    const socket = io(":6400", {cors: {origin: 'http://127.0.0.1:6400', methods: ['GET', 'POST']}});
+    // Listen for data updates from the Flask server
+    socket.on("linear_updates", (newData) => {
+      console.log('newData', newData)
+      setData(newData);
+    });
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Scroll to the last line whenever a new last line is added
+    if (statements.length > 0) {
+      anchorMove(`response${statements.length - 1}`);
+    }
+  }, [statements, anchorMove]);
 
   useEffect(() => {
     const statementList = [];
-    lines.map((interaction, index) => {
+    const filteredLines = filterData(data, selectedTime, selectedFilters);
+    filteredLines.map((interaction, index) => {
       statementList[interaction.idx] = {
         id: interaction.idx,
         speaker: interaction.turn,
@@ -97,25 +103,27 @@ useEffect(() => {
         sentiment_score: interaction.sentiment_score,
         emotion_label: interaction.emotion_label,
         emotion_score: interaction.emotion_score,
-        was_data_collected: checkForCollection(interaction, lines[index + 1]),
-        timestamp: includeTimestamp(interaction, lines[index + 1]),
+        was_data_collected: checkForCollection(interaction, data[index + 1]),
+        timestamp: includeTimestamp(interaction, data[index + 1]),
         threadId: interaction.index,
       };
     });
     setStatements(Object.values(statementList));
-  }, [lines]);
+  }, [data, selectedTime, selectedFilters]);
 
   useEffect(() => {
     anchorMove(chatAnchor);
   }, [chatAnchor]);
 
-  if (loading) return <p>Loading...</p>;
+  if (!data) return <p>Loading...</p>;
   return (
-    <div className="col-span-2 chatbox-container ">
-      <h1>Conversation Transcript</h1>
-      <div className="chatbox-body overflow-hidden h-full">
+    <div className="flex w-full col-span-2 chatbox-container">
+      <div className="chatbox-body overflow-hidden rounded-lg pb-10">
+        <div className="flex rounded-lg items-center justify-center bg-cyan-100">
+          <h2 className="text-lg font-semibold">Conversation Transcript</h2>
+        </div>
         <div
-          className="chatbox-content h-full"
+          className="chatbox-content"
           id="chatboxContent"
           style={{ overflowY: "scroll" }}
         >

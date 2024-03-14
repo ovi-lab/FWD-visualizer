@@ -1,4 +1,4 @@
-const Topic = ({nodeTopic, nodeRequired, nodeCollected}) => {
+const Topic = ({nodeTopic, nodeRequired, nodeSlots}) => {
   return (
     <div className="rounded-lg bg-gray-100 p-2 shadow-md m-5">
     {/* Title row */}

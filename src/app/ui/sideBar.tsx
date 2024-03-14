@@ -1,4 +1,21 @@
 import Link from "next/link";
+
+interface NavItemProps {
+  href: string;
+  title: string;
+}
+
+const NavItem: React.FC<NavItemProps> = ({ href, title }) => (
+  <li>
+    <Link
+      href={href}
+      className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+    >
+      <span className="ms-3">{title}</span>
+    </Link>
+  </li>
+);
+
 export default function SideBar() {
   return (
     <aside
@@ -8,13 +25,8 @@ export default function SideBar() {
     >
       <div className="h-full px-3 py-4 overflow-y-auto bg-gray-800">
         <ul className="space-y-2 font-medium">
-          <li className="flex items-center p-2 rounded-lg text-white font-extrabold"><h1>Haru Chat Visualizer</h1></li>
-          <li>
-            <a
-              href="/dashboard"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
-            >
-              <svg
+          <li className="flex items-center p-2 rounded-lg text-white font-extrabold">
+          <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -28,50 +40,23 @@ export default function SideBar() {
                 <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
                 <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
               </svg>
+            <h1 className="h3, ml-5">Haru Chat Visualizer</h1>
+          </li>
+          <li>
+            <a
+              href="/dashboard"
+              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+            >
+              
               <span className="ms-3">Home</span>
             </a>
           </li>
-          <li>
-            <Link
-              href="/dashboard/chat"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
-            >
-              <span className="ms-3">Chat View</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/diagrams/arc"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
-            >
-              <span className="ms-3">Arc Diagram</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/diagrams/sankey"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
-            >
-              <span className="ms-3">Sankey Diagram</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/diagrams/ToF"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
-            >
-              <span className="ms-3">Tiers of Friendship</span>
-            </Link>
-          </li>
+          <NavItem href="/dashboard/chat" title="Chat View" />
+          <NavItem href="/dashboard/diagrams/arc" title="Arc Diagram" />
+          <NavItem href="/dashboard/diagrams/sankey" title="Sankey Diagram" />
+          <NavItem href="/dashboard/diagrams/ToF" title="Tiers of Friendship" />
           <li className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700"></li>
-          <li>
-            <Link
-              href="/dashboard/upload"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
-            >
-              <span className="ms-3">Upload JSON</span>
-            </Link>
-          </li>
+          <NavItem href="/dashboard/dataSourceSelect" title="Select Data Source" />
         </ul>
       </div>
     </aside>

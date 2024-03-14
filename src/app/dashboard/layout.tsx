@@ -4,12 +4,15 @@ import { SelectedNodeProvider } from "../contexts/selectedNodeContext";
 import { ChatProvider } from "../contexts/chatContext";
 import { TimeProvider } from "@/app/contexts/timeContext";
 import { FilterProvider } from "@/app/contexts/filterContext";
+import {DataSourceProvider} from "@/app/contexts/dataSourceContext"
 
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+  <DataSourceProvider>
+
   <div className="w-full flex-none md:w-56">
     <SideBar />
   </div>
@@ -33,6 +36,7 @@ export default function Layout({
       </FilterProvider>
     </TimeProvider>
   </div>
+  </DataSourceProvider>
 </div>
   );
 }

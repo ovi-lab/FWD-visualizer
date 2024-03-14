@@ -36,6 +36,7 @@ const FilterCheckbox = ({ title, data, filterType, stateValue, onChange }) => {
 // Component for the control panel
 const ControlPanel = () => {
   // States to store filter selections
+  const [data, setData] = useState([])
   const [turnFilter, setTurnFilter] = useState("");
   const [sentimentFilter, setSentimentFilter] = useState("");
   const [emotionFilter, setEmotionFilter] = useState("");
@@ -56,18 +57,22 @@ const ControlPanel = () => {
     "surprise",
   ];
 
-  // useEffect(() => {
-  //   fetch("http://127.0.0.1:6400/api/diagramjson?" +
-  //   new URLSearchParams({ selection: 'nodes' }),
-  // { method: "GET" })
-  //     .then((res) => res.json())
-  //     .then((nodes) => {
-  //       const topics = nodes
-  //         .filter((node) => node.turn === "haru")
-  //         .map((d) => d.topic);
-  //       setAvailableTopics(topics);
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch("http://127.0.0.1:6400/api/diagramjson?" +
+    new URLSearchParams({ selection: 'nodes' }),
+  { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data)
+      });
+  }, []);
+
+  useEffect(() => {
+    const topics = data
+    .filter((node) => node.turn === "haru")
+    .map((d) => d.topic);
+  setAvailableTopics(topics);
+  }, [data])
 
   // Function to handle applying filters
   const applyFilters = () => {

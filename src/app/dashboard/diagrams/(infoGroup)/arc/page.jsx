@@ -7,10 +7,11 @@ import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./arcParts";
 import { filterData } from "@/app/dashboard/utils/filters";
+import { io } from "socket.io-client";
 
 
 export default function ArcDiagram() {
-  const [data, setData] = useState({ nodes: [], links: [] });
+  const [data, setData] = useState(null);
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,21 +28,23 @@ export default function ArcDiagram() {
   };
 
   useEffect(() => {
-    fetch(
-      "http://127.0.0.1:6400/api/diagramjson?" +
-        new URLSearchParams({ selection: "both" }),
-      { method: "GET" }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        
-        setData({ nodes: data.nodes, links: data.links });
-        setLoading(false);
-      });
+    const socket = io(":6400", {
+      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
+    });
+    // Listen for data updates from the Flask server
+      socket.emit('static-diagram-request', '');
+    socket.on('static-diagram-response', (newData) => {
+      setData(newData);
+    })
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
-    if (loading) return;
+    if (!data) return;
     const haruNodes = [];
     const userNodes = [];
     const allNodes = [];

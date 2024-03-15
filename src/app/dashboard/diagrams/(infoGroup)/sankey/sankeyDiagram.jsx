@@ -10,6 +10,7 @@ import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./sankeyParts";
 import { filterData } from "@/app/dashboard/utils/filters";
+import { io } from "socket.io-client";
 
 const width = 600;
 const height = 400;
@@ -25,10 +26,8 @@ const sankeyGenerator = d3sankey()
     [width, height - 5],
   ]);
 
-
 const SankeyDiagram = (props) => {
-  const [data, setData] = useState({nodes: [], links: []});
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [viewBox, setViewBox] = useState(`0 0 600 400`);
@@ -38,20 +37,26 @@ const SankeyDiagram = (props) => {
   const { selectedFilters } = useFilter();
 
   useEffect(() => {
-    fetch(
-      "http://127.0.0.1:6400/api/diagramjson?" +
-        new URLSearchParams({ selection: "both" }),
-      { method: "GET" }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setData({nodes: data.nodes, links: data.links});
-        setLoading(false);
-      });
+    const socket = io(":6400", {
+      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
+    });
+    // Listen for data updates from the Flask server
+    socket.emit("static-diagram-request", 'all');
+    
+    socket.on("static-diagram-response-all", (newData) => {
+      console.log('newData', newData)
+      setData(newData);
+    });
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
-    if (!loading) {
+    if (!data) return;
+    console.log('data', data)
     let rawLinks = [];
     const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
 
@@ -59,7 +64,7 @@ const SankeyDiagram = (props) => {
       rawLinks = data.links.haru;
     } else {
       rawLinks = data.links.user;
-    } 
+    }
     const filteredLinks = filterData(rawLinks, selectedTime, selectedFilters);
 
     try {
@@ -73,8 +78,7 @@ const SankeyDiagram = (props) => {
       // D3 Sankey seems to throw a RangeError but functionality is not affected.
       // console.log("error", error);
     }
-  }
-  }, [data, selectedTime, selectedFilters, props.dataDirection, loading]);
+  }, [data, selectedTime, selectedFilters, props.dataDirection]);
 
   const handleSankeyInteraction = (nodeName) => {
     console.log("nodeName", nodeName);
@@ -90,7 +94,8 @@ const SankeyDiagram = (props) => {
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
-  if (loading) return <div>Loading...</div>;
+
+  if (!data) return <div>Loading...</div>;
   return (
     <div className="sankeyContainer" id="sankey-container">
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>

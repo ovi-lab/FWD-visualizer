@@ -73,11 +73,10 @@ export default function Chatbox() {
       cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
     });
     // Listen for data updates from the Flask server
-    socket.on('connect', () => {
-      socket.emit('static-linear-request');
-    })
+    
+    socket.emit('static-linear-request');
+    
     socket.on('static-linear-response', (newData) => {
-      console.log("newData", newData);
       setData(newData);
     })
 

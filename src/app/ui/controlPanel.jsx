@@ -59,13 +59,17 @@ const ControlPanel = () => {
   ];
 
   useEffect(() => {
-
-    const socket = io(":6400", {cors: {origin: 'http://127.0.0.1:6400', methods: ['GET', 'POST']}});
-    // Listen for data updates from the Flask server
-    socket.on("linear_updates", (newData) => {
-      console.log('newData', newData)
-      setData(newData);
+    const socket = io(":6400", {
+      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
     });
+    // Listen for data updates from the Flask server
+    socket.on('connect', () => {
+      socket.emit('static-linear-request');
+    })
+    
+    socket.on('static-linear-response', (newData) => {
+      setData(newData);
+    })
 
     // Clean up the WebSocket connection when the component unmounts
     return () => {
@@ -114,8 +118,6 @@ const ControlPanel = () => {
   };
 
   const handleCheck = (filter, value) => {
-    console.log('filter', filter)
-    console.log('value', value)
     switch (filter) {
       case "turn":
         setTurnFilter(value);
@@ -127,13 +129,13 @@ const ControlPanel = () => {
         setEmotionFilter(value);
         break;
       case "keywords":
-        console.log("value", value);
         setKeywordFilters(value);
       default:
         break;
     }
   };
 
+  if (!data) return <div>loading</div>
   return (
     <div className="control-panel rounded-lg bg-gray-700 p-0 shadow-md mx-2 pb-1">
       <div className="flex">
@@ -174,8 +176,8 @@ const ControlPanel = () => {
             }}
           >
             <option value="">Select Topic</option>
-            {availableTopics.toReversed().map((topic) => (
-              <option key={topic} value={topic}>
+            {availableTopics.toReversed().map((topic, i) => (
+              <option key={topic + i} value={topic}>
                 {topic}
               </option>
             ))}

@@ -4,26 +4,31 @@ import ThreadList from "./threadList";
 import "./infoStyles.css";
 import { useSelectedNode } from "../../contexts/selectedNodeContext";
 import { useChatAnchor } from "../../contexts/chatContext";
-
+import { io } from "socket.io-client";
+import { on } from "events";
 
 const InfoPanel = () => {
-  const [nodes, setNodes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
   const { selectedNode } = useSelectedNode();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   const [selectedLine, setSelectedLine] = useState("");
 
   useEffect(() => {
-    fetch(
-      "http://127.0.0.1:6400/api/diagramjson?" +
-        new URLSearchParams({ selection: 'nodes' }),
-      { method: "GET" }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setNodes(data);
-        setLoading(false);
-      });
+    const socket = io(":6400", {
+      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
+    });
+    // Listen for data updates from the Flask server
+    socket.on('connect', () => {
+      socket.emit('static-diagram-request', 'nodes');
+    })
+    socket.on('static-diagram-response-bodes', (newData) => {
+      setData(newData);
+    })
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {}, [chatAnchor]);
@@ -33,7 +38,7 @@ const InfoPanel = () => {
     setSelectedLine(clickedID);
   };
 
-  if (loading) return <p>loading...</p>;
+  if (!data) return <p>loading...</p>;
 
   return (
     <div className="col-span-1 infoPanel">
@@ -45,7 +50,7 @@ const InfoPanel = () => {
           <h4>{selectedNode}</h4>
           <p>Here are the items attached to the selected node:</p>
           <ThreadList
-            data={nodes}
+            data={data}
             selected={selectedNode}
             anchorClick={anchorButtonClick}
             selectedLine={selectedLine} 

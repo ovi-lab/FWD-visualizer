@@ -28,7 +28,6 @@ function includeTimestamp(current, previous) {
  */
 export default function Chatbox() {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
@@ -70,13 +69,17 @@ export default function Chatbox() {
   const anchorMove = anchorMoveCallback(AnchorRef);
 
   useEffect(() => {
-
-    const socket = io(":6400", {cors: {origin: 'http://127.0.0.1:6400', methods: ['GET', 'POST']}});
-    // Listen for data updates from the Flask server
-    socket.on("linear_updates", (newData) => {
-      console.log('newData', newData)
-      setData(newData);
+    const socket = io(":6400", {
+      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
     });
+    // Listen for data updates from the Flask server
+    socket.on('connect', () => {
+      socket.emit('static-linear-request');
+    })
+    socket.on('static-linear-response', (newData) => {
+      console.log("newData", newData);
+      setData(newData);
+    })
 
     // Clean up the WebSocket connection when the component unmounts
     return () => {

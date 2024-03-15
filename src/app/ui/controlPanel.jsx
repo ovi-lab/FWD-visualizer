@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useFilter } from "../contexts/filterContext";
 import TimeLine from "./timeline";
+import { io } from "socket.io-client";
 
 // Example predefined keywords
 const predefinedKeywords = ["keyword1", "keyword2", "keyword3"];
@@ -58,13 +59,18 @@ const ControlPanel = () => {
   ];
 
   useEffect(() => {
-    fetch("http://127.0.0.1:6400/api/diagramjson?" +
-    new URLSearchParams({ selection: 'nodes' }),
-  { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data)
-      });
+
+    const socket = io(":6400", {cors: {origin: 'http://127.0.0.1:6400', methods: ['GET', 'POST']}});
+    // Listen for data updates from the Flask server
+    socket.on("linear_updates", (newData) => {
+      console.log('newData', newData)
+      setData(newData);
+    });
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {

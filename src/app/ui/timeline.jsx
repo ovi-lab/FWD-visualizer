@@ -11,13 +11,17 @@ export default function TimeLine() {
   const { selectedTime, setSelectedTime } = useTime();
 
   useEffect(() => {
-
-    const socket = io(":6400", {cors: {origin: 'http://127.0.0.1:6400', methods: ['GET', 'POST']}});
-    // Listen for data updates from the Flask server
-    socket.on("linear_updates", (newData) => {
-      console.log('newData', newData)
-      setData(newData);
+    const socket = io(":6400", {
+      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
     });
+    // Listen for data updates from the Flask server
+    socket.on('connect', () => {
+      socket.emit('static-linear-request');
+    })
+    socket.on('static-linear-response', (newData) => {
+      console.log("newData", newData);
+      setData(newData);
+    })
 
     // Clean up the WebSocket connection when the component unmounts
     return () => {
@@ -26,7 +30,6 @@ export default function TimeLine() {
   }, []);
 
   useEffect(() => {
-    console.log("data", data);
     if (!data || data.length === 0) return;
     const start = data.at(-1).timestamp;
     const final = data.at(0).timestamp;

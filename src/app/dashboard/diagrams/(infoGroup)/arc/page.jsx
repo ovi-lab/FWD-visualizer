@@ -32,10 +32,12 @@ export default function ArcDiagram() {
       cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
     });
     // Listen for data updates from the Flask server
-      socket.emit('static-diagram-request', '');
-    socket.on('static-diagram-response', (newData) => {
+    socket.emit("static-diagram-request", 'all');
+    
+    socket.on("static-diagram-response-all", (newData) => {
+      console.log('newData', newData)
       setData(newData);
-    })
+    });
 
     // Clean up the WebSocket connection when the component unmounts
     return () => {

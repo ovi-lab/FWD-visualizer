@@ -21,7 +21,7 @@ const InfoPanel = () => {
     socket.on('connect', () => {
       socket.emit('static-diagram-request', 'nodes');
     })
-    socket.on('static-diagram-response-bodes', (newData) => {
+    socket.on('static-diagram-response-nodes', (newData) => {
       setData(newData);
     })
 

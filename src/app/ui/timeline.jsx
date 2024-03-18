@@ -21,7 +21,6 @@ export default function TimeLine() {
     socket.on('static-linear-response', (newData) => {
       setData(newData);
     })
-    socket.off('static-linear-response')
     // Clean up the WebSocket connection when the component unmounts
     return () => {
       socket.disconnect();

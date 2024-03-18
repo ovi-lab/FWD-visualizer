@@ -4,6 +4,7 @@ import { Topic } from "./tofParts";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { filterData } from "../../utils/filters";
+import { io } from "socket.io-client";
 
 function filter(input, time) {
   return input
@@ -12,25 +13,33 @@ function filter(input, time) {
 }
 
 export default function TiersOfFriendship() {
-  const [nodes, setNodes] = useState([]);
+  const [data, setData] = useState([]);
   const [rows, setRows] = useState([])
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
 
-useEffect(() => { 
-  fetch("http://127.0.0.1:6400/api/diagramjson?" +
-  new URLSearchParams({ selection: 'nodes' }),
-  { method: "GET" }, {next: {revalidate: 2}})
-  .then((res) => res.json())
-  .then((nodes) => {
-    const userNodes = nodes.filter((node) => node.turn === 'user' ? true : false) 
-    setNodes(userNodes); 
-  });
-}, [])
+  useEffect(() => {
+    const socket = io(":6400", {
+      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
+    });
+    // Listen for data updates from the Flask server
+    socket.on('connect', () => {
+      socket.emit('static-diagram-request', 'nodes');
+    })
+    socket.on('static-diagram-response-nodes', (newData) => {
+      setData(newData);
+    })
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
 
 
   useEffect(() => {
-    const filteredNodes = filterData(nodes, selectedTime, selectedFilters)
+    const filteredNodes = filterData(data, selectedTime, selectedFilters)
     const newRows = [[], [], []]; // Initialize an array to hold nodes for each row
     filteredNodes.map((node) => {
       const topic_category = node.topic.match(/[A-Za-z]+/)[0]
@@ -41,10 +50,10 @@ useEffect(() => {
       }
     });
     setRows(newRows)
-  }, [nodes, selectedTime, selectedFilters, setRows])
+  }, [data, selectedTime, selectedFilters, setRows])
 
 
-  if (!nodes || !rows) return <div>Loading...</div>
+  if (!data || !rows) return <div>Loading...</div>
   
   return (
     <div className="flex flex-col h-full">

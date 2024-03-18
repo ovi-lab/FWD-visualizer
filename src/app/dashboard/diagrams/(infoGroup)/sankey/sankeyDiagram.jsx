@@ -44,7 +44,6 @@ const SankeyDiagram = (props) => {
     socket.emit("static-diagram-request", 'all');
     
     socket.on("static-diagram-response-all", (newData) => {
-      console.log('newData', newData)
       setData(newData);
     });
 
@@ -56,7 +55,6 @@ const SankeyDiagram = (props) => {
 
   useEffect(() => {
     if (!data) return;
-    console.log('data', data)
     let rawLinks = [];
     const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
 
@@ -76,12 +74,10 @@ const SankeyDiagram = (props) => {
       setLinks(links);
     } catch (error) {
       // D3 Sankey seems to throw a RangeError but functionality is not affected.
-      // console.log("error", error);
     }
   }, [data, selectedTime, selectedFilters, props.dataDirection]);
 
   const handleSankeyInteraction = (nodeName) => {
-    console.log("nodeName", nodeName);
     setSelectedNode(nodeName);
   };
 

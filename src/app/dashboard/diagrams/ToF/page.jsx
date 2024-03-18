@@ -6,10 +6,35 @@ import { useFilter } from "@/app/contexts/filterContext";
 import { filterData } from "../../utils/filters";
 import { io } from "socket.io-client";
 
-function filter(input, time) {
-  return input
-    .filter((item) => Date.parse(item.timestamp) <= Date.parse(time) && item.turn === 'user')
-    .map((d) => ({ ...d }));
+function checkExistence(selected, tierRow) {
+  let alreadyExists = false
+  const newSlots = [] 
+  for (const tierNode in tierRow) {
+    if (tierNode.topic === selected.topic) {
+      if (tierNode.slots.length === selected.slots.length)
+          break
+      for (const nodeSlot in tierNode.slots) {
+        
+      }
+
+    }
+  }
+  return newSlots
+}
+
+function addToTiers(line, tierRows) {
+  
+    const topic_category = line.topic.match(/[A-Za-z]+/)[0]
+    if (line.topic === "topic-intro") {
+      const existingTopic = checkExistence(line, tierRows[0])
+      if (!existingTopic) {
+        tierRows[0].push()
+      }
+    } else if (topic_category !== 'command' && topic_category !== 'system') {
+      tierRows[1].push(line);
+    }
+  
+  return tierRows
 }
 
 export default function TiersOfFriendship() {
@@ -23,13 +48,12 @@ export default function TiersOfFriendship() {
       cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
     });
     // Listen for data updates from the Flask server
-    socket.on('connect', () => {
-      socket.emit('static-diagram-request', 'nodes');
-    })
-    socket.on('static-diagram-response-nodes', (newData) => {
+    
+      socket.emit('static-linear-request');
+
+    socket.on('static-linear-response', (newData) => {
       setData(newData);
     })
-
     // Clean up the WebSocket connection when the component unmounts
     return () => {
       socket.disconnect();
@@ -39,15 +63,11 @@ export default function TiersOfFriendship() {
 
 
   useEffect(() => {
-    const filteredNodes = filterData(data, selectedTime, selectedFilters)
-    const newRows = [[], [], []]; // Initialize an array to hold nodes for each row
-    filteredNodes.map((node) => {
-      const topic_category = node.topic.match(/[A-Za-z]+/)[0]
-      if (node.topic === "topic-intro") {
-        newRows[0].push(node);
-      } else if (topic_category !== 'command' && topic_category !== 'system') {
-        newRows[1].push(node);
-      }
+    const filteredLines = filterData(data, selectedTime, selectedFilters)
+    let newRows = [[], [], []]; // Initialize an array to hold nodes for each row
+    filteredLines.map((line) => {
+      if (line.turn !== 'user') 
+        newRows = addToTiers(line, newRows)
     });
     setRows(newRows)
   }, [data, selectedTime, selectedFilters, setRows])

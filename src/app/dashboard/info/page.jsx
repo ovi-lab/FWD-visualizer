@@ -5,7 +5,6 @@ import "./infoStyles.css";
 import { useSelectedNode } from "../../contexts/selectedNodeContext";
 import { useChatAnchor } from "../../contexts/chatContext";
 import { io } from "socket.io-client";
-import { on } from "events";
 
 const InfoPanel = () => {
   const [data, setData] = useState([]);

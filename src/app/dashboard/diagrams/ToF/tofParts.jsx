@@ -1,4 +1,4 @@
-const Topic = ({ nodeTopic, nodeSlots, nodeRequired }) => {
+const Topic = ({ nodeTopic, nodeCollected, nodeRequired }) => {
   return (
     <div className="rounded-lg bg-gray-100 p-2 shadow-md m-5">
       {/* Title row */}
@@ -7,9 +7,14 @@ const Topic = ({ nodeTopic, nodeSlots, nodeRequired }) => {
       </div>
 
       {/* Required row */}
-      {nodeRequired ? (
+      {nodeRequired.length > 0 ? (
         <div className="flex rounded-lg items-center justify-center bg-red-100 p-2">
           <p className="text-sm">Required: </p>
+          <ul>
+          {nodeRequired.map((slot) => {
+          return (<li key={`${nodeTopic}-${slot.name}`}>{slot.name}: {slot.value}</li>)
+        })}
+          </ul>
         </div>
       ) : null}
       <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700" />
@@ -17,8 +22,8 @@ const Topic = ({ nodeTopic, nodeSlots, nodeRequired }) => {
       <div className="flex rounded-lg items-center justify-center bg-green-100 p-2">
         <p className="text-sm">Collects: </p>
         <ul>
-        {nodeSlots.map((slot) => {
-          return (<li key={slot.name}>{slot.name}: {slot.value}</li>)
+        {nodeCollected.map((slot) => {
+          return (<li key={`${nodeTopic}-${slot.name}`}>{slot.name}: {slot.value}</li>)
         })}
 
         </ul>

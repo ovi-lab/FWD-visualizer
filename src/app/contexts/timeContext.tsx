@@ -9,7 +9,7 @@ interface TimeContextType {
 const TimeContext = createContext<TimeContextType | undefined>(undefined);
 
 export const TimeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedTime, setSelectedTime] = useState<string>("1970-01-01 16:26:31");
 
   return (
     <TimeContext.Provider value={{ selectedTime, setSelectedTime }}>

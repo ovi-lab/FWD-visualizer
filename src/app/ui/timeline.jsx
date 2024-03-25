@@ -16,9 +16,9 @@ export default function TimeLine() {
     });
     // Listen for data updates from the Flask server
     
-      socket.emit('static-linear-request');
+      // socket.emit('static-linear-request');
 
-    socket.on('static-linear-response', (newData) => {
+    socket.on('linear-response', (newData) => {
       setData(newData);
     })
     // Clean up the WebSocket connection when the component unmounts
@@ -29,15 +29,15 @@ export default function TimeLine() {
 
   useEffect(() => {
     if (!data || data.length === 0) return;
-    const start = data.at(-1).timestamp;
-    const final = data.at(0).timestamp;
+    const start = data.at(0).timestamp;
+    const final = data.at(-1).timestamp;
     setStart(start);
     setEnd(final);
     setSelectedTime(final);
     setSteps(
       Math.ceil((Date.parse(final) - Date.parse(start)) / data.length / 1000)
     );
-  }, [data, setSelectedTime]);
+  }, [data]);
 
   const handleTimeSelect = (e) => {
     // Parse the input value as a date string

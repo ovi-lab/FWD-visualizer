@@ -81,7 +81,7 @@ export default function TiersOfFriendship() {
           !(
             slot.name.includes("any") ||
             slot.name.includes("topic_name") ||
-            slot.name.includes("agreement_patterns") 
+            slot.name.includes("agreement_patterns")
           )
       );
 
@@ -115,7 +115,7 @@ export default function TiersOfFriendship() {
             line.slots.map((slot) => {
               if (
                 !existingObject.slots.collected.find(
-                  (existingSlot) => slot.name === existingSlot.name 
+                  (existingSlot) => slot.name === existingSlot.name
                 )
               )
                 existingObject.slots.collected.push(slot);
@@ -131,22 +131,18 @@ export default function TiersOfFriendship() {
               pastRowNode.slots.collected.map(pastSlot => {
                 console.log(`${slot.name} +++++++++ ${pastSlot.name}`);
                 if (slot.name === pastSlot.name) {
-                  console.log('slot.name === pastSlot.name', slot.name === pastSlot.name)
                   inPast = true
                 requiredSlots.push(slot)
-                console.log('requi', requiredSlots)
-                return
                 }
             })
             if (!inPast) {
               console.log('slot', slot)
                 collectedSlots.push(slot)
+
             }
             })
             const newRowNode = {topic: line.topic, slots: {required: requiredSlots, collected: collectedSlots}}
-            rows[rowIndex].push(newRowNode);
-            console.log('pastRowNode', pastRowNode)
-            console.log('newRowNode', newRowNode)
+            rows[i].push(newRowNode);
             pastRowNode = newRowNode
           }
         }

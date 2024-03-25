@@ -74,9 +74,9 @@ export default function Chatbox() {
     });
     // Listen for data updates from the Flask server
     
-    socket.emit('static-linear-request');
+    // socket.emit('static-linear-request');
     
-    socket.on('static-linear-response', (newData) => {
+    socket.on('linear-response', (newData) => {
       setData(newData);
     })
 
@@ -95,6 +95,7 @@ export default function Chatbox() {
 
   useEffect(() => {
     const statementList = [];
+    console.log("BRRRRRRRRRRRRRUUUUUUUUUUUUH", data)
     const filteredLines = filterData(data, selectedTime, selectedFilters);
     filteredLines.map((interaction, index) => {
       statementList[interaction.idx] = {
@@ -109,6 +110,7 @@ export default function Chatbox() {
         timestamp: includeTimestamp(interaction, data[index + 1]),
         threadId: interaction.index,
       };
+      console.log(statementList[interaction.idx])
     });
     setStatements(Object.values(statementList));
   }, [data, selectedTime, selectedFilters]);
@@ -117,6 +119,7 @@ export default function Chatbox() {
     anchorMove(chatAnchor);
   }, [chatAnchor]);
 
+  console.log('stmts', statements)
   if (!data) return <p>Loading...</p>;
   return (
     <div className="flex w-full col-span-2 chatbox-container">

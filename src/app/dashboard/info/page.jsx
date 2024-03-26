@@ -18,7 +18,7 @@ const InfoPanel = () => {
     });
     // Listen for data updates from the Flask server
     socket.on('connect', () => {
-      socket.emit('static-diagram-request', 'all');
+      socket.emit('diagram-request', 'all');
     })
     socket.on('diagram-response-all', (newData) => {
       setData(newData.nodes);

@@ -32,7 +32,7 @@ export default function ArcDiagram() {
       cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
     });
     // Listen for data updates from the Flask server
-    socket.emit("static-diagram-request", 'all');
+    socket.emit("diagram-request", 'all');
     
     socket.on("diagram-response-all", (newData) => {
       setData(newData);

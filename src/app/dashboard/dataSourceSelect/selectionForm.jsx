@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 export function SelectionForm({ selected }) {
   const isStatic = selected === "static" || !selected;
   const [file, setFile] = useState(null);
-  const [sourceURL, setSourceURL] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
   const { dataSource, setDataSource } = useDataSource();
 
   const socket = io(":6400", {
@@ -17,9 +17,9 @@ export function SelectionForm({ selected }) {
     setDataSource(selected);
   }, [selected, setDataSource]);
 
-  const handleSubmit = (e) => {
+  const handleUploadSubmit = (e) => {
     if (file !== null) {
-      socket.emit("uploadFile", file);
+      socket.emit("upload_file", file, file.name);
       socket.on("returner", (newfile) => {
         console.log("file", newfile);
       });
@@ -34,52 +34,53 @@ export function SelectionForm({ selected }) {
     };
   };
 
-  return (
-    <form onSubmit={handleSubmit} method="post" encType="multipart/form-data">
-      {isStatic === true ? (
+  const toggleConnection = () => {
+    if (isConnected) {
+      socket.emit("killRosFeed");
+      setIsConnected(false);
+    } else {
+      socket.emit("initRosFeed");
+      setIsConnected(true);
+    }
+  };
+
+  return isStatic === true ? (
+    <form
+      onSubmit={handleUploadSubmit}
+      method="post"
+      encType="multipart/form-data"
+    >
+      <div className="mb-3">
+        <label className="flex flex-column font-bold" htmlFor="fileUpload">
+          Upload the transcript file you want to see on the dashboard (YAML
+          accepted)
+        </label>
+        <input
+          id="fileUpload"
+          className="flex flex-column "
+          accept=".yml,.json"
+          type="file"
+          name="file"
+          onChange={(e) => setFile(e.target.files[0])}
+        />
         <div className="mb-3">
-          <label className="flex flex-column font-bold" htmlFor="fileUpload">
-            Upload the transcript file you want to see on the dashboard (YAML
-            accepted)
-          </label>
-          <input
-            id="fileUpload"
-            className="flex flex-column "
-            accept=".yml,.json"
-            type="file"
-            name="file"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-          <div className="mb-3">
-            <button
-              className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
+          <button
+            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
                      py-1 px-2 font-bold text-gray-700 bg-white text-sm"
-              type="submit"
-            >
-              Submit
-            </button>
-          </div>
+            type="submit"
+          >
+            Submit
+          </button>
         </div>
-      ) : (
-        <div className="mb-3">
-          <input
-            id="connection manager"
-            className="flex flex-column "
-            value={"connect"}
-            type="hidden"
-            name="connection"
-          />
-          <div className="mb-3">
-            <button
-              className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
-                     py-1 px-2 font-bold text-gray-700 bg-white text-sm"
-              type="submit"
-            >
-              Begin Receiving from ROS Subscriber
-            </button>
-          </div>
-        </div>
-      )}
+      </div>
     </form>
+  ) : (
+    <div className="mb-3">
+      <button onClick={toggleConnection}>
+        {isConnected
+          ? "Stop Receiving from the ROS Subscriber"
+          : "Begin Receiving from the ROS Subscriber"}
+      </button>
+    </div>
   );
 }

@@ -74,9 +74,9 @@ export default function Chatbox() {
     });
     // Listen for data updates from the Flask server
     
-    // socket.emit('static-linear-request');
+    socket.emit('transcript-request');
     
-    socket.on('linear-response', (newData) => {
+    socket.on('transcript-response', (newData) => {
       setData(newData);
     })
 

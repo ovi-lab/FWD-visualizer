@@ -18,10 +18,10 @@ const InfoPanel = () => {
     });
     // Listen for data updates from the Flask server
     socket.on('connect', () => {
-      socket.emit('static-diagram-request', 'nodes');
+      socket.emit('static-diagram-request', 'all');
     })
-    socket.on('static-diagram-response-nodes', (newData) => {
-      setData(newData);
+    socket.on('diagram-response-all', (newData) => {
+      setData(newData.nodes);
     })
 
     // Clean up the WebSocket connection when the component unmounts

@@ -58,7 +58,7 @@ export default function TiersOfFriendship() {
 
     socket.emit("static-linear-request");
 
-    socket.on("static-linear-response", (newData) => {
+    socket.on("linear-response", (newData) => {
       setData(newData);
     });
     // Clean up the WebSocket connection when the component unmounts
@@ -68,6 +68,7 @@ export default function TiersOfFriendship() {
   }, []);
 
   useEffect(() => {
+    
     const filteredLines = filterData(data, selectedTime, selectedFilters);
 
     const rows = [[], [], [], []];

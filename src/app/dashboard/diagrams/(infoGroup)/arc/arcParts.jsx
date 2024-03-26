@@ -29,7 +29,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
       fill={
         isSelected
           ? "rgb(139, 227, 139)"
-          : (node.name.includes("haru:")
+          : ((node.turn === "haru")
           ? "#80b1d3"
           : "#fb8072")
       }

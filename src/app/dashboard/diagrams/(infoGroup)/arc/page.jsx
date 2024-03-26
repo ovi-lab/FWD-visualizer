@@ -34,8 +34,7 @@ export default function ArcDiagram() {
     // Listen for data updates from the Flask server
     socket.emit("static-diagram-request", 'all');
     
-    socket.on("static-diagram-response-all", (newData) => {
-      console.log('newData', newData)
+    socket.on("diagram-response-all", (newData) => {
       setData(newData);
     });
 
@@ -84,10 +83,10 @@ export default function ArcDiagram() {
     const calculatedLinks = filteredLinks.map((link) => {
       let d;
       if (idToNode[link.source] !== undefined) {
-        const start = idToNode[link.source].name.includes("haru:")
+        const start = idToNode[link.source].turn === "haru"
         ? xHaru(idToNode[link.source].name)
         : xUser(idToNode[link.source].name);
-      const end = idToNode[link.target].name.includes("haru:")
+      const end = idToNode[link.target].turn === "haru"
         ? xHaru(idToNode[link.target].name)
         : xUser(idToNode[link.target].name);
       d = [

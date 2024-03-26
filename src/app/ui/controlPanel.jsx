@@ -66,7 +66,7 @@ const ControlPanel = () => {
       socket.emit("static-linear-request");
     });
 
-    socket.on("static-linear-response", (newData) => {
+    socket.on("linear-response", (newData) => {
       setData(newData);
     });
 

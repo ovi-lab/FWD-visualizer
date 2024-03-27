@@ -16,7 +16,6 @@ export default function TiersOfFriendship() {
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   const { selectedNode, setSelectedNode } = useSelectedNode();
 
-
   useEffect(() => {
     const socket = io(":6400", {
       cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
@@ -42,7 +41,6 @@ export default function TiersOfFriendship() {
     const filteredLines = filterData(data, selectedTime, selectedFilters);
     const rows = [[], [], [], []];
 
-
     filteredLines.map((line) => {
       const lineSlots = line.slots
         .filter(
@@ -57,24 +55,21 @@ export default function TiersOfFriendship() {
 
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
       if (topic_category === "command" || topic_category === "system") return;
-      
+
       const tierObject = { topic: line.topic, required: [], collected: [] };
       let placementIndex = 0;
       let alreadyExists = false;
       for (let i = 0; i < 4; i++) {
         for (const existing of rows[i]) {
           if (line.topic === "topic-intro" && lineSlots != undefined) {
-            console.log('line.topic', line.topic)
-            existing.collected = lineSlots
+            existing.collected = lineSlots;
             // TODO: still fix the index location
           }
           if (existing.topic === tierObject.topic) {
-            console.log('existing.topic', existing.topic)
-            console.log('existing.collected.length', existing.collected.length)
-            console.log('tierOtierObject.topic',tierObject.topic)
-            console.log('tierOtierObject.collected.length',tierObject.collected.length)
-            if (existing.collected.length < tierObject.collected.length || existing.collected.length === 0) {
-              console.log('existing.collected.length', existing.collected.length)
+            if (
+              existing.collected.length < tierObject.collected.length ||
+              existing.collected.length === 0
+            ) {
               tierObject.collected.map((slot) => {
                 if (!existing.collected.includes(slot))
                   existing.collected.push(slot);
@@ -90,7 +85,6 @@ export default function TiersOfFriendship() {
                 collected.slotData.name.includes(slot.slotData.name)
               )
             ) {
-              console.log('existing', existing)
               tierObject.required.push(slot);
               placementIndex = i + 1;
             }
@@ -102,7 +96,6 @@ export default function TiersOfFriendship() {
         tierObject.collected = lineSlots.filter(
           (lineSlot) => !tierObject.required.includes(lineSlot)
         );
-        console.log('tierObject', tierObject)
       }
 
       if (!alreadyExists) {

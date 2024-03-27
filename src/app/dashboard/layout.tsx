@@ -10,7 +10,7 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+    <div className="flex w-screen h-screen flex-col md:flex-row md:overflow-hidden">
   <DataSourceProvider>
 
   <div className="w-full flex-none md:w-56">
@@ -28,10 +28,11 @@ export default function Layout({
                 {children}
               </SelectedNodeProvider>
             </ChatProvider>
-          </div>
-          <div className="mr-5">
+          
             <ControlPanel />
           </div>
+          
+          
         </div>
       </FilterProvider>
     </TimeProvider>

@@ -33,8 +33,12 @@ export default function TiersOfFriendship() {
     };
   }, []);
 
-  const anchorButtonClick = (clickedID) => {
+  const handleSlotClick = (clickedID) => {
     setChatAnchor(`response${clickedID}`);
+  };
+
+  const handleTopicClick = (nodeName) => {
+    setSelectedNode(nodeName);
   };
 
   useEffect(() => {
@@ -123,7 +127,8 @@ export default function TiersOfFriendship() {
                   nodeTopic={node.topic}
                   nodeCollected={node.collected}
                   nodeRequired={node.required}
-                  handleClick={anchorButtonClick}
+                  handleTopicClick={handleTopicClick}
+                  handleSlotClick={handleSlotClick}
                 />
               ))}
             </div>

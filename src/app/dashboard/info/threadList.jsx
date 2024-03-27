@@ -41,7 +41,8 @@ export default function ThreadList({
   selectedLine,
 }) {
   // Find the selected node in the data array
-  const selectedNode = data.find((node) => node.name === selected);
+  // TODO: Make this all use turn + topic rather than name
+  const selectedNode = data.find((node) => node.name.includes(selected));
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
 
@@ -53,7 +54,7 @@ export default function ThreadList({
   const itemsArray = [];
   let numConversations = 1;
   filterData(selectedNode.interactions, selectedTime, selectedFilters).map(
-    (interact, index) => {
+    (interact) => {
       if (interact.lastInteraction === true) {
         numConversations++;
       }

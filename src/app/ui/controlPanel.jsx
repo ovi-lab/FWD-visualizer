@@ -145,7 +145,7 @@ const ControlPanel = () => {
 
   if (!data) return <div>loading</div>;
   return (
-    <div className="control-panel rounded-lg bg-gray-700 p-0 shadow-md mx-2 pb-1">
+    <div className="mr-5 bottom-0 w-full absolute control-panel rounded-lg bg-gray-700 p-0 shadow-md mx-2 pb-1">
       <div className="flex">
         {/* Speaker filter */}
         <FilterCheckbox

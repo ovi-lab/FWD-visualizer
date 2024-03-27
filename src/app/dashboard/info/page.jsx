@@ -17,12 +17,12 @@ const InfoPanel = () => {
       cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
     });
     // Listen for data updates from the Flask server
-    socket.on('connect', () => {
-      socket.emit('diagram-request', 'all');
-    })
-    socket.on('diagram-response-all', (newData) => {
+
+    socket.emit("diagram-request");
+
+    socket.on("diagram-response", (newData) => {
       setData(newData.nodes);
-    })
+    });
 
     // Clean up the WebSocket connection when the component unmounts
     return () => {
@@ -52,7 +52,7 @@ const InfoPanel = () => {
             data={data}
             selected={selectedNode}
             anchorClick={anchorButtonClick}
-            selectedLine={selectedLine} 
+            selectedLine={selectedLine}
           />
         </div>
       )}

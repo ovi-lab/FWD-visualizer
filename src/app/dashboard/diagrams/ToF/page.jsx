@@ -130,14 +130,12 @@ export default function TiersOfFriendship() {
             line.slots.map((slot) => {
               let inPast = false
               pastRowNode.slots.collected.map(pastSlot => {
-                console.log(`${slot.name} +++++++++ ${pastSlot.name}`);
                 if (slot.name === pastSlot.name) {
                   inPast = true
                 requiredSlots.push(slot)
                 }
             })
             if (!inPast) {
-              console.log('slot', slot)
                 collectedSlots.push(slot)
 
             }

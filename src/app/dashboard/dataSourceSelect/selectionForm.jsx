@@ -44,6 +44,7 @@ export function SelectionForm({ selected }) {
     }
   };
 
+
   return isStatic === true ? (
     <form
       onSubmit={handleUploadSubmit}
@@ -76,7 +77,11 @@ export function SelectionForm({ selected }) {
     </form>
   ) : (
     <div className="mb-3">
-      <button onClick={toggleConnection}>
+      <button onClick={toggleConnection}
+      className={`px-4 py-2 rounded-lg ${
+          isConnected ? 'bg-red-500' : 'bg-green-500'
+        } text-white`}
+      >
         {isConnected
           ? "Stop Receiving from the ROS Subscriber"
           : "Begin Receiving from the ROS Subscriber"}

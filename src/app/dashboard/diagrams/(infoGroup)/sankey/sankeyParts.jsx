@@ -13,6 +13,9 @@ const Node = ({
   isSelected,
   handle,
 }) => {
+  const widthLessThanHalf = x0 < width / 2
+  const rectPosition = widthLessThanHalf ? x1 + 6 : x0 - 6
+  const textAnchorPosition = widthLessThanHalf ? "start" : "end"
   return (
     <g key={id}>
       <rect
@@ -35,20 +38,20 @@ const Node = ({
       <text
         key={`${id}a`}
         fontSize={"0.50em"}
-        x={x0 < width / 2 ? x1 + 6 : x0 - 6}
+        x={rectPosition}
         y={(y1 + y0) / 2}
         dy={"0.35em"}
-        textAnchor={x0 < width / 2 ? "start" : "end"}
+        textAnchor={textAnchorPosition}
       >
         {name.split(": ")[0]}:
       </text>
       <text
         key={`${id}b`}
         fontSize={"0.50em"}
-        x={x0 < width / 2 ? x1 + 6 : x0 - 6}
+        x={rectPosition}
         y={((y1 + y0) / 2) + 10}
         dy={"0.35em"}
-        textAnchor={x0 < width / 2 ? "start" : "end"}
+        textAnchor={textAnchorPosition}
       >
         {name.split(": ")[1]}
       </text>

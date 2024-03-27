@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Topic } from "./tofParts";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
@@ -68,15 +68,11 @@ export default function TiersOfFriendship() {
   }, []);
 
   useEffect(() => {
-    
     const filteredLines = filterData(data, selectedTime, selectedFilters);
-
     const rows = [[], [], [], []];
-    let pastRowNode = {topic: '', slots: {required: [], collected: []}}
+    let pastTierObject = { topic: "", slots: { required: [], collected: [] } };
 
     filteredLines.map((line) => {
-      let rowIndex = 0; // Default row index is 0
-
       line.slots = line.slots.filter(
         (slot) =>
           !(
@@ -88,66 +84,50 @@ export default function TiersOfFriendship() {
 
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
       if (topic_category === "command" || topic_category === "system") return;
-      if (line.topic === "topic-intro") {
-        const introObject = rows[0].find(
-          (rowObject) => rowObject && rowObject.topic === line.topic
-        );
-        if (introObject) {
-          line.slots.map((slot) => {
-            if (
-              !introObject.slots.collected.find(
-                (existingSlot) => slot.name === existingSlot.name
-              )
-            )
-              introObject.slots.collected.push(slot);
-          });
-        } else {
-          const newRowNode = {topic: line.topic, slots: {required: [], collected: [line.slots]}}
-          rows[0].push(newRowNode);
-          pastRowNode = newRowNode
-        }
-      } else {
-        // Find the appropriate row index based on slot existence
-        for (let i = 1; i < rows.length; i++) {
-          const existingObject = rows[i].find(
-            (rowObject) => rowObject && rowObject.topic === line.topic
-          );
-          if (existingObject) {
-            line.slots.map((slot) => {
-              if (
-                !existingObject.slots.collected.find(
-                  (existingSlot) => slot.name === existingSlot.name
-                )
-              )
-                existingObject.slots.collected.push(slot);
-            });
-            rowIndex = i;
-            break;
-          } else {
-            rowIndex++;
-            const requiredSlots = []
-            const collectedSlots = []
-            line.slots.map((slot) => {
-              let inPast = false
-              pastRowNode.slots.collected.map(pastSlot => {
-                if (slot.name === pastSlot.name) {
-                  inPast = true
-                requiredSlots.push(slot)
-                }
-            })
-            if (!inPast) {
-                collectedSlots.push(slot)
 
+      const tierObject = { topic: line.topic, required: [], collected: [] };
+      if (tierObject.topic.includes("topic-intro")) {
+        tierObject.collected = line.slots;
+        rows[0][0] = tierObject;
+        return;
+      }
+
+      let placementIndex = 1;
+      let alreadyExists = false;
+      for (let i = 0; i < 4; i++) {
+        if (rows[i].length === 0) continue;
+        for (const existing of rows[i]) {
+          if (existing.topic.includes(tierObject.topic)) {
+            if (existing.collected.length < tierObject.collected.length) {
+              existing.collected = tierObject.collected;
             }
-            })
-            const newRowNode = {topic: line.topic, slots: {required: requiredSlots, collected: collectedSlots}}
-            rows[i].push(newRowNode);
-            pastRowNode = newRowNode
+            alreadyExists = true;
+            break;
+          }
+
+          for (const slot of line.slots) {
+            if (
+              existing.collected.find((collected) =>
+                collected.name.includes(slot.name)
+              )
+            ) {
+              tierObject.required.push(slot);
+              placementIndex = i + 1;
+            }
           }
         }
+
+        if (alreadyExists) break;
+
+        tierObject.collected = line.slots.filter(
+          (slot) => !tierObject.required.includes(slot)
+        );
+      }
+      
+      if (!alreadyExists) {
+        rows[placementIndex < 4 ? placementIndex : 3].push(tierObject);
       }
     });
-
     setRows(rows);
   }, [data, selectedTime, selectedFilters, setRows]);
 
@@ -159,13 +139,16 @@ export default function TiersOfFriendship() {
         (rowNodes, index) =>
           // Only render the row if it has nodes
           rowNodes[index] !== undefined && (
-            <div key={`${rowNodes[index].topic}`} className="flex justify-center">
+            <div
+              key={`${rowNodes[index].topic}`}
+              className="flex justify-center"
+            >
               {rowNodes.map((node) => (
                 <Topic
                   key={`${rowNodes[index]}-${node.topic}`}
                   nodeTopic={node.topic}
-                  nodeCollected={node.slots.collected}
-                  nodeRequired={node.slots.required}
+                  nodeCollected={node.collected}
+                  nodeRequired={node.required}
                 />
               ))}
             </div>

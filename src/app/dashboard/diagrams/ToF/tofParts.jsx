@@ -1,4 +1,12 @@
 const Topic = ({ nodeTopic, nodeCollected, nodeRequired }) => {
+  
+  function ListItem(slot) {
+    if (slot.name === "")
+      
+    return (<li key={`${nodeTopic}-${slot.name}`}>{slot.name}: {slot.value}</li>)
+  }
+
+
   return (
     <div className="rounded-lg bg-gray-100 p-2 shadow-md m-5">
       {/* Title row */}
@@ -12,7 +20,8 @@ const Topic = ({ nodeTopic, nodeCollected, nodeRequired }) => {
           <p className="text-sm">Required: </p>
           <ul>
           {nodeRequired.map((slot) => {
-          return (<li key={`${nodeTopic}-${slot.name}`}>{slot.name}: {slot.value}</li>)
+          if (slot.name)
+            return (<li key={`${nodeTopic}-${slot.name}`}>{slot.name}: {slot.value}</li>)
         })}
           </ul>
         </div>
@@ -23,7 +32,8 @@ const Topic = ({ nodeTopic, nodeCollected, nodeRequired }) => {
         <p className="text-sm">Collects: </p>
         <ul>
         {nodeCollected.map((slot) => {
-          return (<li key={`${nodeTopic}-${slot.name}`}>{slot.name}: {slot.value}</li>)
+          if (slot.name)
+            return (<li key={`${nodeTopic}-${slot.name}`}>{slot.name}: {slot.value}</li>)
         })}
 
         </ul>

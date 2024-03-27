@@ -5,50 +5,14 @@ import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { filterData } from "../../utils/filters";
 import { io } from "socket.io-client";
-import { index } from "d3";
-
-function checkExistence(selected, tierRow) {
-  let newSlots = [];
-  let existsIdx = false;
-
-  for (const tierNode of tierRow) {
-    if (tierNode.topic === selected.topic) {
-      existsIdx = tierNode.index;
-      if (tierNode.slots.length === selected.slots.length) break;
-      for (const selectedSlot of selected.slots) {
-        let slotExists = tierNode.slots.some(
-          (tierSlot) => tierSlot.value === selectedSlot.value
-        );
-        if (!slotExists) newSlots.push(selectedSlot);
-      }
-      break;
-    }
-  }
-
-  return { exists, newSlots };
-}
-
-function addToTiers(line, tierRows) {
-  const topic_category = line.topic.match(/[A-Za-z]+/)[0];
-  if (line.topic === "topic-intro") {
-    const { exists, newSlots } = checkExistence(line, tierRows[0]);
-    if (!exists) {
-      tierRows[0].push();
-    } else if (newSlots) {
-      tierRows[0][index].slots.push(newSlots);
-    }
-  } else if (topic_category !== "command" && topic_category !== "system") {
-    for (const row of tierRows) tierRows[1].push(line);
-  }
-
-  return tierRows;
-}
+import { useChatAnchor } from "@/app/contexts/chatContext";
 
 export default function TiersOfFriendship() {
   const [data, setData] = useState([]);
   const [rows, setRows] = useState([]);
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
+  const { chatAnchor, setChatAnchor } = useChatAnchor();
 
   useEffect(() => {
     const socket = io(":6400", {
@@ -67,10 +31,13 @@ export default function TiersOfFriendship() {
     };
   }, []);
 
+  const anchorButtonClick = (clickedID) => {
+    setChatAnchor(`response${clickedID}`);
+  };
+
   useEffect(() => {
     const filteredLines = filterData(data, selectedTime, selectedFilters);
     const rows = [[], [], [], []];
-    let pastTierObject = { topic: "", slots: { required: [], collected: [] } };
 
     filteredLines.map((line) => {
       line.slots = line.slots.filter(
@@ -80,14 +47,16 @@ export default function TiersOfFriendship() {
             slot.name.includes("topic_name") ||
             slot.name.includes("agreement_patterns")
           )
-      );
+      ).map((filteredSlot) => ({slotData: filteredSlot, slotID: line.idx}));
 
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
       if (topic_category === "command" || topic_category === "system") return;
 
       const tierObject = { topic: line.topic, required: [], collected: [] };
       if (tierObject.topic.includes("topic-intro")) {
-        tierObject.collected = line.slots;
+        console.log('line.slots', line.slots)
+        // TODO: make it so that the slotID is always the earliest ID assigned to the slot
+        tierObject.collected = line.slots.map((lineslot) => ({slotData: lineslot.slotData, slotID: lineslot.slotID}));
         rows[0][0] = tierObject;
         return;
       }
@@ -106,21 +75,17 @@ export default function TiersOfFriendship() {
           }
 
           for (const slot of line.slots) {
-            if (
-              existing.collected.find((collected) =>
-                collected.name.includes(slot.name)
-              )
-            ) {
+            if (existing.collected.find((collected) => collected.slotData.name.includes(slot.slotData.name))) {
               tierObject.required.push(slot);
               placementIndex = i + 1;
-            }
+          }
           }
         }
 
         if (alreadyExists) break;
 
         tierObject.collected = line.slots.filter(
-          (slot) => !tierObject.required.includes(slot)
+          (lineSlot) => !tierObject.required.includes(lineSlot)
         );
       }
       
@@ -149,6 +114,7 @@ export default function TiersOfFriendship() {
                   nodeTopic={node.topic}
                   nodeCollected={node.collected}
                   nodeRequired={node.required}
+                  handleClick={anchorButtonClick}
                 />
               ))}
             </div>

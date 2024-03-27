@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./infoStyles.css";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";

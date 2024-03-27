@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
-import { useSelectedNode } from "../../../../contexts/selectedNodeContext";
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./arcParts";

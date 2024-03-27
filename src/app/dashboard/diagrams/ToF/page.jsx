@@ -6,6 +6,7 @@ import { useFilter } from "@/app/contexts/filterContext";
 import { filterData } from "../../utils/filters";
 import { io } from "socket.io-client";
 import { useChatAnchor } from "@/app/contexts/chatContext";
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 export default function TiersOfFriendship() {
   const [data, setData] = useState([]);
@@ -13,6 +14,8 @@ export default function TiersOfFriendship() {
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
+  const { selectedNode, setSelectedNode } = useSelectedNode();
+
 
   useEffect(() => {
     const socket = io(":6400", {
@@ -39,56 +42,69 @@ export default function TiersOfFriendship() {
     const filteredLines = filterData(data, selectedTime, selectedFilters);
     const rows = [[], [], [], []];
 
+
     filteredLines.map((line) => {
-      line.slots = line.slots.filter(
-        (slot) =>
-          !(
-            slot.name.includes("any") ||
-            slot.name.includes("topic_name") ||
-            slot.name.includes("agreement_patterns")
-          )
-      ).map((filteredSlot) => ({slotData: filteredSlot, slotID: line.idx}));
+      const lineSlots = line.slots
+        .filter(
+          (slot) =>
+            !(
+              slot.name.includes("any") ||
+              slot.name.includes("topic_name") ||
+              slot.name.includes("agreement_patterns")
+            )
+        )
+        .map((filteredSlot) => ({ slotData: filteredSlot, slotID: line.idx }));
 
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
       if (topic_category === "command" || topic_category === "system") return;
-
+      
       const tierObject = { topic: line.topic, required: [], collected: [] };
-      if (tierObject.topic.includes("topic-intro")) {
-        console.log('line.slots', line.slots)
-        // TODO: make it so that the slotID is always the earliest ID assigned to the slot
-        tierObject.collected = line.slots.map((lineslot) => ({slotData: lineslot.slotData, slotID: lineslot.slotID}));
-        rows[0][0] = tierObject;
-        return;
-      }
-
-      let placementIndex = 1;
+      let placementIndex = 0;
       let alreadyExists = false;
       for (let i = 0; i < 4; i++) {
-        if (rows[i].length === 0) continue;
         for (const existing of rows[i]) {
-          if (existing.topic.includes(tierObject.topic)) {
-            if (existing.collected.length < tierObject.collected.length) {
-              existing.collected = tierObject.collected;
+          if (line.topic === "topic-intro" && lineSlots != undefined) {
+            console.log('line.topic', line.topic)
+            existing.collected = lineSlots
+            // TODO: still fix the index location
+          }
+          if (existing.topic === tierObject.topic) {
+            console.log('existing.topic', existing.topic)
+            console.log('existing.collected.length', existing.collected.length)
+            console.log('tierOtierObject.topic',tierObject.topic)
+            console.log('tierOtierObject.collected.length',tierObject.collected.length)
+            if (existing.collected.length < tierObject.collected.length || existing.collected.length === 0) {
+              console.log('existing.collected.length', existing.collected.length)
+              tierObject.collected.map((slot) => {
+                if (!existing.collected.includes(slot))
+                  existing.collected.push(slot);
+              });
             }
             alreadyExists = true;
             break;
           }
 
-          for (const slot of line.slots) {
-            if (existing.collected.find((collected) => collected.slotData.name.includes(slot.slotData.name))) {
+          for (const slot of lineSlots) {
+            if (
+              existing.collected.find((collected) =>
+                collected.slotData.name.includes(slot.slotData.name)
+              )
+            ) {
+              console.log('existing', existing)
               tierObject.required.push(slot);
               placementIndex = i + 1;
-          }
+            }
           }
         }
 
         if (alreadyExists) break;
 
-        tierObject.collected = line.slots.filter(
+        tierObject.collected = lineSlots.filter(
           (lineSlot) => !tierObject.required.includes(lineSlot)
         );
+        console.log('tierObject', tierObject)
       }
-      
+
       if (!alreadyExists) {
         rows[placementIndex < 4 ? placementIndex : 3].push(tierObject);
       }

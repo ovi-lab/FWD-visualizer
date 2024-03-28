@@ -20,8 +20,8 @@ export default function Layout({
   <div className="flex-grow">
     <TimeProvider>
       <FilterProvider>
-        <div className="flex flex-col h-full">
-          <div className="p-3 md:px-4 md:py-3 overflow-y-auto flex">
+        <div className="p-3 md:px-4 md:py-3 overflow-y-auto">
+          
             
             <ChatProvider>
               <SelectedNodeProvider>
@@ -30,7 +30,7 @@ export default function Layout({
             </ChatProvider>
           
             <ControlPanel />
-          </div>
+         
           
           
         </div>

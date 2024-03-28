@@ -75,7 +75,7 @@ export default function ThreadList({
   };
 
   return (
-    <div className="listContainer">
+    <div className="listContainer rounded-lg">
       {itemsArray.length < 1 ? (
         <p>
           The dialog currently does not contain a response that links to this

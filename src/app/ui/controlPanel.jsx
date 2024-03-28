@@ -145,7 +145,7 @@ const ControlPanel = () => {
 
   if (!data) return <div>loading</div>;
   return (
-    <div className="mr-5 bottom-0 w-full absolute control-panel rounded-lg bg-gray-700 p-0 shadow-md mx-2 pb-1">
+    <div className="bottom-0 w-75% mx-2 pb-1 bg-gray-700 rounded-lg shadow-md">
       <div className="flex">
         {/* Speaker filter */}
         <FilterCheckbox
@@ -175,7 +175,7 @@ const ControlPanel = () => {
           onChange={handleCheck}
         />
         {/* Topic filter */}
-        <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
+        <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2 font-bold text-sm">
           <h3 className="m-1 font-bold text-sm">Topic Filter</h3>
           <select
             value={selectedTopic}
@@ -183,10 +183,12 @@ const ControlPanel = () => {
               setSelectedTopic(e.target.value);
             }}
           >
-            <option value="">Select Topic</option>
-            {availableTopics.toReversed().map((topic, i) => (
+            <option className="m-1 " value="">
+              Select Topic
+            </option>
+            {availableTopics.map((topic, i) => (
               <option key={topic + i} value={topic}>
-                {topic}
+                {topic.length < 20 ? topic : topic.slice(0, 20) + "..."}
               </option>
             ))}
           </select>
@@ -219,15 +221,9 @@ const ControlPanel = () => {
           </button>
         </div>
       </div>
-
-      <TimeLine />
+        <TimeLine />
     </div>
   );
 };
-
-// Example usage:
-// Wrap your app with FilterContext.Provider to provide access to filter selections
-// <FilterContext.Provider value={filters}><App /></FilterContext.Provider>
-// In any child component, use useContext(FilterContext) to access filter selections
 
 export default ControlPanel;

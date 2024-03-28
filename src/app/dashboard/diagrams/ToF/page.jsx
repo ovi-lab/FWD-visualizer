@@ -4,11 +4,14 @@ import { Topic } from "./tofParts";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { filterData } from "../../utils/filters";
-import { io } from "socket.io-client";
 import { useChatAnchor } from "@/app/contexts/chatContext";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
+import "./tof-styles.css"
+import { useWebSocket } from "@/app/contexts/webSocketContext";
+
 
 export default function TiersOfFriendship() {
+  const socket = useWebSocket()
   const [data, setData] = useState([]);
   const [rows, setRows] = useState([]);
   const { selectedTime } = useTime();
@@ -17,9 +20,7 @@ export default function TiersOfFriendship() {
   const { selectedNode, setSelectedNode } = useSelectedNode();
 
   useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
+    if (!socket) return;
     // Listen for data updates from the Flask server
 
     socket.emit("transcript-request");
@@ -27,10 +28,7 @@ export default function TiersOfFriendship() {
     socket.on("transcript-response", (newData) => {
       setData(newData);
     });
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+    
   }, []);
 
   const handleSlotClick = (clickedID) => {
@@ -119,7 +117,7 @@ export default function TiersOfFriendship() {
           rowNodes[index] !== undefined && (
             <div
               key={`${rowNodes[index].topic}`}
-              className="flex justify-center"
+              className="flex justify-center topic-wrapper"
             >
               {rowNodes.map((node) => (
                 <Topic

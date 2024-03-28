@@ -1,31 +1,31 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTime } from "../contexts/timeContext";
-import io from "socket.io-client";
+import { useWebSocket } from "../contexts/webSocketContext";
 
 export default function TimeLine() {
+  const socket = useWebSocket()
   const [data, setData] = useState([]);
   const [start, setStart] = useState("1970-01-01 16:26:30");
   const [end, setEnd] = useState("1970-01-01 16:26:31");
   const [steps, setSteps] = useState(0);
   const { selectedTime, setSelectedTime } = useTime();
 
-  useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
-    // Listen for data updates from the Flask server
-    
-      // socket.emit('transcript-request');
-
-    socket.on('transcript-response', (newData) => {
-      setData(newData);
-    })
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+  const handleResponse = useCallback((newData) => {
+    setData(newData);
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    // Listen for data updates from the Flask server
+    socket.emit("transcript-request");
+  }, [socket]);
+  
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("transcript-response", handleResponse
+    );
+  });
 
   useEffect(() => {
     if (!data || data.length === 0) return;

@@ -1,21 +1,14 @@
 "use client";
-import { useDataSource } from "@/app/contexts/dataSourceContext";
-import { useState, useEffect } from "react";
-import { io } from "socket.io-client";
+import { useState, useRef} from "react";
+import { useWebSocket } from "../../contexts/webSocketContext";
 
 export function SelectionForm({ selected }) {
+  const socket = useWebSocket()
   const isStatic = selected === "static" || !selected;
   const [file, setFile] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const { dataSource, setDataSource } = useDataSource();
+  let connectedRef = useRef(false);
+  const [ isConnected, setConnected ] = useState(connectedRef)
 
-  const socket = io(":6400", {
-    cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-  });
-
-  useEffect(() => {
-    setDataSource(selected);
-  }, [selected, setDataSource]);
 
   const handleUploadSubmit = (e) => {
     if (file !== null) {
@@ -24,23 +17,17 @@ export function SelectionForm({ selected }) {
         console.log("file", newfile);
       });
     }
-    const params = {
-      selection: dataSource,
-      data: sourceURL,
-    };
-
-    return () => {
-      socket.disconnect();
-    };
   };
 
   const toggleConnection = () => {
     if (isConnected) {
       socket.emit("killRosFeed");
-      setIsConnected(false);
+      connectedRef = false;
+      setConnected(false)
     } else {
       socket.emit("initRosFeed");
-      setIsConnected(true);
+      setConnected(true)
+      connectedRef = true;
     }
   };
 

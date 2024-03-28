@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useFilter } from "../contexts/filterContext";
 import TimeLine from "./timeline";
-import { io } from "socket.io-client";
+import { useWebSocket } from "../contexts/webSocketContext";
 
 const FilterCheckbox = ({ data, title, filterType, stateValue, onChange }) => {
   return (
@@ -36,6 +36,7 @@ const FilterCheckbox = ({ data, title, filterType, stateValue, onChange }) => {
 // Component for the control panel
 const ControlPanel = () => {
   // States to store filter selections
+  const socket = useWebSocket()
   const [data, setData] = useState([]);
   const [turnFilter, setTurnFilter] = useState("");
   const [sentimentFilter, setSentimentFilter] = useState("");
@@ -57,24 +58,21 @@ const ControlPanel = () => {
     "surprise",
   ];
 
-  useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
-    // Listen for data updates from the Flask server
-    socket.on("connect", () => {
-      socket.emit("transcript-request");
-    });
-
-    socket.on("transcript-response", (newData) => {
-      setData(newData);
-    });
-
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+  const handleResponse = useCallback((newData) => {
+    setData(newData);
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    // Listen for data updates from the Flask server
+    socket.emit("transcript-request");
+  }, [socket]);
+  
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("transcript-response", handleResponse
+    );
+  });
 
   useEffect(() => {
     const topics = [];

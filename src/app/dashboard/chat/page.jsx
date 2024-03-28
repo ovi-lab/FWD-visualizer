@@ -5,8 +5,8 @@ import { useChatAnchor } from "../../contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import {filterData} from "@/app/dashboard/utils/filters"
-import { io } from "socket.io-client";
+import { filterData } from "@/app/dashboard/utils/filters";
+import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 function checkForCollection(current, previous) {
   if (current.turn === "haru" || previous === undefined) return false;
@@ -27,6 +27,7 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
+  const socket = useWebSocket()
   const [data, setData] = useState([]);
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
@@ -68,23 +69,21 @@ export default function Chatbox() {
 
   const anchorMove = anchorMoveCallback(AnchorRef);
 
-  useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
-    // Listen for data updates from the Flask server
-    
-    socket.emit('transcript-request');
-    
-    socket.on('transcript-response', (newData) => {
-      setData(newData);
-    })
-
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+  const handleResponse = useCallback((newData) => {
+    setData(newData);
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    // Listen for data updates from the Flask server
+    socket.emit("transcript-request");
+  }, [socket]);
+  
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("transcript-response", handleResponse
+    );
+  });
 
   useEffect(() => {
     // Scroll to the last line whenever a new last line is added

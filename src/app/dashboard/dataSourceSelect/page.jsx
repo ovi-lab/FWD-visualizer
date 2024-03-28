@@ -32,7 +32,7 @@ const SelectionButton = ({
 );
 
 const DataSourceSelector = () => {
-  const [dataSource, setDataSource] = useState("");
+  const [dataSource, setDataSource] = useState("static");
 
   const handleRadioChange = (event) => {
     setDataSource(event.target.value);

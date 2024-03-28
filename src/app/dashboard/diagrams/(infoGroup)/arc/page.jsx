@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
@@ -7,10 +7,11 @@ import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./arcParts";
 import { filterData } from "@/app/dashboard/utils/filters";
-import { io } from "socket.io-client";
+import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 
 export default function ArcDiagram() {
+  const socket = useWebSocket()
   const [data, setData] = useState(null);
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
@@ -27,22 +28,22 @@ export default function ArcDiagram() {
     setSelectedNode(nodeName);
   };
 
+  const handleResponse = useCallback((newData) => {
+    setData(newData);
+  }, []);
+
   useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
+    if (!socket) return;
     // Listen for data updates from the Flask server
     socket.emit("diagram-request");
-    
-    socket.on("diagram-response", (newData) => {
-      setData(newData);
-    });
+  }, [socket]);
+  
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("diagram-response", handleResponse
+    );
+  });
 
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     if (!data) return;

@@ -1,34 +1,34 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ThreadList from "./threadList";
 import "./infoStyles.css";
 import { useSelectedNode } from "../../contexts/selectedNodeContext";
 import { useChatAnchor } from "../../contexts/chatContext";
-import { io } from "socket.io-client";
+import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 const InfoPanel = () => {
+  const socket = useWebSocket()
   const [data, setData] = useState([]);
   const { selectedNode } = useSelectedNode();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   const [selectedLine, setSelectedLine] = useState("");
 
-  useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
-    // Listen for data updates from the Flask server
-
-    socket.emit("diagram-request");
-
-    socket.on("diagram-response", (newData) => {
-      setData(newData.nodes);
-    });
-
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+  const handleResponse = useCallback((newData) => {
+    setData(newData.nodes);
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    // Listen for data updates from the Flask server
+    socket.emit("diagram-request");
+  }, [socket]);
+  
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("diagram-response", handleResponse
+    );
+  });
+
 
   useEffect(() => {}, [chatAnchor]);
 

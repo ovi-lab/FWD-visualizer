@@ -107,7 +107,7 @@ export default function TiersOfFriendship() {
     setRows(rows);
   }, [data, selectedTime, selectedFilters, setRows]);
 
-  if (!data || !rows) return <div>Loading...</div>;
+  if (!data || !rows) return <div className="flex flex-col h-full">Loading...</div>;
 
   return (
     <div className="flex flex-col h-full">

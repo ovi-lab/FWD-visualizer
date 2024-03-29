@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SelectionForm } from "./dataSourceSelect/selectionForm";
 
 interface NavItemProps {
   href: string;
@@ -56,7 +57,7 @@ export default function SideBar() {
           <NavItem href="/dashboard/diagrams/sankey" title="Sankey Diagram" />
           <NavItem href="/dashboard/diagrams/ToF" title="Tiers of Friendship" />
           <li className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700"></li>
-          <NavItem href="/dashboard/dataSourceSelect" title="Select Data Source" />
+          <SelectionForm/>
         </ul>
       </div>
     </aside>

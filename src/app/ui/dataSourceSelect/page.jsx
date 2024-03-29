@@ -56,9 +56,7 @@ const DataSourceSelector = () => {
       handleRadioChange={handleRadioChange}
     />
   </div>
-  <div className="bg-blue-100 shadow-md rounded p-8">
     <SelectionForm selected={dataSource}/>
-  </div>
 </div>
   );
 };

@@ -14,6 +14,7 @@ export default function TiersOfFriendship() {
   const socket = useWebSocket()
   const [data, setData] = useState([]);
   const [rows, setRows] = useState([]);
+  const [viewBox, setViewBox] = useState([])
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
@@ -111,31 +112,42 @@ export default function TiersOfFriendship() {
     setRows(rows);
   }, [data, selectedTime, selectedFilters, setRows]);
 
+  useEffect(() => {
+    // Calculate bounding box of the generated content
+    const svgContent = document.getElementById("svg-content");
+    if (svgContent) {
+      const { x, y, width, height } = svgContent.getBBox();
+      const newViewBox = `${x - 1} ${y - 1} ${width + 2} ${height + 2}`;
+      setViewBox(newViewBox);
+    }
+  }, [data]);
+
   if (!data || !rows) return <div className="flex flex-col h-full">Loading...</div>;
 
   return (
-    <div className="flex flex-col h-full">
-      {rows.map(
-        (rowNodes, index) =>
-          // Only render the row if it has nodes
-          rowNodes[index] !== undefined && (
-            <div
-              key={`${rowNodes[index].topic}`}
-              className="flex justify-center topic-wrapper"
-            >
-              {rowNodes.map((node) => (
-                <Topic
-                  key={`${rowNodes[index]}-${node.topic}`}
-                  nodeTopic={node.topic}
-                  nodeCollected={node.collected}
-                  nodeRequired={node.required}
-                  handleTopicClick={handleTopicClick}
-                  handleSlotClick={handleSlotClick}
-                />
-              ))}
-            </div>
-          )
-      )}
-    </div>
+    <svg className="tof-container" viewBox={viewBox} >
+  {rows.map(
+    (rowNodes, index) =>
+      // Only render the row if it has nodes
+      rowNodes[index] !== undefined && (
+        <g
+          key={`${rowNodes[index].topic}`}
+          className="flex justify-center topic-wrapper"
+          id="svg-content"
+        >
+          {rowNodes.map((node) => (
+            <Topic
+              key={`${rowNodes[index]}-${node.topic}`}
+              nodeTopic={node.topic}
+              nodeCollected={node.collected}
+              nodeRequired={node.required}
+              handleTopicClick={handleTopicClick}
+              handleSlotClick={handleSlotClick}
+            />
+          ))}
+        </g>
+      )
+  )}
+</svg>
   );
 }

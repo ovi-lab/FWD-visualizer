@@ -41,7 +41,6 @@ export default function ThreadList({
   selectedLine,
 }) {
   // Find the selected node in the data array
-  // TODO: Make this all use turn + topic rather than name
   const selectedNode = data.find((node) => node.name.includes(selected));
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();

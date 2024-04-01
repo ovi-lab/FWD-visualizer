@@ -5,7 +5,7 @@ import {
   sankeyLinkHorizontal,
 } from "d3-sankey";
 import "../graphStyles.css";
-import { useSelectedNode } from "../../../../contexts/selectedNodeContext";
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./sankeyParts";
@@ -57,7 +57,7 @@ const SankeyDiagram = (props) => {
     if (!data) return;
     let rawLinks = [];
     const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
-
+    
     if (props.dataDirection === "haru-user") {
       rawLinks = data.links.haru;
     } else {
@@ -73,7 +73,7 @@ const SankeyDiagram = (props) => {
       setNodes(nodes);
       setLinks(links);
     } catch (error) {
-      // D3 Sankey seems to throw a RangeError but functionality is not affected.
+      console.log('error', error)
     }
   }, [data, selectedTime, selectedFilters, props.dataDirection]);
 
@@ -93,7 +93,6 @@ const SankeyDiagram = (props) => {
 
   if (!data) return <div>Loading...</div>;
   return (
-    <div className="sankeyContainer" id="sankey-container">
       <svg className="sankeyDiagram p-1" ref={sankeyRef} viewBox={viewBox}>
         <g style={{ mixBlendMode: "multiply" }} id={"sankey-content"}>
           {links.map((link) => (
@@ -122,7 +121,6 @@ const SankeyDiagram = (props) => {
           )}
         </g>
       </svg>
-    </div>
   );
 };
 

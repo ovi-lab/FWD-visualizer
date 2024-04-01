@@ -67,7 +67,6 @@ const Link = ({
   linkedNodeSelected,
   linkWidth,
 }) => {
-  // console.log('linkedNodeSelected', linkedNodeSelected)
   return (
     <g>
       <path

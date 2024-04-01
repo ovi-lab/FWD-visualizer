@@ -59,7 +59,7 @@ export default function ThreadList({
         numConversations++;
       }
 
-      return itemsArray.unshift([numConversations, interact]);
+      return itemsArray.push([numConversations, interact]);
       // return itemsArray.push([numConversations, interact])
     }
   );

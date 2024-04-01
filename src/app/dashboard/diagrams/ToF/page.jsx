@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Topic } from "./tofParts";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
@@ -19,17 +19,21 @@ export default function TiersOfFriendship() {
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   const { selectedNode, setSelectedNode } = useSelectedNode();
 
+  const handleResponse = useCallback((newData) => {
+    setData(newData);
+  }, []);
+
   useEffect(() => {
     if (!socket) return;
     // Listen for data updates from the Flask server
-
     socket.emit("transcript-request");
-
-    socket.on("transcript-response", (newData) => {
-      setData(newData);
-    });
-    
-  }, []);
+  }, [socket]);
+  
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("transcript-response", handleResponse
+    );
+  });
 
   const handleSlotClick = (clickedID) => {
     setChatAnchor(`response${clickedID}`);
@@ -40,9 +44,9 @@ export default function TiersOfFriendship() {
   };
 
   useEffect(() => {
+    if (!data) return;
     const filteredLines = filterData(data, selectedTime, selectedFilters);
     const rows = [[], [], [], []];
-
     filteredLines.map((line) => {
       const lineSlots = line.slots
         .filter(
@@ -54,7 +58,7 @@ export default function TiersOfFriendship() {
             )
         )
         .map((filteredSlot) => ({ slotData: filteredSlot, slotID: line.idx }));
-
+      console.log('line', line)
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
       if (topic_category === "command" || topic_category === "system") return;
 

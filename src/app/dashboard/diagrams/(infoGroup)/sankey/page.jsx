@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import SankeyDiagram from "./sankeyDiagram";
 
 function SankeySelector() {
-  const [dataDirection, setDataDirection] = useState("haru-user");
-
+  const [dataDirection, setDataDirection] = useState("user-haru");
 
   // Event handler for radio button change
   const handleRadioChange = (event) => {
@@ -18,25 +17,6 @@ function SankeySelector() {
           Sankey Diagram
         </h3>
         <div className="direction-selector float-right "> 
-        <input
-          type="radio"
-          id="haru-user"
-          className="hidden"
-          name="data-direction"
-          value="haru-user"
-          checked={dataDirection === "haru-user"}
-          onChange={handleRadioChange}
-        />
-        <label
-          htmlFor="haru-user"
-          className={`btn m-4 p-2 ${
-            dataDirection === "haru-user"
-              ? "btn-active border-2 border-sky-500 "
-              : "btn-outline-success border border-gray-500"
-          }`}
-        >
-          Haru to User
-        </label>
         <input
           type="radio"
           id="user-haru"
@@ -55,6 +35,25 @@ function SankeySelector() {
           }`}
         >
           User to Haru
+        </label>
+        <input
+          type="radio"
+          id="haru-user"
+          className="hidden"
+          name="data-direction"
+          value="haru-user"
+          checked={dataDirection === "haru-user"}
+          onChange={handleRadioChange}
+        />
+        <label
+          htmlFor="haru-user"
+          className={`btn m-4 p-2 ${
+            dataDirection === "haru-user"
+              ? "btn-active border-2 border-sky-500 "
+              : "btn-outline-success border border-gray-500"
+          }`}
+        >
+          Haru to User
         </label>
         </div>
       </div>

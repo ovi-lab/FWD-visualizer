@@ -27,7 +27,7 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
-  const socket = useWebSocket()
+  const socket = useWebSocket();
   const [data, setData] = useState([]);
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
@@ -78,11 +78,10 @@ export default function Chatbox() {
     // Listen for data updates from the Flask server
     socket.emit("transcript-request");
   }, [socket]);
-  
+
   useEffect(() => {
     if (!socket) return;
-    socket.on("transcript-response", handleResponse
-    );
+    socket.on("transcript-response", handleResponse);
   });
 
   useEffect(() => {
@@ -93,23 +92,8 @@ export default function Chatbox() {
   }, [statements, anchorMove]);
 
   useEffect(() => {
-    const statementList = [];
     const filteredLines = filterData(data, selectedTime, selectedFilters);
-    filteredLines.map((interaction, index) => {
-      statementList[interaction.idx] = {
-        id: interaction.idx,
-        speaker: interaction.turn,
-        text: interaction.sentence,
-        sentiment_label: interaction.sentiment_label,
-        sentiment_score: interaction.sentiment_score,
-        emotion_label: interaction.emotion_label,
-        emotion_score: interaction.emotion_score,
-        was_data_collected: checkForCollection(interaction, data[index + 1]),
-        timestamp: includeTimestamp(interaction, data[index + 1]),
-        threadId: interaction.index,
-      };
-    });
-    setStatements(Object.values(statementList));
+    setStatements(filteredLines);
   }, [data, selectedTime, selectedFilters]);
 
   useEffect(() => {
@@ -128,10 +112,19 @@ export default function Chatbox() {
           id="chatboxContent"
           style={{ overflowY: "scroll" }}
         >
-          {statements.map((stmt) => {
+          {statements.map((stmt, index) => {
             return (
-              <div key={stmt.id}>
-                <Bubble stmt={stmt} id={stmt.id} />
+              <div key={stmt.idx}>
+                <Bubble
+                  id={stmt.idx}
+                  turn={stmt.turn}
+                  sentiLabel={stmt.sentiment_label}
+                  sentiScore={stmt.sentiment_score}
+                  timestamp={includeTimestamp(stmt, statements[index-1])}
+                  emoLabel={stmt.emotion_label}
+                  text={stmt.sentence}
+                  wasCollected={checkForCollection(stmt, statements[index-1])}
+                />
               </div>
             );
           })}

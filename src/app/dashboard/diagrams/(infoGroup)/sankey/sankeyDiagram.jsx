@@ -79,29 +79,12 @@ const SankeyDiagram = (props) => {
     } catch (error) {
       console.log("error", error);
     }
-  }, [data, selectedTime, selectedFilters, props.dataDirection]);
+  }, [data, selectedTime, selectedFilters, props.dataDirection, viewBox]);
 
   const handleSankeyInteraction = (nodeName) => {
     setSelectedNode(nodeName);
   };
 
-  useLayoutEffect(() => {
-    // Calculate bounding box of the generated content
-    if (!data) return;
-    const svgContent = document.getElementById("svg-content");
-    if (svgContent) {
-      console.log('svgContent', svgContent)
-      const { newX, newY, newWidth, newHeight } = svgContent.getBBox();
-      console.log(svgContent.getBBox());
-      const newViewBox = {
-        x: (newX + 1),
-        y: (newY + 1),
-        width: (newWidth - 2),
-        height: (newHeight - 2),
-      };
-      setViewBox(newViewBox);
-    }
-  }, [data]);
 
   if (!data) return <div>Loading...</div>;
   return (

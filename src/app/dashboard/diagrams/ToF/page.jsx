@@ -6,15 +6,19 @@ import { useFilter } from "@/app/contexts/filterContext";
 import { filterData } from "../../utils/filters";
 import { useChatAnchor } from "@/app/contexts/chatContext";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
-import "./tof-styles.css"
+import "./tof-styles.css";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
-
 export default function TiersOfFriendship() {
-  const socket = useWebSocket()
+  const socket = useWebSocket();
   const [data, setData] = useState([]);
   const [rows, setRows] = useState([]);
-  const [viewBox, setViewBox] = useState([])
+  const [viewBox, setViewBox] = useState({
+    x: 0,
+    y: 0,
+    width: 800,
+    height: 600,
+  });
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
@@ -29,11 +33,10 @@ export default function TiersOfFriendship() {
     // Listen for data updates from the Flask server
     socket.emit("transcript-request");
   }, [socket]);
-  
+
   useEffect(() => {
     if (!socket) return;
-    socket.on("transcript-response", handleResponse
-    );
+    socket.on("transcript-response", handleResponse);
   });
 
   const handleSlotClick = (clickedID) => {
@@ -47,7 +50,7 @@ export default function TiersOfFriendship() {
   useEffect(() => {
     if (!data) return;
     const filteredLines = filterData(data, selectedTime, selectedFilters);
-    const rows = [[], [], [], []];
+    const rows = [[]];
     filteredLines.map((line) => {
       const lineSlots = line.slots
         .filter(
@@ -59,14 +62,13 @@ export default function TiersOfFriendship() {
             )
         )
         .map((filteredSlot) => ({ slotData: filteredSlot, slotID: line.idx }));
-      console.log('line', line)
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
       if (topic_category === "command" || topic_category === "system") return;
 
       const tierObject = { topic: line.topic, required: [], collected: [] };
       let placementIndex = 0;
       let alreadyExists = false;
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < rows.length; i++) {
         for (const existing of rows[i]) {
           if (line.topic === "topic-intro" && lineSlots != undefined) {
             existing.collected = lineSlots;
@@ -106,7 +108,9 @@ export default function TiersOfFriendship() {
       }
 
       if (!alreadyExists) {
-        rows[placementIndex < 4 ? placementIndex : 3].push(tierObject);
+        placementIndex > rows.length - 1
+          ? rows.push([tierObject])
+          : rows[placementIndex].push(tierObject);
       }
     });
     setRows(rows);
@@ -114,40 +118,65 @@ export default function TiersOfFriendship() {
 
   useEffect(() => {
     // Calculate bounding box of the generated content
-    const svgContent = document.getElementById("svg-content");
+    if (!data) return;
+    const svgContent = document.getElementById("tof-content");
     if (svgContent) {
-      const { x, y, width, height } = svgContent.getBBox();
-      const newViewBox = `${x - 1} ${y - 1} ${width + 2} ${height + 2}`;
+      const { newX, newY, newWidth, newHeight } = svgContent.getBBox();
+      const newViewBox = {
+        x: newX,
+        y: newY,
+        width: newWidth,
+        height: newHeight,
+      };
+      console.log(newViewBox);
       setViewBox(newViewBox);
     }
   }, [data]);
 
-  if (!data || !rows) return <div className="flex flex-col h-full">Loading...</div>;
+  if (!data || !rows)
+    return <div className="flex flex-col h-full">Loading...</div>;
+  const width = viewBox.width;
+  const height = viewBox.height;
 
   return (
-    <svg className="tof-container" viewBox={viewBox} >
-  {rows.map(
-    (rowNodes, index) =>
-      // Only render the row if it has nodes
-      rowNodes[index] !== undefined && (
-        <g
-          key={`${rowNodes[index].topic}`}
-          className="flex justify-center topic-wrapper"
-          id="svg-content"
-        >
-          {rowNodes.map((node) => (
-            <Topic
-              key={`${rowNodes[index]}-${node.topic}`}
-              nodeTopic={node.topic}
-              nodeCollected={node.collected}
-              nodeRequired={node.required}
-              handleTopicClick={handleTopicClick}
-              handleSlotClick={handleSlotClick}
-            />
-          ))}
-        </g>
-      )
-  )}
-</svg>
+    <svg
+      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width}  ${viewBox.height}`}
+      width={width}
+      height={height}
+    >
+      <g id="" dominantBaseline="middle" textAnchor="middle">
+        {rows.map((rowNodes, rowIndex) => {
+          if (rowNodes.length === 0) return;
+          const rowSegments = height / rows.length;
+          const rowHeight = rowSegments * 0.75;
+          const yPosition = rowSegments * rowIndex + rowSegments * 0.5;
+          return (
+            <g key={`row${rowIndex}`}>
+              {rowNodes !== undefined &&
+                rowNodes.map((node, nodeIndex) => {
+                  const nodeSegments = width / rowNodes.length;
+                  const nodeWidth = nodeSegments - nodeSegments*0.25;
+                  const xPosition =
+                    nodeSegments * nodeIndex + nodeSegments*0.25;
+                  return (
+                    <Topic
+                      key={`node-${rowIndex}-${nodeIndex}`}
+                      nodeTopic={node.topic}
+                      nodeCollected={node.collected}
+                      nodeRequired={node.required}
+                      handleTopicClick={handleTopicClick}
+                      handleSlotClick={handleSlotClick}
+                      nodeWidth={nodeWidth}
+                      xPosition={xPosition}
+                      rowHeight={rowHeight}
+                      yPosition={yPosition}
+                    />
+                  );
+                })}
+            </g>
+          );
+        })}
+      </g>
+    </svg>
   );
 }

@@ -1,83 +1,127 @@
+"use client";
+
+import { useState } from "react";
+
+function SlotList({
+  title,
+  textSize,
+  nodeList,
+  handleClick,
+  transformVal,
+  nodeWidth,
+  elementTop,
+}) {
+  return (
+    <g transform={`translate(0, ${elementTop})`}>
+      <text x={nodeWidth/2} y={elementTop} fontSize={textSize}>
+        {title}
+      </text>
+      {nodeList.map((slot, index) => {
+        if (slot.slotData.name) {
+          const slotText = `${slot.slotData.name}: ${slot.slotData.value}`;
+          const rectWidth = nodeWidth;
+          return (
+            <g
+              className="select-none cursor-pointer"
+              key={`${slot.topic}-${slot.slotData.name}`}
+              transform={`translate(0, ${elementTop+textSize})`}
+              onClick={() => handleClick(slot.slotID)}
+            >
+              <rect
+                width={rectWidth}
+                height={textSize * 2}
+                x={0}
+                fill="#ffffff"
+                stroke="#000000"
+                strokeWidth="1"
+              />
+              <text
+                x={rectWidth * 0.5}
+                y={textSize}
+                className="font-bold text-gray-700"
+                fontSize={textSize}
+              >
+                {slotText}
+              </text>
+            </g>
+          );
+        } else {
+          return null;
+        }
+      })}
+    </g>
+  );
+}
+
 const Topic = ({
   nodeTopic,
   nodeCollected,
   nodeRequired,
   handleSlotClick,
   handleTopicClick,
+  nodeWidth,
+  xPosition,
+  rowHeight,
+  yPosition,
 }) => {
-  function SlotList({ nodeList, handleClick }) {
-    return (
-      <g>
-        {nodeList.map((slot) => {
-          if (slot.slotData.name) {
-            return (
-              <g
-                className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1"
-                key={`${nodeTopic}-${slot.slotData.name}`}
-                onClick={() => handleClick(slot.slotID)}
-              >
-                <rect
-                  width="100"
-                  height="30"
-                  fill="#ffffff"
-                  stroke="#000000"
-                  strokeWidth="1"
-                />
-                <text x="5" y="20" className="font-bold text-gray-700 text-sm">
-                  {slot.slotData.name}: {slot.slotData.value}
-                </text>
-              </g>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </g>
-    );
-  }
+  const elementWidth = nodeWidth;
+  const titleHeight = rowHeight / 6;
+  const textSize = Math.min(nodeWidth / 10, rowHeight / 10);
+  const [collectedY, setCollectedY] = useState(0);
+
+  const collectedGrows = () => {};
 
   return (
     <g
-      className="rounded-lg bg-gray-100 p-2 shadow-md m-5"
+      className="fill-gray-900"
+      transform={`translate(${xPosition}, ${yPosition})`}
     >
-      {/* Title row */}
       <rect
-        className="select-none cursor-pointer flex rounded-lg items-center justify-center mb-2 bg-cyan-100 p-2"
+        className="select-none cursor-pointer fill-gray-100 "
         onClick={() => handleTopicClick(nodeTopic)}
-        width="100%"
-        height="50"
+        width={elementWidth}
+        height={rowHeight}
       />
-      <text
-        x="50%"
-        y="50%"
-        dominantBaseline="middle"
-        textAnchor="middle"
-        className="text-lg font-semibold"
+      {/* Title row */}
+      <g
+        className="select-none cursor-pointer"
+        onClick={() => handleTopicClick(nodeTopic)}
+        width={elementWidth}
+        height={titleHeight}
       >
-        {nodeTopic}
-      </text>
+        <rect
+          className="fill-cyan-100"
+          width={elementWidth}
+          height={titleHeight}
+        />
+        <text className="font-semibold" x={elementWidth*0.5} y={titleHeight*0.5} fontSize={textSize}>
+          {nodeTopic}
+        </text>
+      </g>
 
-      {/* Required row */}
+      {/* Group for required items */}
       {nodeRequired.length > 0 && (
-        <g className="flex rounded-lg items-center justify-center bg-red-100 p-2">
-          <text className="text-sm">Required: </text>
-          <SlotList nodeList={nodeRequired} handleClick={handleSlotClick} />
-        </g>
+        <SlotList
+          title={"Requires"}
+          textSize={textSize}
+          nodeList={nodeRequired}
+          handleClick={handleSlotClick}
+          nodeWidth={nodeWidth}
+          elementTop={rowHeight/8}
+        />
       )}
 
-      <line
-        x1="0"
-        y1="0"
-        x2="100%"
-        y2="0"
-        className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700"
-      />
+      {/* Group for collected items */}
 
-      {/* Collection row */}
-      <g className="flex rounded-lg items-center justify-center bg-green-100 p-2">
-        <text className="text-sm">Collects: </text>
-        <SlotList nodeList={nodeCollected} handleClick={handleSlotClick} />
-      </g>
+      <SlotList
+        title={"Collects"}
+        textSize={textSize}
+        nodeList={nodeCollected}
+        handleClick={handleSlotClick}
+        transformVal={"translate(0, 180)"}
+        nodeWidth={nodeWidth}
+        elementTop={rowHeight/4}
+      />
     </g>
   );
 };

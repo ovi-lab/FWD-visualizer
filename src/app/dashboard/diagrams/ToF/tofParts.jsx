@@ -13,7 +13,7 @@ function SlotList({
 }) {
   return (
     <g transform={`translate(0, ${elementTop})`}>
-      <text x={nodeWidth/2} y={elementTop} fontSize={textSize}>
+      <text className={'font-bold'} x={nodeWidth / 2} y={elementTop} fontSize={textSize}>
         {title}
       </text>
       {nodeList.map((slot, index) => {
@@ -24,9 +24,16 @@ function SlotList({
             <g
               className="select-none cursor-pointer"
               key={`${slot.topic}-${slot.slotData.name}`}
-              transform={`translate(0, ${elementTop+textSize})`}
+              transform={`translate(${0}, ${elementTop + textSize})`}
               onClick={() => handleClick(slot.slotID)}
             >
+            <rect
+                width={nodeWidth}
+                
+                fill="#ffffff"
+                stroke="#000000"
+                strokeWidth="1"
+              />
               <rect
                 width={rectWidth}
                 height={textSize * 2}
@@ -38,7 +45,7 @@ function SlotList({
               <text
                 x={rectWidth * 0.5}
                 y={textSize}
-                className="font-bold text-gray-700"
+                className="font-semibold text-gray-700"
                 fontSize={textSize}
               >
                 {slotText}
@@ -66,7 +73,7 @@ const Topic = ({
 }) => {
   const elementWidth = nodeWidth;
   const titleHeight = rowHeight / 6;
-  const textSize = Math.min(nodeWidth / 10, rowHeight / 10);
+  const textSize = Math.min(nodeWidth / 15, rowHeight / 15);
   const [collectedY, setCollectedY] = useState(0);
 
   const collectedGrows = () => {};
@@ -77,8 +84,8 @@ const Topic = ({
       transform={`translate(${xPosition}, ${yPosition})`}
     >
       <rect
-        className="select-none cursor-pointer fill-gray-100 "
-        onClick={() => handleTopicClick(nodeTopic)}
+        className="fill-gray-100 "
+        
         width={elementWidth}
         height={rowHeight}
       />
@@ -94,7 +101,12 @@ const Topic = ({
           width={elementWidth}
           height={titleHeight}
         />
-        <text className="font-semibold" x={elementWidth*0.5} y={titleHeight*0.5} fontSize={textSize}>
+        <text
+          className="font-semibold"
+          x={elementWidth * 0.5}
+          y={titleHeight * 0.5}
+          fontSize={textSize}
+        >
           {nodeTopic}
         </text>
       </g>
@@ -107,7 +119,7 @@ const Topic = ({
           nodeList={nodeRequired}
           handleClick={handleSlotClick}
           nodeWidth={nodeWidth}
-          elementTop={rowHeight/8}
+          elementTop={rowHeight / 8}
         />
       )}
 
@@ -120,7 +132,7 @@ const Topic = ({
         handleClick={handleSlotClick}
         transformVal={"translate(0, 180)"}
         nodeWidth={nodeWidth}
-        elementTop={rowHeight/4}
+        elementTop={rowHeight / 4}
       />
     </g>
   );

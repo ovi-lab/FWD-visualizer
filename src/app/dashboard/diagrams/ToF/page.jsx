@@ -13,6 +13,7 @@ export default function TiersOfFriendship() {
   const socket = useWebSocket();
   const [data, setData] = useState([]);
   const [rows, setRows] = useState([]);
+  const [longestRowLength, setLongestRowLength] = useState(0);
   const [viewBox, setViewBox] = useState({
     x: 0,
     y: 0,
@@ -51,6 +52,7 @@ export default function TiersOfFriendship() {
     if (!data) return;
     const filteredLines = filterData(data, selectedTime, selectedFilters);
     const rows = [[]];
+    let rowLength = 0;
     filteredLines.map((line) => {
       const lineSlots = line.slots
         .filter(
@@ -85,6 +87,7 @@ export default function TiersOfFriendship() {
               });
             }
             alreadyExists = true;
+            // rows[placementIndex] > rowLength ? rowLength = rows[placementIndex].length : null
             break;
           }
 
@@ -112,8 +115,13 @@ export default function TiersOfFriendship() {
           ? rows.push([tierObject])
           : rows[placementIndex].push(tierObject);
       }
+      rows[placementIndex].length > rowLength
+        ? (rowLength = rows[placementIndex].length)
+        : null;
     });
     setRows(rows);
+    console.log("rowLength", rowLength);
+    setLongestRowLength(rowLength);
   }, [data, selectedTime, selectedFilters, setRows]);
 
   useEffect(() => {
@@ -137,7 +145,8 @@ export default function TiersOfFriendship() {
     return <div className="flex flex-col h-full">Loading...</div>;
   const width = viewBox.width;
   const height = viewBox.height;
-
+  const smallestSegments = width / longestRowLength;
+  const maxNodeWidth = smallestSegments - smallestSegments * 0.125;
   return (
     <svg
       viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width}  ${viewBox.height}`}
@@ -149,15 +158,14 @@ export default function TiersOfFriendship() {
           if (rowNodes.length === 0) return;
           const rowSegments = height / rows.length;
           const rowHeight = rowSegments * 0.75;
-          const yPosition = rowSegments * rowIndex + rowSegments * 0.5;
+          const yPosition = rowSegments * rowIndex + rowSegments * 0.25;
           return (
             <g key={`row${rowIndex}`}>
               {rowNodes !== undefined &&
                 rowNodes.map((node, nodeIndex) => {
                   const nodeSegments = width / rowNodes.length;
-                  const nodeWidth = nodeSegments - nodeSegments*0.25;
                   const xPosition =
-                    nodeSegments * nodeIndex + nodeSegments*0.25;
+                    nodeSegments * nodeIndex + nodeSegments * 0.5 - maxNodeWidth * 0.5;
                   return (
                     <Topic
                       key={`node-${rowIndex}-${nodeIndex}`}
@@ -166,7 +174,7 @@ export default function TiersOfFriendship() {
                       nodeRequired={node.required}
                       handleTopicClick={handleTopicClick}
                       handleSlotClick={handleSlotClick}
-                      nodeWidth={nodeWidth}
+                      nodeWidth={maxNodeWidth}
                       xPosition={xPosition}
                       rowHeight={rowHeight}
                       yPosition={yPosition}

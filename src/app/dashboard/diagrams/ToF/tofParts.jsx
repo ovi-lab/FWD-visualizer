@@ -7,7 +7,6 @@ function SlotList({
   textSize,
   nodeList,
   handleClick,
-  transformVal,
   nodeWidth,
   elementTop,
 }) {
@@ -27,13 +26,6 @@ function SlotList({
               transform={`translate(${0}, ${elementTop + textSize})`}
               onClick={() => handleClick(slot.slotID)}
             >
-            <rect
-                width={nodeWidth}
-                
-                fill="#ffffff"
-                stroke="#000000"
-                strokeWidth="1"
-              />
               <rect
                 width={rectWidth}
                 height={textSize * 2}
@@ -74,7 +66,7 @@ const Topic = ({
   const elementWidth = nodeWidth;
   const titleHeight = rowHeight / 6;
   const textSize = Math.min(nodeWidth / 15, rowHeight / 15);
-  const [collectedY, setCollectedY] = useState(0);
+  const [bottomY, setBottomY] = useState(0);
 
   const collectedGrows = () => {};
 

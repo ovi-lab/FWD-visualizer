@@ -55,14 +55,14 @@ export default function TiersOfFriendship() {
     let rowLength = 0;
     filteredLines.map((line) => {
       const lineSlots = line.slots
-        .filter(
-          (slot) =>
-            !(
-              slot.name.includes("any") ||
-              slot.name.includes("topic_name") ||
-              slot.name.includes("agreement_patterns")
-            )
-        )
+        // .filter(
+        //   (slot) =>
+        //     !(
+        //       // slot.name.includes("any") ||
+        //       // slot.name.includes("topic_name") ||
+        //       // slot.name.includes("agreement_patterns")
+        //     )
+        // )
         .map((filteredSlot) => ({ slotData: filteredSlot, slotID: line.idx }));
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
       if (topic_category === "command" || topic_category === "system") return;
@@ -73,7 +73,8 @@ export default function TiersOfFriendship() {
       for (let i = 0; i < rows.length; i++) {
         for (const existing of rows[i]) {
           if (line.topic === "topic-intro" && lineSlots != undefined) {
-            existing.collected = lineSlots;
+            if (lineSlots.name === "person_name") {}
+              existing.collected = lineSlots;
             // TODO: still fix the index location
           }
           if (existing.topic === tierObject.topic) {

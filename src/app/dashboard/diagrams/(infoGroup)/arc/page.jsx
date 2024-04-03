@@ -83,7 +83,7 @@ export default function ArcDiagram() {
     );
     const calculatedLinks = filteredLinks.map((link) => {
       let d;
-      if (idToNode[link.source] !== undefined) {
+      if (idToNode[link.source] !== undefined && idToNode[link.target] !== undefined) {
         const start = idToNode[link.source].turn === "haru"
         ? xHaru(idToNode[link.source].name)
         : xUser(idToNode[link.source].name);

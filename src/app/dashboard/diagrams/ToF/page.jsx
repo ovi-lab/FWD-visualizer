@@ -55,17 +55,24 @@ export default function TiersOfFriendship() {
     let rowLength = 0;
     filteredLines.map((line) => {
       const lineSlots = line.slots
-        // .filter(
-        //   (slot) =>
-        //     !(
-        //       // slot.name.includes("any") ||
-        //       // slot.name.includes("topic_name") ||
-        //       // slot.name.includes("agreement_patterns")
-        //     )
-        // )
+        .filter(
+          (slot) =>
+            !(
+              slot.name.includes("error")
+              ||
+              // slot.name.includes("any") ||
+              // slot.name.includes("topic_name") ||
+              slot.name.includes("agreement_patterns")
+            )
+        )
         .map((filteredSlot) => ({ slotData: filteredSlot, slotID: line.idx }));
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
-      if (topic_category === "command" || topic_category === "system") return;
+      if (
+        topic_category === "command" ||
+        topic_category === "system" ||
+        topic_category === "error"
+      )
+        return;
 
       const tierObject = { topic: line.topic, required: [], collected: [] };
       let placementIndex = 0;
@@ -73,8 +80,7 @@ export default function TiersOfFriendship() {
       for (let i = 0; i < rows.length; i++) {
         for (const existing of rows[i]) {
           if (line.topic === "topic-intro" && lineSlots != undefined) {
-            if (lineSlots.name === "person_name") {}
-              existing.collected = lineSlots;
+            existing.collected = lineSlots;
             // TODO: still fix the index location
           }
           if (existing.topic === tierObject.topic) {
@@ -94,8 +100,9 @@ export default function TiersOfFriendship() {
 
           for (const slot of lineSlots) {
             if (
-              existing.collected.find((collected) =>
-                collected.slotData.name.includes(slot.slotData.name)
+              existing.collected.find(
+                (collected) =>
+                  collected.slotData.name.includes(slot.slotData.name) 
               )
             ) {
               tierObject.required.push(slot);
@@ -144,8 +151,8 @@ export default function TiersOfFriendship() {
 
   if (!data || !rows)
     return <div className="flex flex-col h-full">Loading...</div>;
-  const width = viewBox.width;
-  const height = viewBox.height;
+  const width = viewBox.width*0.8;
+  const height = viewBox.height*0.8;
   const smallestSegments = width / longestRowLength;
   const maxNodeWidth = smallestSegments - smallestSegments * 0.125;
   return (
@@ -166,7 +173,9 @@ export default function TiersOfFriendship() {
                 rowNodes.map((node, nodeIndex) => {
                   const nodeSegments = width / rowNodes.length;
                   const xPosition =
-                    nodeSegments * nodeIndex + nodeSegments * 0.5 - maxNodeWidth * 0.5;
+                    nodeSegments * nodeIndex +
+                    nodeSegments * 0.5 -
+                    maxNodeWidth * 0.5;
                   return (
                     <Topic
                       key={`node-${rowIndex}-${nodeIndex}`}

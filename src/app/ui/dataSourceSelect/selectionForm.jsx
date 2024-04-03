@@ -93,7 +93,9 @@ export function SelectionForm() {
           </span>
         </label>          
       </div>
-      <button onClick={handleDownloadClick}>Download JSON</button>
+      <button className="select-none cursor-pointer rounded-lg border-2 border-gray-700
+                     py-1 px-2 font-bold text-gray-700 bg-white text-sm"
+                     onClick={handleDownloadClick}>Download JSON</button>
     </div>
   );
 }

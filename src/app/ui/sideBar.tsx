@@ -43,15 +43,6 @@ export default function SideBar() {
               </svg>
             <h1 className="h3, ml-5">Haru Chat Visualizer</h1>
           </li>
-          <li>
-            <a
-              href="/dashboard"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
-            >
-              
-              <span className="ms-3">Home</span>
-            </a>
-          </li>
           <NavItem href="/dashboard/chat" title="Chat View" />
           <NavItem href="/dashboard/diagrams/arc" title="Arc Diagram" />
           <NavItem href="/dashboard/diagrams/sankey" title="Sankey Diagram" />

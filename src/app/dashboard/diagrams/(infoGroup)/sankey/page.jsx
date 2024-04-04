@@ -31,7 +31,7 @@ const SelectorButton = ({
 };
 
 function SankeySelector() {
-  const [dataDirection, setDataDirection] = useState("user-haru");
+  const [dataDirection, setDataDirection] = useState("haru-user");
 
   // Event handler for radio button change
   const handleRadioChange = (event) => {

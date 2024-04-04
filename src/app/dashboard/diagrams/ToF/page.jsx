@@ -60,7 +60,7 @@ export default function TiersOfFriendship() {
           (slot) =>
             !(
               slot.name.includes("error") ||
-              // slot.name.includes("any") ||
+              slot.name.includes("any") ||
               // slot.name.includes("topic_name") ||
               slot.name.includes("agreement_patterns")
             )
@@ -75,7 +75,7 @@ export default function TiersOfFriendship() {
       for (let i = 0; i < rows.length; i++) {
         for (const existing of rows[i]) {
           if (line.topic === "topic-intro" && lineSlots !== undefined) {
-            existing.collected = lineSlots;
+            if(existing.collected.length ===0) existing.collected = lineSlots;
           
             // TODO: still fix the index location
           }

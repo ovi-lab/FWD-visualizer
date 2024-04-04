@@ -13,7 +13,6 @@ export default function TiersOfFriendship() {
   const socket = useWebSocket();
   const [data, setData] = useState([]);
   const [rows, setRows] = useState([]);
-  const [longestRowLength, setLongestRowLength] = useState(0);
   const [viewBox, setViewBox] = useState({
     x: 0,
     y: 0,
@@ -24,6 +23,8 @@ export default function TiersOfFriendship() {
   const { selectedFilters } = useFilter();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   const { selectedNode, setSelectedNode } = useSelectedNode();
+
+  const svgMode = false; //For switching to use SVGs
 
   const handleResponse = useCallback((newData) => {
     setData(newData);
@@ -58,8 +59,7 @@ export default function TiersOfFriendship() {
         .filter(
           (slot) =>
             !(
-              slot.name.includes("error")
-              ||
+              slot.name.includes("error") ||
               // slot.name.includes("any") ||
               // slot.name.includes("topic_name") ||
               slot.name.includes("agreement_patterns")
@@ -67,45 +67,37 @@ export default function TiersOfFriendship() {
         )
         .map((filteredSlot) => ({ slotData: filteredSlot, slotID: line.idx }));
       const topic_category = line.topic.match(/[A-Za-z]+/)[0];
-      if (
-        topic_category === "command" ||
-        topic_category === "system" ||
-        topic_category === "error"
-      )
-        return;
+      if (topic_category.includes(["command", "system", "error"])) return;
 
-      const tierObject = { topic: line.topic, required: [], collected: [] };
+      const topicNode = { topic: line.topic, required: [], collected: [] };
       let placementIndex = 0;
       let alreadyExists = false;
       for (let i = 0; i < rows.length; i++) {
         for (const existing of rows[i]) {
-          if (line.topic === "topic-intro" && lineSlots != undefined) {
+          if (line.topic === "topic-intro" && lineSlots !== undefined) {
             existing.collected = lineSlots;
+          
             // TODO: still fix the index location
           }
-          if (existing.topic === tierObject.topic) {
-            if (
-              existing.collected.length < tierObject.collected.length ||
-              existing.collected.length === 0
-            ) {
-              tierObject.collected.map((slot) => {
-                if (!existing.collected.includes(slot))
-                  existing.collected.push(slot);
-              });
-            }
+
+          if (existing.topic === topicNode.topic) {
+            topicNode.collected.forEach((objectSlot) => {
+                const exists = existing.collected.some((existingSlot) => existingSlot.slotData.name === objectSlot.slotData.name);
+                if (!exists) {
+                    existing.collected.push(objectSlot);
+                }
+            });
             alreadyExists = true;
-            // rows[placementIndex] > rowLength ? rowLength = rows[placementIndex].length : null
             break;
-          }
+        }
 
           for (const slot of lineSlots) {
             if (
-              existing.collected.find(
-                (collected) =>
-                  collected.slotData.name.includes(slot.slotData.name) 
+              existing.collected.find((collected) =>
+                collected.slotData.name.includes(slot.slotData.name)
               )
             ) {
-              tierObject.required.push(slot);
+              topicNode.required.push(slot);
               placementIndex = i + 1;
             }
           }
@@ -113,24 +105,21 @@ export default function TiersOfFriendship() {
 
         if (alreadyExists) break;
 
-        tierObject.collected = lineSlots.filter(
-          (lineSlot) => !tierObject.required.includes(lineSlot)
+        console.log('tierObject.collected', topicNode.collected)
+        topicNode.collected = lineSlots.filter(
+          (lineSlot) => !topicNode.required.includes(lineSlot)
         );
       }
 
-      if (!alreadyExists) {
-        placementIndex > rows.length - 1
-          ? rows.push([tierObject])
-          : rows[placementIndex].push(tierObject);
-      }
-      rows[placementIndex].length > rowLength
-        ? (rowLength = rows[placementIndex].length)
-        : null;
+      
+       if (!alreadyExists) (placementIndex > rows.length - 1)
+          ? rows.push([topicNode])
+          : rows[placementIndex].push(topicNode);
+  
     });
+    console.log("rows", rows);
     setRows(rows);
-    console.log("rowLength", rowLength);
-    setLongestRowLength(rowLength);
-  }, [data, selectedTime, selectedFilters, setRows]);
+  }, [data, selectedTime, selectedFilters]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content
@@ -144,57 +133,90 @@ export default function TiersOfFriendship() {
         width: newWidth,
         height: newHeight,
       };
-      console.log(newViewBox);
       setViewBox(newViewBox);
     }
   }, [data]);
 
   if (!data || !rows)
     return <div className="flex flex-col h-full">Loading...</div>;
-  const width = viewBox.width*0.8;
-  const height = viewBox.height*0.8;
-  const smallestSegments = width / longestRowLength;
-  const maxNodeWidth = smallestSegments - smallestSegments * 0.125;
-  return (
-    <svg
-      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width}  ${viewBox.height}`}
-      width={width}
-      height={height}
-    >
-      <g id="" dominantBaseline="middle" textAnchor="middle">
-        {rows.map((rowNodes, rowIndex) => {
-          if (rowNodes.length === 0) return;
-          const rowSegments = height / rows.length;
-          const rowHeight = rowSegments * 0.75;
-          const yPosition = rowSegments * rowIndex + rowSegments * 0.25;
+
+  
+  if (!svgMode) {
+    return (
+      <div className={`grid grid-rows-${rows.length} overflow-scroll`}>
+        {rows.map((row, rowIndex) => {
+          // Only render the row if it has nodes
           return (
-            <g key={`row${rowIndex}`}>
-              {rowNodes !== undefined &&
-                rowNodes.map((node, nodeIndex) => {
-                  const nodeSegments = width / rowNodes.length;
-                  const xPosition =
-                    nodeSegments * nodeIndex +
-                    nodeSegments * 0.5 -
-                    maxNodeWidth * 0.5;
-                  return (
-                    <Topic
-                      key={`node-${rowIndex}-${nodeIndex}`}
-                      nodeTopic={node.topic}
-                      nodeCollected={node.collected}
-                      nodeRequired={node.required}
-                      handleTopicClick={handleTopicClick}
-                      handleSlotClick={handleSlotClick}
-                      nodeWidth={maxNodeWidth}
-                      xPosition={xPosition}
-                      rowHeight={rowHeight}
-                      yPosition={yPosition}
-                    />
-                  );
-                })}
-            </g>
+            rows[rowIndex] !== undefined && (
+              <div
+                key={`${rows[rowIndex].topic}`}
+                className="flex justify-center topic-wrapper"
+              >
+                {row.map((node) => (
+                  <Topic
+                    key={`${row[rowIndex]}-${rowIndex}-${node.topic}`}
+                    nodeTopic={node.topic}
+                    nodeCollected={node.collected}
+                    nodeRequired={node.required}
+                    handleTopicClick={handleTopicClick}
+                    handleSlotClick={handleSlotClick}
+                  />
+                ))}
+              </div>
+            )
           );
         })}
-      </g>
-    </svg>
-  );
+      </div>
+    );
+  } 
+  
+  if (svgMode) {
+    /* This return is for an experimental SVG version of the Topic nodes, 
+     they are currently non functional so can be ignored unless you want to play around with them. */
+    const width = viewBox.width * 0.91;
+    const height = viewBox.height * 0.91;
+    // const smallestSegments = width / longestRowLength;
+    const maxNodeWidth = smallestSegments - smallestSegments * 0.125;
+    return (
+      <svg
+        viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width}  ${viewBox.height}`}
+        width={width}
+        height={height}
+      >
+        <g id="" dominantBaseline="middle" textAnchor="middle">
+          {rows.map((rowNodes, rowIndex) => {
+            if (rowNodes.length === 0) return;
+            const rowSegments = height / rows.length;
+            const rowHeight = rowSegments;
+            const yPosition = rowSegments * rowIndex + rowSegments * 0.25;
+            return (
+              <g key={`row${rowIndex}`}>
+                {rowNodes !== undefined &&
+                  rowNodes.map((node, nodeIndex) => {
+                    const nodeSegments = width / rowNodes.length;
+                    const xPosition =
+                      nodeSegments * nodeIndex +
+                      (nodeSegments - maxNodeWidth) * 0.5;
+                    return (
+                      <Topic
+                        key={`node-${rowIndex}-${nodeIndex}`}
+                        nodeTopic={node.topic}
+                        nodeCollected={node.collected}
+                        nodeRequired={node.required}
+                        handleTopicClick={handleTopicClick}
+                        handleSlotClick={handleSlotClick}
+                        nodeWidth={maxNodeWidth}
+                        xPosition={xPosition}
+                        rowHeight={rowHeight}
+                        yPosition={yPosition}
+                      />
+                    );
+                  })}
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+    );
+  }
 }

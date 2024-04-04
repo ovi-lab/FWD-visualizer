@@ -1,4 +1,66 @@
-function SlotList({
+const Topic = ({
+  nodeTopic,
+  nodeCollected,
+  nodeRequired,
+  handleSlotClick,
+  handleTopicClick,
+}) => {
+  function SlotList({ title, nodeList, handleClick, color }) {
+    return (
+      <div
+        className={`flex rounded-lg items-center justify-center ${color} p-1`}
+      >
+        <p className="text-[0.75em]">{title}</p>
+        <ul>
+          {nodeList.map((slot, idx) => {
+            if (slot.slotData.name)
+              return (
+                <li
+                  className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
+   py-1 px-2 text-gray-900 text-[0.75em]"
+                  key={`${nodeTopic}-${slot.slotData.name}-${idx}`}
+                  onClick={() => handleClick(slot.slotID)}
+                >
+                  {slot.slotData.name}: {slot.slotData.value}
+                </li>
+              );
+          })}
+        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg bg-gray-100 p-1 shadow-md m-3">
+      {/* Title row */}
+      <div
+        className="select-none cursor-pointer flex rounded-lg items-center justify-center mb-2 bg-cyan-100 p-2"
+        onClick={() => handleTopicClick(nodeTopic)}
+      >
+        <h2 className="text-sm font-semibold">{nodeTopic}</h2>
+      </div>
+
+      {/* Required row */}
+      {nodeRequired.length > 0 ? (
+        <SlotList
+          title={"R"}
+          nodeList={nodeRequired}
+          handleClick={handleSlotClick}
+          color={"bg-red-100"}
+        />
+      ) : null}
+      {/* Collection row */}
+      <SlotList
+        title={"C"}
+        nodeList={nodeCollected}
+        handleClick={handleSlotClick}
+        color={"bg-green-100"}
+      />
+    </div>
+  );
+};
+
+function SlotListSVG({
   title,
   textSize,
   nodeList,
@@ -25,7 +87,7 @@ function SlotList({
           return (
             <g
               className="select-none cursor-pointer"
-              key={`${title}-${index}-${slot.slotData.name}`}
+              key={`${title}-${index}-${slot.slotData}`}
               transform={`translate(${0}, ${elementPosition})`}
               onClick={() => handleClick(slot.slotID)}
             >
@@ -53,7 +115,7 @@ function SlotList({
   );
 }
 
-const Topic = ({
+const TopicSVG = ({
   nodeTopic,
   nodeCollected,
   nodeRequired,
@@ -69,7 +131,7 @@ const Topic = ({
   const rectHeight = textSize * 2;
   const requiredBottom =
     nodeRequired.length > 0
-      ? titleHeight + rectHeight * (nodeRequired.length)
+      ? titleHeight + rectHeight * nodeRequired.length
       : titleHeight;
   const collectedBottom = requiredBottom + rectHeight * nodeCollected.length;
 
@@ -115,7 +177,7 @@ const Topic = ({
 
       {/* Group for required items */}
       {nodeRequired.length > 0 && (
-        <SlotList
+        <SlotListSVG
           title={"Requires"}
           textSize={textSize}
           nodeList={nodeRequired}
@@ -126,7 +188,7 @@ const Topic = ({
       )}
 
       {/* Group for collected items */}
-      <SlotList
+      <SlotListSVG
         title={"Collects"}
         textSize={textSize}
         nodeList={nodeCollected}

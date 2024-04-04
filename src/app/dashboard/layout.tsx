@@ -10,13 +10,13 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex w-screen h-screen flex-col md:flex-row md:overflow-hidden">
+    <div className="grid grid-cols-9 w-screen h-screen">
       <WebSocketProvider>
-        <div className="w-full flex-none md:w-56">
+        <div className="w-full col-span-1 ">
           <SideBar />
         </div>
 
-        <div className="flex-grow">
+        <div className="col-span-8">
           <TimeProvider>
             <FilterProvider>
               <div className="p-3 md:px-4 md:py-3 overflow-y-auto">

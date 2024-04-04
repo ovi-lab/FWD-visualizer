@@ -143,7 +143,7 @@ const ControlPanel = () => {
 
   if (!data) return <div>loading</div>;
   return (
-    <div className="bottom-0 w-75% mx-2 pb-1 bg-gray-700 rounded-lg shadow-md">
+    <div className="bottom-0 mr-auto ml-auto absolute pb-1 bg-gray-700 rounded-lg shadow-md">
       <div className="flex">
         {/* Speaker filter */}
         <FilterCheckbox
@@ -173,7 +173,7 @@ const ControlPanel = () => {
           onChange={handleCheck}
         />
         {/* Topic filter */}
-        <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2 font-bold text-sm">
+        <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2 font-bold text-[0.9rem]">
           <h3 className="m-1 font-bold text-sm">Topic Filter</h3>
           <select
             value={selectedTopic}

@@ -84,8 +84,8 @@ function MessageDisplay({ speaker, color, message }) {
       className={`message rounded-lg p-2`}
       style={{ backgroundColor: `${color}` }}
     >
-      <div className={`speaker text-sm font-bold ${speaker}`}>{speaker}</div>
-      <div className={`text ${speaker}`}>{message}</div>
+      <div className={`speaker text-[1rem] font-bold ${speaker}`}>{speaker}</div>
+      <div className={`text-[1.1rem] ${speaker}`}>{message}</div>
     </div>
   );
 }

@@ -31,7 +31,7 @@ const Topic = ({
   }
 
   return (
-    <div className="rounded-lg bg-gray-100 p-1 shadow-md m-3">
+    <div className="rounded-lg bg-gray-100 p-1 shadow-md m-3 w-[200px]">
       {/* Title row */}
       <div
         className="select-none cursor-pointer flex rounded-lg items-center justify-center mb-2 bg-cyan-100 p-2"

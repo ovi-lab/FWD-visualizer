@@ -12,20 +12,20 @@ export default function Layout({
   return (
     <div className="grid grid-cols-9 w-screen h-screen">
       <WebSocketProvider>
-        <div className="w-full col-span-1 ">
+        <div className="col-span-1 flex flex-col h-full">
           <SideBar />
         </div>
 
-        <div className="col-span-8">
+        <div className="col-span-8 flex flex-col h-full">
           <TimeProvider>
             <FilterProvider>
-              <div className="p-3 md:px-4 md:py-3 overflow-y-auto">
+              <div className="p-3 overflow-y-auto flex-1">
                 <ChatProvider>
                   <SelectedNodeProvider>{children}</SelectedNodeProvider>
                 </ChatProvider>
 
-                <ControlPanel />
               </div>
+                <ControlPanel />
             </FilterProvider>
           </TimeProvider>
         </div>

@@ -9,6 +9,7 @@ export default function Layout({
       <InfoPanel />
       <div className="col-span-4 flex flex-col overflow-auto">{children}</div>
       <Chatbox />
+      
     </div>
   );
 }

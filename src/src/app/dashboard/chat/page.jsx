@@ -102,15 +102,15 @@ export default function Chatbox() {
 
   if (!data) return <p>Loading...</p>;
   return (
-    <div className="w-full col-span-2 chatbox-container">
-      <div className="chatbox-body overflow-hidden rounded-lg pb-10">
+    <div className="h-[85vh] col-span-2 chatbox-container">
+      <div className="chatbox-body h-100% overflow-hidden rounded-lg pb-10">
         <div className="flex rounded-lg items-center justify-center bg-cyan-100">
           <h2 className="text-lg font-semibold">Conversation Transcript</h2>
         </div>
         <div
-          className="chatbox-content"
+          className="chatbox-content overflow-y-scroll"
           id="chatboxContent"
-          style={{ overflowY: "scroll" }}
+          
         >
           {statements.map((stmt, index) => {
             return (
@@ -130,6 +130,7 @@ export default function Chatbox() {
           })}
         </div>
       </div>
-    </div>
+      </div>
+
   );
 }

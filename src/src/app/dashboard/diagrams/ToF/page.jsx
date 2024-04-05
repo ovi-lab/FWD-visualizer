@@ -60,8 +60,8 @@ export default function TiersOfFriendship() {
           (slot) =>
             !(
               slot.name.includes("error") ||
-              slot.name.includes("any") ||
-              // slot.name.includes("topic_name") ||
+              // slot.name.includes("any") ||
+              slot.name.includes("topic_name") ||
               slot.name.includes("agreement_patterns")
             )
         )
@@ -143,7 +143,7 @@ export default function TiersOfFriendship() {
   
   if (!svgMode) {
     return (
-      <div className={`grid grid-rows-${rows.length} overflow-scroll`}>
+      <div className={`grid grid-rows-${rows.length} overflow-auto`}>
         {rows.map((row, rowIndex) => {
           // Only render the row if it has nodes
           return (

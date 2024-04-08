@@ -9,8 +9,9 @@ import { filterData } from "@/app/dashboard/utils/filters";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 function checkForCollection(current, previous) {
-  if (current.turn === "haru" || previous === undefined) return false;
-  return previous.entity_type_detection;
+  if (previous=== undefined) return false;
+  if (previous.slots.length < current.slots.length) return true;
+  return false;
 }
 
 function includeTimestamp(current, previous) {
@@ -107,11 +108,7 @@ export default function Chatbox() {
         <div className="flex rounded-lg items-center justify-center bg-cyan-100">
           <h2 className="text-lg font-semibold">Conversation Transcript</h2>
         </div>
-        <div
-          className="chatbox-content overflow-y-scroll"
-          id="chatboxContent"
-          
-        >
+        <div className="chatbox-content overflow-y-scroll" id="chatboxContent">
           {statements.map((stmt, index) => {
             return (
               <div key={stmt.idx}>
@@ -120,17 +117,16 @@ export default function Chatbox() {
                   turn={stmt.turn}
                   sentiLabel={stmt.sentiment_label}
                   sentiScore={stmt.sentiment_score}
-                  timestamp={includeTimestamp(stmt, statements[index-1])}
+                  timestamp={includeTimestamp(stmt, statements[index - 1])}
                   emoLabel={stmt.emotion_label}
                   text={stmt.sentence}
-                  wasCollected={checkForCollection(stmt, statements[index-1])}
+                  wasCollected={checkForCollection(stmt, statements[index - 1])}
                 />
               </div>
             );
           })}
         </div>
       </div>
-      </div>
-
+    </div>
   );
 }

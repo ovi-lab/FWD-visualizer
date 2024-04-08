@@ -127,9 +127,7 @@ export default function ArcDiagram() {
   }, [nodes, links]);
 
   // A linear scale for node size
-  const size = d3.scaleLinear().domain([0, 25]).range([1, 30]).clamp(true);
-
-  
+  const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
   
   /**
    * Description placeholder

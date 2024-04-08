@@ -117,13 +117,13 @@ const Bubble = ({ id, turn, sentiLabel, sentiScore, timestamp, emoLabel, text, w
         <div className={`bubble items-start ${speaker}`}>
           <MessageDisplay speaker={speaker} color={color} message={text} />
           <EmotionDisplay label={emoLabel} speaker={speaker} />
+        </div>)}
           {wasCollected && text ? (
-            <div className={`flex data-collection`}>
+            <div className={`text-right font-bold data-collection`}>
               Response saved
             </div>
-          ) : null}
-        </div>
-      )}
+          ) : null
+      }
     </div>
   );
 };

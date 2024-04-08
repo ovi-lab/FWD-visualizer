@@ -53,7 +53,6 @@ export default function TiersOfFriendship() {
     if (!data) return;
     const filteredLines = filterData(data, selectedTime, selectedFilters);
     const rows = [[]];
-    let rowLength = 0;
     filteredLines.map((line) => {
       const lineSlots = line.slots
         .filter(

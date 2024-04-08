@@ -127,7 +127,29 @@ export default function ArcDiagram() {
   }, [nodes, links]);
 
   // A linear scale for node size
-  const size = d3.scaleLinear().domain([1, 10]).range([1, 20]).clamp(true);
+  const size = d3.scaleLinear().domain([0, 25]).range([1, 30]).clamp(true);
+
+  
+  
+  /**
+   * Description placeholder
+   *
+   * @param {*} node
+   * @param {number} maxUtteranceLength
+   * @returns {number}
+   */
+  const calcEngagement = (node, maxUtteranceLength) => {
+    let lengthScore = 0
+      let sentimentScore = 0
+    node.interactions.map((interaction) => {
+      lengthScore = lengthScore + interaction.response.length / maxUtteranceLength
+      sentimentScore = sentimentScore + interaction.sentiment_score
+  })
+    const avgLength = lengthScore / node.interactions.length
+    const avgSentiment = sentimentScore / node.interactions.length 
+    
+    return (0.5 * avgSentiment) + (0.5 * avgLength) 
+  }
 
   if (loading) return <p>loading...</p>;
 
@@ -146,7 +168,14 @@ export default function ArcDiagram() {
             />
           ))}
           {/* Render the nodes on the diagram */}
-          {nodes.map((node) => (
+          {nodes.map((node) => {
+            let engagementScore = 0
+            console.log(data.attributes)
+            node.turn === 'haru' ? 
+            engagementScore = calcEngagement(node, data.attributes.longest_haru_utterance) 
+            : engagementScore = calcEngagement(node, data.attributes.longest_user_utterance)
+            console.log(engagementScore)
+            return(
             <Node
               key={node.id}
               xPosition={
@@ -155,12 +184,13 @@ export default function ArcDiagram() {
                   : scales.userScale(node.name)
               }
               node={node}
-              size={size(Math.pow(1.2, node.n))}
+              size={size(30*engagementScore)}
               arcHeight={450}
               isSelected={node.name === selectedNode}
               handle={handleNodeSelect}
-            />
-          ))}
+            />)
+          }
+          )}
         </g>
       </svg>
     </div>

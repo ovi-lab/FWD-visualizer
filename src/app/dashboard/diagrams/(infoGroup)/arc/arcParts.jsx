@@ -1,4 +1,3 @@
-
 /**
  * Represents a node component for an arc diagram.
  * @param {object} props - The props object containing the properties of the node.
@@ -11,50 +10,48 @@
  * @returns {JSX.Element} - A JSX element representing the node.
  */
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
-  <g key={node.name}>
-  <line
-    x1={xPosition}
-    y1={arcHeight + size + 5}
-    x2={xPosition}
-    y2={arcHeight+30}
-    stroke="grey"
-    strokeWidth="1"
-  />
-    <circle
-      className="node arcNode"
-      cx={xPosition}
-      cy={arcHeight}
-      id={node.name}
-      r={size}
-      fill={
-        isSelected
-          ? "rgb(139, 227, 139)"
-          : ((node.turn === "haru")
-          ? "#80b1d3"
-          : "#fb8072")
-      }
-      stroke="grey"
-      onClick={() => handle(node.name)}
-    />
-    
-    <text
-      x={xPosition - 30}
-      y={arcHeight + 30}
-      transform={`rotate(-45)`}
-      style={{
-        textAnchor: "end",
-        transformOrigin: `${xPosition}px ${arcHeight - 15}px`,
-        fontSize: "0.8rem",
-      }}
-      
-      className="label arcLabel"
-    >
-      {node.name}
-    </text>
-    
-  </g>
-);
+  
+    <g key={node.name}>
+      <line
+        x1={xPosition}
+        y1={arcHeight + size + 5}
+        x2={xPosition}
+        y2={arcHeight + 30}
+        stroke="grey"
+        strokeWidth="1"
+      />
+      <circle
+        className="node arcNode"
+        cx={xPosition}
+        cy={arcHeight}
+        id={node.name}
+        r={size}
+        fill={
+          isSelected
+            ? "rgb(139, 227, 139)"
+            : node.turn === "haru"
+            ? "#80b1d3"
+            : "#fb8072"
+        }
+        stroke="grey"
+        onClick={() => handle(node.name)}
+      />
 
+      <text
+        x={xPosition - 30}
+        y={arcHeight + 30}
+        transform={`rotate(-45)`}
+        style={{
+          textAnchor: "end",
+          transformOrigin: `${xPosition}px ${arcHeight - 15}px`,
+          fontSize: "0.8rem",
+        }}
+        className="label arcLabel"
+      >
+        {node.name}
+      </text>
+    </g>
+  );
 /**
  * Represents a link component for an arc diagram.
  * @param {object} props - The props object containing the properties of the link.
@@ -62,7 +59,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
  * @param {string} props.pathData - The path data for the link.
  * @returns {JSX.Element} - A JSX element representing the link.
  */
-const Link = ({name, pathData, isConnectedNodeSelected }) => (
+const Link = ({ name, pathData, isConnectedNodeSelected }) => (
   <path
     key={name}
     d={pathData}

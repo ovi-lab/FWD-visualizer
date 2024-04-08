@@ -60,7 +60,7 @@ export default function TiersOfFriendship() {
           (slot) =>
             !(
               slot.name.includes("error") ||
-              // slot.name.includes("any") ||
+              slot.name.includes("any") ||
               slot.name.includes("topic_name") ||
               slot.name.includes("agreement_patterns")
             )

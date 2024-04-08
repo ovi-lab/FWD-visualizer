@@ -5,12 +5,13 @@ import { useChatAnchor } from "../../contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import {filterData} from "@/app/dashboard/utils/filters"
-import { io } from "socket.io-client";
+import { filterData } from "@/app/dashboard/utils/filters";
+import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 function checkForCollection(current, previous) {
-  if (current.turn === "haru" || previous === undefined) return false;
-  return previous.entity_type_detection;
+  if (previous=== undefined) return false;
+  if (previous.slots.length < current.slots.length) return true;
+  return false;
 }
 
 function includeTimestamp(current, previous) {
@@ -27,6 +28,7 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
+  const socket = useWebSocket();
   const [data, setData] = useState([]);
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
@@ -68,23 +70,20 @@ export default function Chatbox() {
 
   const anchorMove = anchorMoveCallback(AnchorRef);
 
-  useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
-    // Listen for data updates from the Flask server
-    
-    socket.emit('static-linear-request');
-    
-    socket.on('static-linear-response', (newData) => {
-      setData(newData);
-    })
-
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+  const handleResponse = useCallback((newData) => {
+    setData(newData);
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    // Listen for data updates from the Flask server
+    socket.emit("transcript-request");
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("transcript-response", handleResponse);
+  });
 
   useEffect(() => {
     // Scroll to the last line whenever a new last line is added
@@ -94,23 +93,8 @@ export default function Chatbox() {
   }, [statements, anchorMove]);
 
   useEffect(() => {
-    const statementList = [];
     const filteredLines = filterData(data, selectedTime, selectedFilters);
-    filteredLines.map((interaction, index) => {
-      statementList[interaction.idx] = {
-        id: interaction.idx,
-        speaker: interaction.turn,
-        text: interaction.sentence,
-        sentiment_label: interaction.sentiment_label,
-        sentiment_score: interaction.sentiment_score,
-        emotion_label: interaction.emotion_label,
-        emotion_score: interaction.emotion_score,
-        was_data_collected: checkForCollection(interaction, data[index + 1]),
-        timestamp: includeTimestamp(interaction, data[index + 1]),
-        threadId: interaction.index,
-      };
-    });
-    setStatements(Object.values(statementList));
+    setStatements(filteredLines);
   }, [data, selectedTime, selectedFilters]);
 
   useEffect(() => {
@@ -119,20 +103,25 @@ export default function Chatbox() {
 
   if (!data) return <p>Loading...</p>;
   return (
-    <div className="flex w-full col-span-2 chatbox-container">
-      <div className="chatbox-body overflow-hidden rounded-lg pb-10">
+    <div className="h-[85vh] col-span-2 chatbox-container">
+      <div className="chatbox-body h-100% overflow-hidden rounded-lg pb-10">
         <div className="flex rounded-lg items-center justify-center bg-cyan-100">
           <h2 className="text-lg font-semibold">Conversation Transcript</h2>
         </div>
-        <div
-          className="chatbox-content"
-          id="chatboxContent"
-          style={{ overflowY: "scroll" }}
-        >
-          {statements.map((stmt) => {
+        <div className="chatbox-content overflow-y-scroll" id="chatboxContent">
+          {statements.map((stmt, index) => {
             return (
-              <div key={stmt.id}>
-                <Bubble stmt={stmt} id={stmt.id} />
+              <div key={stmt.idx}>
+                <Bubble
+                  id={stmt.idx}
+                  turn={stmt.turn}
+                  sentiLabel={stmt.sentiment_label}
+                  sentiScore={stmt.sentiment_score}
+                  timestamp={includeTimestamp(stmt, statements[index - 1])}
+                  emoLabel={stmt.emotion_label}
+                  text={stmt.sentence}
+                  wasCollected={checkForCollection(stmt, statements[index - 1])}
+                />
               </div>
             );
           })}

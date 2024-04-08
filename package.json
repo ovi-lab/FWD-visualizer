@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8080",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -13,6 +13,7 @@
     "d3-sankey": "^0.12.3",
     "fs": "^0.0.1-security",
     "next": "14.1.0",
+    "npm": "^10.5.0",
     "promises": "^0.2.5",
     "react": "^18",
     "react-dom": "^18",

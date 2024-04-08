@@ -1,43 +1,43 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTime } from "../contexts/timeContext";
-import io from "socket.io-client";
+import { useWebSocket } from "../contexts/webSocketContext";
 
 export default function TimeLine() {
+  const socket = useWebSocket()
   const [data, setData] = useState([]);
   const [start, setStart] = useState("1970-01-01 16:26:30");
   const [end, setEnd] = useState("1970-01-01 16:26:31");
   const [steps, setSteps] = useState(0);
   const { selectedTime, setSelectedTime } = useTime();
 
-  useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
-    // Listen for data updates from the Flask server
-    
-      socket.emit('static-linear-request');
-
-    socket.on('static-linear-response', (newData) => {
-      setData(newData);
-    })
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+  const handleResponse = useCallback((newData) => {
+    setData(newData);
   }, []);
 
   useEffect(() => {
+    if (!socket) return;
+    // Listen for data updates from the Flask server
+    socket.emit("transcript-request");
+  }, [socket]);
+  
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("transcript-response", handleResponse
+    );
+  });
+
+  useEffect(() => {
     if (!data || data.length === 0) return;
-    const start = data.at(-1).timestamp;
-    const final = data.at(0).timestamp;
+    const start = data.at(0).timestamp;
+    const final = data.at(-1).timestamp;
     setStart(start);
     setEnd(final);
     setSelectedTime(final);
     setSteps(
       Math.ceil((Date.parse(final) - Date.parse(start)) / data.length / 1000)
     );
-  }, [data, setSelectedTime]);
+  }, [data]);
 
   const handleTimeSelect = (e) => {
     // Parse the input value as a date string
@@ -57,7 +57,7 @@ export default function TimeLine() {
     );
   else
     return (
-      <div className=" rounded-lg bg-gray-100 p-1 shadow-md m-2">
+      <div className="rounded-lg bg-gray-100 p-1 shadow-md m-2 w-100%">
         <div className="flex items-center justify-between">
           <label
             htmlFor="steps-range"
@@ -85,7 +85,7 @@ export default function TimeLine() {
           max={Date.parse(end)}
           step={steps}
           defaultValue={Date.parse(selectedTime)}
-          className="w-full h-2 bg-blue-300 rounded-lg appearance-none cursor-pointer"
+          className="w-full h-3 bg-blue-300 rounded-lg appearance-none cursor-pointer"
           onChange={handleTimeSelect}
         />
       </div>

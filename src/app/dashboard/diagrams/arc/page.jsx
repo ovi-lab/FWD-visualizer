@@ -1,16 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
-import { useSelectedNode } from "../../../../contexts/selectedNodeContext";
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./arcParts";
 import { filterData } from "@/app/dashboard/utils/filters";
-import { io } from "socket.io-client";
+import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 
 export default function ArcDiagram() {
+  const socket = useWebSocket()
   const [data, setData] = useState(null);
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
@@ -27,23 +28,22 @@ export default function ArcDiagram() {
     setSelectedNode(nodeName);
   };
 
-  useEffect(() => {
-    const socket = io(":6400", {
-      cors: { origin: "http://127.0.0.1:6400", methods: ["GET", "POST"] },
-    });
-    // Listen for data updates from the Flask server
-    socket.emit("static-diagram-request", 'all');
-    
-    socket.on("static-diagram-response-all", (newData) => {
-      console.log('newData', newData)
-      setData(newData);
-    });
-
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
+  const handleResponse = useCallback((newData) => {
+    setData(newData);
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    // Listen for data updates from the Flask server
+    socket.emit("diagram-request");
+  }, [socket]);
+  
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("diagram-response", handleResponse
+    );
+  });
+
 
   useEffect(() => {
     if (!data) return;
@@ -79,15 +79,16 @@ export default function ArcDiagram() {
     const filteredLinks = filterData(
       data.links.haru.concat(data.links.user),
       selectedTime,
-      selectedFilters
+      selectedFilters,
+      true
     );
     const calculatedLinks = filteredLinks.map((link) => {
       let d;
-      if (idToNode[link.source] !== undefined) {
-        const start = idToNode[link.source].name.includes("haru:")
+      if (idToNode[link.source] !== undefined && idToNode[link.target] !== undefined) {
+        const start = idToNode[link.source].turn === "haru"
         ? xHaru(idToNode[link.source].name)
         : xUser(idToNode[link.source].name);
-      const end = idToNode[link.target].name.includes("haru:")
+      const end = idToNode[link.target].turn === "haru"
         ? xHaru(idToNode[link.target].name)
         : xUser(idToNode[link.target].name);
       d = [
@@ -126,7 +127,27 @@ export default function ArcDiagram() {
   }, [nodes, links]);
 
   // A linear scale for node size
-  const size = d3.scaleLinear().domain([1, 10]).range([1, 20]).clamp(true);
+  const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
+  
+  /**
+   * Description placeholder
+   *
+   * @param {*} node
+   * @param {number} maxUtteranceLength
+   * @returns {number}
+   */
+  const calcEngagement = (node, maxUtteranceLength) => {
+    let lengthScore = 0
+      let sentimentScore = 0
+    node.interactions.map((interaction) => {
+      lengthScore = lengthScore + interaction.response.length / maxUtteranceLength
+      sentimentScore = sentimentScore + interaction.sentiment_score
+  })
+    const avgLength = lengthScore / node.interactions.length
+    const avgSentiment = sentimentScore / node.interactions.length 
+    
+    return (0.5 * avgSentiment) + (0.5 * avgLength) 
+  }
 
   if (loading) return <p>loading...</p>;
 
@@ -145,7 +166,14 @@ export default function ArcDiagram() {
             />
           ))}
           {/* Render the nodes on the diagram */}
-          {nodes.map((node) => (
+          {nodes.map((node) => {
+            let engagementScore = 0
+            console.log(data.attributes)
+            node.turn === 'haru' ? 
+            engagementScore = calcEngagement(node, data.attributes.longest_haru_utterance) 
+            : engagementScore = calcEngagement(node, data.attributes.longest_user_utterance)
+            console.log(engagementScore)
+            return(
             <Node
               key={node.id}
               xPosition={
@@ -154,12 +182,13 @@ export default function ArcDiagram() {
                   : scales.userScale(node.name)
               }
               node={node}
-              size={size(Math.pow(1.2, node.n))}
+              size={size(30*engagementScore)}
               arcHeight={450}
               isSelected={node.name === selectedNode}
               handle={handleNodeSelect}
-            />
-          ))}
+            />)
+          }
+          )}
         </g>
       </svg>
     </div>

@@ -1,11 +1,11 @@
 import InfoPanel from "./info/page";
-import ArcDiagram from "./diagrams/(infoGroup)/arc/page";
+import ArcDiagram from "./diagrams/arc/page";
 import Chatbox from "./chat/page";
-import SankeySelector from "./diagrams/(infoGroup)/sankey/page";
+import SankeySelector from "./diagrams/sankey/page";
 
 export default function Dashboard() {
   return (
-    <div>  
+    <div className="w-screen h-screen">  
         <div className="grid grid-cols-7 row data-row">
         <InfoPanel/>
           <div

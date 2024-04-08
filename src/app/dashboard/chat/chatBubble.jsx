@@ -84,8 +84,8 @@ function MessageDisplay({ speaker, color, message }) {
       className={`message rounded-lg p-2`}
       style={{ backgroundColor: `${color}` }}
     >
-      <div className={`speaker text-sm font-bold ${speaker}`}>{speaker}</div>
-      <div className={`text ${speaker}`}>{message}</div>
+      <div className={`speaker text-[1rem] font-bold ${speaker}`}>{speaker}</div>
+      <div className={`text-[1.1rem] ${speaker}`}>{message}</div>
     </div>
   );
 }
@@ -96,34 +96,34 @@ function MessageDisplay({ speaker, color, message }) {
  * @param id The ID of the exchange displayed
  * @returns
  */
-const Bubble = ({ stmt, id }) => {
-  const speaker = stmt.speaker === "haru" ? "Haru" : "User";
-  const color = sentimentColor(stmt.sentiment_label, stmt.sentiment_score);
+const Bubble = ({ id, turn, sentiLabel, sentiScore, timestamp, emoLabel, text, wasCollected}) => {
+  const speaker = turn === "haru" ? "Haru" : "User";
+  const color = sentimentColor(sentiLabel, sentiScore);
   return (
     <div className="bubbleContainer" id={`response${id}`}>
-      {stmt.timestamp ? (
+      {timestamp ? (
         <div
           className={`timestamp ${speaker} flex justify-center relative mb-2`}
         >
-          {stmt.timestamp}
+          {timestamp}
         </div>
       ) : null}
       {speaker === "Haru" ? (
         <div className={`bubble items-start ${speaker}`}>
-          <EmotionDisplay label={stmt.emotion_label} speaker={speaker} />
-          <MessageDisplay speaker={speaker} color={color} message={stmt.text} />
+          <EmotionDisplay label={emoLabel} speaker={speaker} />
+          <MessageDisplay speaker={speaker} color={color} message={text} />
         </div>
       ) : (
         <div className={`bubble items-start ${speaker}`}>
-          <MessageDisplay speaker={speaker} color={color} message={stmt.text} />
-          <EmotionDisplay label={stmt.emotion_label} speaker={speaker} />
-          {stmt.was_data_collected && stmt.text ? (
-            <div className={`flex data-collection`}>
+          <MessageDisplay speaker={speaker} color={color} message={text} />
+          <EmotionDisplay label={emoLabel} speaker={speaker} />
+        </div>)}
+          {wasCollected && text ? (
+            <div className={`text-right font-bold data-collection`}>
               Response saved
             </div>
-          ) : null}
-        </div>
-      )}
+          ) : null
+      }
     </div>
   );
 };

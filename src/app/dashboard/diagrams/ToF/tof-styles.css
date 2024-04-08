@@ -1,0 +1,5 @@
+.topic-wrapper {
+    flex: 1;
+    max-width: calc(100% - 10px); /* Adjust margin */
+    transition: all 0.3s ease; /* Smooth transition */
+  }

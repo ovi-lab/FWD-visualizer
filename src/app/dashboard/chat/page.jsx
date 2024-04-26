@@ -77,7 +77,7 @@ export default function Chatbox() {
   useEffect(() => {
     if (!socket) return;
     // Listen for data updates from the Flask server
-    socket.emit("transcript-request");
+    socket.emit("transcriptRequest");
   }, [socket]);
 
   useEffect(() => {
@@ -103,7 +103,7 @@ export default function Chatbox() {
 
   if (!data) return <p>Loading...</p>;
   return (
-    <div className="h-[85vh] col-span-2 chatbox-container">
+    <div className="h-[80vh] col-span-2 chatbox-container">
       <div className="chatbox-body h-100% overflow-hidden rounded-lg pb-10">
         <div className="flex rounded-lg items-center justify-center bg-cyan-100">
           <h2 className="text-lg font-semibold">Conversation Transcript</h2>

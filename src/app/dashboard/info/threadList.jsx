@@ -19,7 +19,7 @@ function InfoButton({ interact, conversationNum, handleClick, isClicked }) {
 
   return (
     <button
-      className={"info-button"}
+      className={"info-button hover:shadow-lg"}
       onClick={() => handleClick(id)}
       style={{ backgroundColor: color }}
     >

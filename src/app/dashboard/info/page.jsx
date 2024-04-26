@@ -20,7 +20,7 @@ const InfoPanel = () => {
   useEffect(() => {
     if (!socket) return;
     // Listen for data updates from the Flask server
-    socket.emit("diagram-request");
+    socket.emit("diagramRequest")
   }, [socket]);
   
   useEffect(() => {
@@ -40,7 +40,7 @@ const InfoPanel = () => {
   if (!data) return <p>loading...</p>;
 
   return (
-    <div className=" overflow-hidden rounded-lg pb-2 border infoPanel">
+    <div className=" overflow-hidden rounded-lg border">
     <div className="flex rounded-lg items-center justify-center bg-cyan-100">
       <h3 className="text-lg font-semibold">Information Panel</h3>
       </div>

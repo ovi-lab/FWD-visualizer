@@ -48,7 +48,7 @@ const SankeyDiagram = (props) => {
   useEffect(() => {
     if (!socket) return;
     // Listen for data updates from the Flask server
-    socket.emit("diagram-request");
+    socket.emit("diagramRequest");
   }, [socket]);
 
   useEffect(() => {

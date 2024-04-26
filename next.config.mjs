@@ -17,7 +17,7 @@ const nextConfig = {
         return [
           {
             source: '/',
-            destination: '/chat',
+            destination: '/dashboard/chat',
             permanent: true,
           },
         ]

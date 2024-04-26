@@ -65,7 +65,7 @@ const ControlPanel = () => {
   useEffect(() => {
     if (!socket) return;
     // Listen for data updates from the Flask server
-    socket.emit("transcript-request");
+    socket.emit("transcriptRequest");
   }, [socket]);
   
   useEffect(() => {
@@ -143,7 +143,7 @@ const ControlPanel = () => {
 
   if (!data) return <div>loading</div>;
   return (
-    <div className="bottom-0 mr-auto ml-auto absolute pb-1 bg-gray-700 rounded-lg shadow-md">
+    <div className="bottom-0 mr-auto ml-auto pb-1 bg-gray-700 rounded-lg shadow-md">
       <div className="flex">
         {/* Speaker filter */}
         <FilterCheckbox

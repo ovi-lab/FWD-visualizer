@@ -10,8 +10,7 @@ import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 function checkForCollection(current, previous) {
   if (previous=== undefined) return false;
-  if (previous.slots.length < current.slots.length) return true;
-  return false;
+  return previous.slots.length < current.slots.length;
 }
 
 function includeTimestamp(current, previous) {
@@ -119,7 +118,7 @@ export default function Chatbox() {
                   sentiScore={stmt.sentiment_score}
                   timestamp={includeTimestamp(stmt, statements[index - 1])}
                   emoLabel={stmt.emotion_label}
-                  text={stmt.sentence}
+                  utterance={stmt.sentence}
                   wasCollected={checkForCollection(stmt, statements[index - 1])}
                 />
               </div>

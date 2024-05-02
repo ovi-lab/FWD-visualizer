@@ -1,94 +1,76 @@
 import { scaleLinear } from "d3";
-import { UserAvatar, HaruAvatar } from "./avatars";
+import { EmotionDisplay } from "./EmotionDisplay";
 
+const scales = {
+  positive: scaleLinear().domain([0, 1]).range(["white", "#99e699"]),
+  negative: scaleLinear().domain([0, 1]).range(["white", "#ff787a"]),
+  default: scaleLinear().domain([0, 1]).range(["white", "white"]),
+};
 
-function sentimentColor(label, score) {
-  let colorScale;
-  switch (label) {
-    case "positive":
-      colorScale = scaleLinear().domain([0, 1]).range(["white", "#99e699"]);
-      break;
-    case "negative":
-      colorScale = scaleLinear().domain([0, 1]).range(["white", "#ff787a"]);
-      break;
-
-    default:
-      colorScale = scaleLinear().domain([0, 1]).range(["white", "white"]);
-      break;
-  }
-
+function getSentimentColor(label, score) {
+  const colorScale = scales[label] || scales.default;
   return colorScale(score);
 }
 
-function EmotionDisplay({ label, speaker }) {
-  let emotion = ":|";
-  let color = "#a3e635";
-  switch (label) {
-    case "anger":
-      emotion = ">:(";
-      color = "#ff7866"; // Red
-      break;
-    case "disgust":
-      emotion = ">:P";
-      color = "#8B4513"; // Brown
-      break;
-    case "fear":
-      emotion = ":{";
-      color = "#cdabff"; // Purple
-      break;
-    case "joy":
-      emotion = ":D";
-      color = "#57cd57"; // Green
-      break;
-    case "neutral":
-      emotion = ":)";
-      color = "#a3e635"; // Lime
-      break;
-    case "sadness":
-      emotion = ":(";
-      color = "#63b8ff"; // Blue
-      break;
-    case "surprise":
-      emotion = ":o";
-      color = "#FFD700"; // Gold/Yellow
-      break;
-    default:
-      break;
-  }
-  return (
-    <div className="">
-   
-
-      <div
-        className="profile h-8 w-8 rounded-full  mx-2 text-center"
-        style={{ backgroundColor: color }}
-      >
-        {emotion}
-      </div>
-    
-      
-      <div className="mt-2 ml-2">
-        {speaker === "Haru" ? (
-          <HaruAvatar size={30} />
-        ) : (
-          <UserAvatar size={30} />
-        )}
-      </div>
-    </div>
-  );
-}
-
-function MessageDisplay({ speaker, color, message }) {
+function MessageDisplay({ id, speaker, color, message }) {
   return (
     <div
+      id={`response${id}`}
       className={`message rounded-lg p-2`}
       style={{ backgroundColor: `${color}` }}
     >
-      <div className={`speaker text-[1rem] font-bold ${speaker}`}>{speaker}</div>
+      <div className={`speaker text-[1rem] font-bold ${speaker}`}>
+        {speaker}
+      </div>
       <div className={`text-[1.1rem] ${speaker}`}>{message}</div>
     </div>
   );
 }
+
+
+// Helper to display the timestamp if available
+const TimestampDisplay = ({ timestamp, speaker }) => (
+  timestamp && (
+    <div className={`timestamp ${speaker} flex justify-center relative mb-2`}>
+      {timestamp}
+    </div>
+  )
+);
+
+// Conditional data collection notice
+const DataCollectionNotice = ({ wasCollected, text }) => (
+  wasCollected && text && (
+    <div className={`text-right font-bold data-collection`}>
+      Response saved
+    </div>
+  )
+);
+
+
+/**
+ * Renders the bubble content in the order needed depending on speaker
+ *
+ * @param {speaker} param0.speaker
+ * @param {id} param0.id
+ * @param {color} param0.color
+ * @param {text} param0.text
+ * @param {emoLabel} param0.emoLabel
+ */
+const BubbleContent = ({ speaker, id, color, text, emoLabel }) => (
+  <div className={`bubble items-start ${speaker}`}>
+    {speaker === "Haru" ? (
+      <>
+        <EmotionDisplay label={emoLabel} speaker={speaker} />
+        <MessageDisplay id={id} speaker={speaker} color={color} message={text} />
+      </>
+    ) : (
+      <>
+        <MessageDisplay id={id} speaker={speaker} color={color} message={text} />
+        <EmotionDisplay label={emoLabel} speaker={speaker} />
+      </>
+    )}
+  </div>
+);
 
 /**
  * Creates a chat bubble for the current exchange
@@ -96,34 +78,20 @@ function MessageDisplay({ speaker, color, message }) {
  * @param id The ID of the exchange displayed
  * @returns
  */
-const Bubble = ({ id, turn, sentiLabel, sentiScore, timestamp, emoLabel, text, wasCollected}) => {
+const Bubble = ({ id, turn, sentiLabel, sentiScore, timestamp, emoLabel, utterance, wasCollected }) => {
   const speaker = turn === "haru" ? "Haru" : "User";
-  const color = sentimentColor(sentiLabel, sentiScore);
+  const color = getSentimentColor(sentiLabel, sentiScore);
   return (
-    <div className="bubbleContainer" id={`response${id}`}>
-      {timestamp ? (
-        <div
-          className={`timestamp ${speaker} flex justify-center relative mb-2`}
-        >
-          {timestamp}
-        </div>
-      ) : null}
-      {speaker === "Haru" ? (
-        <div className={`bubble items-start ${speaker}`}>
-          <EmotionDisplay label={emoLabel} speaker={speaker} />
-          <MessageDisplay speaker={speaker} color={color} message={text} />
-        </div>
-      ) : (
-        <div className={`bubble items-start ${speaker}`}>
-          <MessageDisplay speaker={speaker} color={color} message={text} />
-          <EmotionDisplay label={emoLabel} speaker={speaker} />
-        </div>)}
-          {wasCollected && text ? (
-            <div className={`text-right font-bold data-collection`}>
-              Response saved
-            </div>
-          ) : null
-      }
+    <div className="bubbleContainer">
+      <TimestampDisplay timestamp={timestamp} speaker={speaker} />
+      <BubbleContent
+        speaker={speaker}
+        id={id}
+        color={color}
+        text={utterance}
+        emoLabel={emoLabel}
+      />
+      <DataCollectionNotice wasCollected={wasCollected} text={utterance} />
     </div>
   );
 };

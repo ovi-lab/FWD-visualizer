@@ -1,4 +1,12 @@
-const UserAvatar = ({ size }) => (
+import React from 'react';
+
+// Define TypeScript interfaces for the props of each component
+interface AvatarProps {
+  size: number;  // Assuming size is a number. If it's a string like "24px", change type to string.
+}
+
+// UserAvatar component with TypeScript
+const UserAvatar: React.FC<AvatarProps> = ({ size }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -16,7 +24,8 @@ const UserAvatar = ({ size }) => (
   </svg>
 );
 
-const HaruAvatar = ({ size }) => (
+// HaruAvatar component with TypeScript
+const HaruAvatar: React.FC<AvatarProps> = ({ size }) => (
   <svg
     width={size}
     height={size}

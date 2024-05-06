@@ -2,7 +2,7 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface TimeContextType {
-  selectedTime: string;
+  selectedTime: string | undefined;
   setSelectedTime: React.Dispatch<React.SetStateAction<string>>;
 }
 

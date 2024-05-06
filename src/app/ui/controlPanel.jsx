@@ -1,34 +1,89 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, use } from "react";
 import { useFilter } from "../contexts/filterContext";
 import TimeLine from "./timeline";
 import { useWebSocket } from "../contexts/webSocketContext";
 
-const FilterCheckbox = ({ data, title, filterType, stateValue, onChange }) => {
+const defaultFilters = {
+  turn: "",
+  sentiment: "",
+  emotion: "",
+  topic: "",
+  keywords: false,
+};
+
+const turnList = ["haru", "user"];
+const sentimentList = ["positive", "neutral", "negative"];
+const emotionList = [
+  "anger",
+  "disgust",
+  "fear",
+  "joy",
+  "neutral",
+  "sadness",
+  "surprise",
+];
+
+const FilterCheckbox = ({
+  data,
+  title,
+  filterType,
+  stateValue,
+  handleChange,
+}) => {
   return (
     <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2">
       <h3 className="m-1 font-bold text-sm">{title}</h3>
-      {data.map((filterCategory) => (
+      {data.map((filterOption) => (
         <label
-          key={`${filterType}:${filterCategory}`}
-          htmlFor={`${filterType}:${filterCategory}-filter`}
+          key={`${filterType}:${filterOption}`}
+          htmlFor={`${filterType}:${filterOption}-filter`}
           className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
    py-1 px-2 font-bold text-gray-700 text-sm transition-colors duration-200 ease-in-out has-[:checked]:bg-green-100 has-[:checked]:text-gray-700 has-[:checked]:border-gray-700 "
         >
           <input
             type="checkbox"
-            id={`${filterType}:${filterCategory}-filter`}
+            id={`${filterType}:${filterOption}-filter`}
             className="peer hidden checked:bg-green-100"
             name="data-direction"
             value="haru-user"
-            checked={stateValue === filterCategory}
+            checked={stateValue === filterOption}
             onChange={() => {
-              onChange(filterType, filterCategory);
+              if (stateValue === filterOption)
+                handleChange(filterType, defaultFilters[filterType]);
+              else handleChange(filterType, filterOption);
             }}
           />
-          {filterCategory}
+          {filterOption}
         </label>
       ))}
+    </div>
+  );
+};
+
+const FilterDropdown = ({
+  dropdownList,
+  title,
+  promptOption,
+  stateValue,
+  handleChange,
+}) => {
+  return (
+    <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2 font-bold text-[0.9rem]">
+      <h3 className="m-1 font-bold text-sm">{title}</h3>
+      <select
+        value={stateValue}
+        onChange={(e) => handleChange("topic", e.target.value)}
+      >
+        <option className="m-1 " value="">
+          {promptOption}
+        </option>
+        {dropdownList.map((topic, i) => (
+          <option key={topic + i} value={topic}>
+            {topic.length < 20 ? topic : topic.slice(0, 20) + "..."}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };
@@ -36,27 +91,11 @@ const FilterCheckbox = ({ data, title, filterType, stateValue, onChange }) => {
 // Component for the control panel
 const ControlPanel = () => {
   // States to store filter selections
-  const socket = useWebSocket()
+  const socket = useWebSocket();
   const [data, setData] = useState([]);
-  const [turnFilter, setTurnFilter] = useState("");
-  const [sentimentFilter, setSentimentFilter] = useState("");
-  const [emotionFilter, setEmotionFilter] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState("");
+  const [filterState, setFilterState] = useState(defaultFilters);
   const [availableTopics, setAvailableTopics] = useState([]);
-  const [keywordFilter, setKeywordFilters] = useState(false);
   const { setSelectedFilters } = useFilter();
-
-  const turns = ["haru", "user"];
-  const sentiments = ["positive", "neutral", "negative"];
-  const emotions = [
-    "anger",
-    "disgust",
-    "fear",
-    "joy",
-    "neutral",
-    "sadness",
-    "surprise",
-  ];
 
   const handleResponse = useCallback((newData) => {
     setData(newData);
@@ -67,78 +106,40 @@ const ControlPanel = () => {
     // Listen for data updates from the Flask server
     socket.emit("transcriptRequest");
   }, [socket]);
-  
+
   useEffect(() => {
     if (!socket) return;
-    socket.on("transcript-response", handleResponse
-    );
+    socket.on("transcript-response", handleResponse);
   });
 
   useEffect(() => {
-    const topics = [];
-    data
-      .filter((line) => line.turn === "haru")
-      .filter((haruLine) => {
-        for (let i = topics.length; i >= 0; i--) {
-          if (haruLine.topic === topics[i]) return false;
-        }
-        topics.push(haruLine.topic);
-        return true;
-      });
-    setAvailableTopics(topics);
+    // Create a new Set to collect unique topics where 'turn' is 'haru'
+    const uniqueTopics = new Set();
+  
+    // Iterate over the data array to filter out unique 'haru' topics
+    data.forEach((line) => {
+      if (line.turn === "haru") {
+        uniqueTopics.add(line.topic);
+      }
+    });
+  
+    // Convert the Set back to an array and update the state
+    setAvailableTopics([...uniqueTopics]);
   }, [data]);
-
-  /**
-   * Applies the filters that have been set in the component state
-   * and adds them to the selectedFilters context for use by other components
-   */
-  const applyFilters = () => {
-    const filters = {
-      turn: turnFilter,
-      sentiment: sentimentFilter,
-      emotion: emotionFilter,
-      topic: selectedTopic,
-      keywords: keywordFilter,
-    };
-    setSelectedFilters(filters);
-  };
 
   /**
    * Sets all the filter states to their default values
    * and also applies them to the selectedFilters context to reset any filtered components
    */
   const resetFilters = () => {
-    setTurnFilter("");
-    setSentimentFilter("");
-    setEmotionFilter("");
-    setSelectedTopic("");
-    setKeywordFilters(false);
-    const filters = {
-      turn: "",
-      sentiment: "",
-      emotion: "",
-      topic: "",
-      keywords: false,
-    };
-    setSelectedFilters(filters);
+    setFilterState(defaultFilters);
+    setSelectedFilters(defaultFilters);
   };
 
-  const handleCheck = (filter, value) => {
-    switch (filter) {
-      case "turn":
-        setTurnFilter(value);
-        break;
-      case "sentiment":
-        setSentimentFilter(value);
-        break;
-      case "emotion":
-        setEmotionFilter(value);
-        break;
-      case "keywords":
-        setKeywordFilters(value);
-      default:
-        break;
-    }
+  const applyFilter = (filter, value) => {
+    const newFilters = { ...filterState, [filter]: value };
+    setFilterState(newFilters);
+    setSelectedFilters(newFilters);
   };
 
   if (!data) return <div>loading</div>;
@@ -147,69 +148,52 @@ const ControlPanel = () => {
       <div className="flex">
         {/* Speaker filter */}
         <FilterCheckbox
-          data={turns}
+          data={turnList}
           title={"Speaker"}
           filterType={"turn"}
-          stateValue={turnFilter}
-          onChange={handleCheck}
+          stateValue={filterState.turn}
+          handleChange={applyFilter}
         />
 
         {/* Sentiment filter */}
 
         <FilterCheckbox
-          data={sentiments}
+          data={sentimentList}
           title={"Sentiment"}
           filterType={"sentiment"}
-          stateValue={sentimentFilter}
-          onChange={handleCheck}
+          stateValue={filterState.sentiment}
+          handleChange={applyFilter}
         />
 
         {/* Emotion filter */}
         <FilterCheckbox
-          data={emotions}
+          data={emotionList}
           title={"Emotion"}
           filterType={"emotion"}
-          stateValue={emotionFilter}
-          onChange={handleCheck}
+          stateValue={filterState.emotion}
+          handleChange={applyFilter}
         />
+
         {/* Topic filter */}
-        <div className="rounded-lg bg-gray-100 p-2 pt-0 shadow-md m-2 font-bold text-[0.9rem]">
-          <h3 className="m-1 font-bold text-sm">Topic Filter</h3>
-          <select
-            value={selectedTopic}
-            onChange={(e) => {
-              setSelectedTopic(e.target.value);
-            }}
-          >
-            <option className="m-1 " value="">
-              Select Topic
-            </option>
-            {availableTopics.map((topic, i) => (
-              <option key={topic + i} value={topic}>
-                {topic.length < 20 ? topic : topic.slice(0, 20) + "..."}
-              </option>
-            ))}
-          </select>
-        </div>
+        <FilterDropdown
+          dropdownList={availableTopics}
+          title={"Topic Filter"}
+          promptOption={"Select Topic"}
+          stateValue={filterState.topic}
+          handleChange={applyFilter}
+        />
 
         {/* Keyword filter */}
         <FilterCheckbox
           data={["yes", "no"]}
           title={"Use the safety list?"}
           filterType={"keywords"}
-          stateValue={keywordFilter}
-          onChange={handleCheck}
+          stateValue={filterState.keywords}
+          handleChange={applyFilter}
         />
 
         {/* Button to apply filters */}
         <div className="flex-left rounded-lg bg-gray-100 p-1 shadow-md m-2">
-          <button
-            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
-     py-1 px-2 font-bold text-gray-700 text-sm"
-            onClick={applyFilters}
-          >
-            Apply
-          </button>
           <button
             className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
      py-1 px-2 font-bold text-gray-700 text-sm"
@@ -219,7 +203,7 @@ const ControlPanel = () => {
           </button>
         </div>
       </div>
-        <TimeLine />
+      <TimeLine />
     </div>
   );
 };

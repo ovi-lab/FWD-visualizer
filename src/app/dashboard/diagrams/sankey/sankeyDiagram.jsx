@@ -9,7 +9,7 @@ import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./sankeyParts";
-import { filterData } from "@/app/dashboard/utils/filters";
+import { filterData } from "@/app/utils/filters";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 // This const is a D3 sankey generator used to generate the data needed for the nodes and links to display properly in an SVG

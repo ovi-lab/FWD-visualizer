@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect, useCallback, use } from "react";
-import { useFilter } from "../contexts/filterContext";
+import { useFilter } from "@/app/contexts/filterContext";
 import TimeLine from "./timeline";
-import { useWebSocket } from "../contexts/webSocketContext";
+import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 const defaultFilters = {
   turn: "",

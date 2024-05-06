@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { useTime } from "../contexts/timeContext";
-import { useWebSocket } from "../contexts/webSocketContext";
+import { useTime } from "@/app/contexts/timeContext";
+import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 export default function TimeLine() {
   const socket = useWebSocket()
@@ -30,6 +30,7 @@ export default function TimeLine() {
     }
     const startTime = data[0]?.timestamp;
     const endTime = data[data.length - 1]?.timestamp;
+    setSelectedTime(endTime)
     const totalDuration = Date.parse(endTime) - Date.parse(startTime);
     const fullIntervals = Math.floor(totalDuration / 10000);
     const remainder = totalDuration % 10000;

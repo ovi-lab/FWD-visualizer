@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Topic } from "./tofParts";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import { filterData } from "../../utils/filters";
+import { filterData } from "@/app/utils/filters";
 import { useChatAnchor } from "@/app/contexts/chatContext";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import "./tof-styles.css";

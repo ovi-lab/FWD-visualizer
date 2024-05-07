@@ -4,10 +4,10 @@ import ThreadList from "./threadList";
 import "./infoStyles.css";
 import { useSelectedNode } from "../../contexts/selectedNodeContext";
 import { useChatAnchor } from "../../contexts/chatContext";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 const InfoPanel = () => {
-  const {diagramData} = useWebSocket()
+  const {diagramData} = useSocketData();
   const { selectedNode } = useSelectedNode();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   const [selectedLine, setSelectedLine] = useState("");

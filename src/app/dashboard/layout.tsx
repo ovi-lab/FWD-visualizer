@@ -4,14 +4,14 @@ import { SelectedNodeProvider } from "@/app/contexts/selectedNodeContext";
 import { ChatProvider } from "@/app/contexts/chatContext";
 import { TimeProvider } from "@/app/contexts/timeContext";
 import { FilterProvider } from "@/app/contexts/filterContext";
-import { WebSocketProvider } from "@/app/contexts/webSocketContext";
+import { SocketDataProvider } from "@/app/contexts/SocketDataContext";
 
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="grid grid-cols-9 w-full h-full min-h-screen min-w-screen">
-      <WebSocketProvider>
+      <SocketDataProvider>
         <div className="col-span-1 flex flex-col h-full">
           <SideBar />
         </div>
@@ -30,7 +30,7 @@ export default function Layout({
             </FilterProvider>
           </TimeProvider>
         </div>
-      </WebSocketProvider>
+      </SocketDataProvider>
     </div>
   );
 }

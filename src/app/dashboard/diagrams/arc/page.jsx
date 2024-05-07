@@ -7,7 +7,7 @@ import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./arcParts";
 import { filterData } from "@/app/utils/filters";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 /**
  * Calculates the SVG path for a link between two nodes in an arc diagram.
@@ -65,7 +65,7 @@ const calcEngagement = (node, maxUtteranceLength) => {
  * @returns {JSX.Element} The rendered component.
  */
 export default function ArcDiagram() {
-  const {diagramData} = useWebSocket();
+  const {diagramData} = useSocketData();
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [scales, setScales] = useState({});

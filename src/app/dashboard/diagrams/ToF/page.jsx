@@ -7,10 +7,10 @@ import { filterData } from "@/app/utils/filters";
 import { useChatAnchor } from "@/app/contexts/chatContext";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import "./tof-styles.css";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 export default function TiersOfFriendship() {
-  const { transcriptData } = useWebSocket();
+  const { transcriptData } = useSocketData();
   const [rows, setRows] = useState([]);
   const [viewBox, setViewBox] = useState({
     x: 0,
@@ -136,7 +136,7 @@ export default function TiersOfFriendship() {
   if (!svgMode) {
     return (
       <div className={`grid grid-rows-${rows.length} overflow-auto`}>
-        {rows.map((row, rowIndex) => {
+        {rows.map((row) => {
           // Only render the row if it has nodes
           console.log("row", row);
           return (

@@ -30,8 +30,7 @@ const Topic = ({
 }) => {
   return (
     <div className="rounded-lg bg-gray-100 p-1 shadow-md m-3 w-48">
-      {" "}
-      {/* w-[200px] replaced with w-48 */}
+    
       {/* Title row */}
       <button
         className="select-none cursor-pointer flex rounded-lg items-center w-full justify-center mb-2 bg-cyan-100 p-2"

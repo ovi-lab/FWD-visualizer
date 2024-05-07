@@ -8,9 +8,9 @@ import React, {
 } from "react";
 import io from "socket.io-client";
 
-const WebSocketContext = createContext();
+const socketDataContext = createContext();
 
-export const WebSocketProvider = ({ children }) => {
+export const SocketDataProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [transcriptData, setTranscriptData] = useState(null);
   const [diagramData, setDiagramData] = useState(null);
@@ -23,29 +23,6 @@ export const WebSocketProvider = ({ children }) => {
   const handleTranscriptResponse = useCallback((newData) => {
     setTranscriptData(newData);
   }, []);
-
-  // useEffect(() => {
-  //   // Initialize socket connection
-  //   const newSocket = io(":6400", {
-  //       cors: {
-  //           origin: "http://127.0.0.1:6400",
-  //           methods: ["GET", "POST"]
-  //       }
-  //   });
-  //   setSocket(newSocket);
-
-  //   // Set up event listener for 'diagram_response'
-  //   newSocket.on("diagram_response", handleDiagramResponse);
-
-  //   // Emit a request for diagram data
-  //   newSocket.emit("diagram_request");
-
-  //   // Cleanup function to disconnect socket when component unmounts
-  //   return () => {
-  //       newSocket.off("diagram_response", handleDiagramResponse);
-  //       newSocket.disconnect();
-  //   };
-  // }, [handleDiagramResponse]);
 
   useEffect(() => {
     // Initialize socket connection
@@ -71,10 +48,10 @@ export const WebSocketProvider = ({ children }) => {
       newSocket.off("diagram_response", handleDiagramResponse);
       newSocket.disconnect();
     };
-  }, [handleDiagramResponse]);
+  }, [handleDiagramResponse, handleTranscriptResponse]);
 
   return (
-    <WebSocketContext.Provider
+    <socketDataContext.Provider
       value={{
         socket: socket,
         transcriptData: transcriptData,
@@ -82,10 +59,10 @@ export const WebSocketProvider = ({ children }) => {
       }}
     >
       {children}
-    </WebSocketContext.Provider>
+    </socketDataContext.Provider>
   );
 };
 
-export const useWebSocket = () => {
-  return useContext(WebSocketContext);
+export const useSocketData = () => {
+  return useContext(socketDataContext);
 };

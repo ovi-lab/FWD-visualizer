@@ -10,7 +10,7 @@ import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./sankeyParts";
 import { filterData } from "@/app/utils/filters";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 // This const is a D3 sankey generator used to generate the data needed for the nodes and links to display properly in an SVG
 const createSankeyGenerator = (width, height) => {
@@ -26,7 +26,7 @@ const createSankeyGenerator = (width, height) => {
 };
 
 const SankeyDiagram = (props) => {
-  const {diagramData} = useWebSocket();
+  const {diagramData} = useSocketData();
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [viewBox, setViewBox] = useState({

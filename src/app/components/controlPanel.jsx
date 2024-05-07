@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, use } from "react";
 import { useFilter } from "@/app/contexts/filterContext";
 import TimeLine from "./timeline";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 const defaultFilters = {
   turn: "",
@@ -91,7 +91,7 @@ const FilterDropdown = ({
 // Component for the control panel
 const ControlPanel = () => {
   // States to store filter selections
-  const {transcriptData} = useWebSocket();
+  const {transcriptData} = useSocketData();
   const [filterState, setFilterState] = useState(defaultFilters);
   const [availableTopics, setAvailableTopics] = useState([]);
   const { setSelectedFilters } = useFilter();

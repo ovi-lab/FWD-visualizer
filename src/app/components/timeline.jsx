@@ -1,10 +1,10 @@
 "use client";
 import { useMemo } from "react";
 import { useTime } from "@/app/contexts/timeContext";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 export default function TimeLine() {
-  const { transcriptData } = useWebSocket();
+  const { transcriptData } = useSocketData();
   const { selectedTime, setSelectedTime } = useTime();
 
   const { start, end, steps } = useMemo(() => {

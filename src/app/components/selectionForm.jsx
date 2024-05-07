@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 export function SelectionForm() {
-  const {socket} = useWebSocket();
+  const {socket} = useSocketData();
   const [file, setFile] = useState(null);
   const [isConnected, setConnected] = useState(false);
 

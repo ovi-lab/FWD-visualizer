@@ -6,7 +6,7 @@ import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { filterData } from "@/app/utils/filters";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 function checkForCollection(current, previous) {
   if (previous=== undefined) return false;
@@ -27,7 +27,7 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
-  const {transcriptData} = useWebSocket();
+  const {transcriptData} = useSocketData();
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);

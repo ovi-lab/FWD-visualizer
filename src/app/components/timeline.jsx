@@ -15,12 +15,12 @@ export default function TimeLine() {
   useEffect(() => {
     if (!socket) return;
     // Listen for data updates from the Flask server
-    socket.emit("transcriptRequest");
+    socket.emit("transcript_request");
   }, [socket]);
   
   useEffect(() => {
     if (!socket) return;
-    socket.on("transcript-response", handleResponse
+    socket.on("transcript_response", handleResponse
     );
   });
 

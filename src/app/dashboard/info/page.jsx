@@ -20,12 +20,12 @@ const InfoPanel = () => {
   useEffect(() => {
     if (!socket) return;
     // Listen for data updates from the Flask server
-    socket.emit("diagramRequest")
+    socket.emit("diagram_request")
   }, [socket]);
   
   useEffect(() => {
     if (!socket) return;
-    socket.on("diagram-response", handleResponse
+    socket.on("diagram_response", handleResponse
     );
   });
 

@@ -65,7 +65,7 @@ const calcEngagement = (node, maxUtteranceLength) => {
  * @returns {JSX.Element} The rendered component.
  */
 export default function ArcDiagram() {
-  const socket = useWebSocket();
+  const {socket} = useWebSocket();
   const [data, setData] = useState(null);
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
@@ -88,12 +88,12 @@ export default function ArcDiagram() {
   useEffect(() => {
     if (!socket) return;
     // Listen for data updates from the Flask server
-    socket.emit("diagramRequest");
+    socket.emit("diagram_request");
   }, [socket]);
 
   useEffect(() => {
     if (!socket) return;
-    socket.on("diagram-response", handleResponse);
+    socket.on("diagram_response", handleResponse);
   });
 
   useEffect(() => {

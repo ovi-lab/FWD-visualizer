@@ -24,15 +24,15 @@ useEffect(() => {
   });
   setSocket(newSocket);
 
-  // Set up event listener for 'diagram-response'
-  newSocket.on("diagram-response", handleDiagramResponse);
+  // Set up event listener for 'diagram_response'
+  newSocket.on("diagram_response", handleDiagramResponse);
 
   // Emit a request for diagram data
-  newSocket.emit("diagramRequest");
+  newSocket.emit("diagram_request");
 
   // Cleanup function to disconnect socket when component unmounts
   return () => {
-      newSocket.off("diagram-response", handleDiagramResponse);
+      newSocket.off("diagram_response", handleDiagramResponse);
       newSocket.disconnect();
   };
 }, [handleDiagramResponse]);

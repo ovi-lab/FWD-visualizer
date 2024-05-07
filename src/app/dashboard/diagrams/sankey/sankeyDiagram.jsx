@@ -39,6 +39,7 @@ const SankeyDiagram = (props) => {
   const { selectedNode, setSelectedNode } = useSelectedNode();
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
+  console.log('diagramData', diagramData)
 
   useEffect(() => {
     if (!diagramData) return;

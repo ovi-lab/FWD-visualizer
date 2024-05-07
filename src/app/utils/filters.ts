@@ -17,7 +17,6 @@ interface Filters {
 
 function filterData(data: DataLine[], time: string, filters: Filters, isLink: boolean =false) {
   const parseDateTime = (timestamp: string) => Date.parse(timestamp)
-  console.log('BRRRRRRRRRRRRRRRROOOOOOOOOOOOOOOOOOOO')
   return data.filter((line: DataLine) => {
 
     if (parseDateTime(line.timestamp) > parseDateTime(time)) return false

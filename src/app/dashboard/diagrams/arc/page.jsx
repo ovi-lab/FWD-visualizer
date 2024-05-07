@@ -9,13 +9,66 @@ import { Node, Link } from "./arcParts";
 import { filterData } from "@/app/utils/filters";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
+/**
+ * Calculates the SVG path for a link between two nodes in an arc diagram.
+ * Computes a quadratic bezier curve based on the positions of the source and target nodes.
+ * @function
+ * @param {Object} link - The link object containing source and target node identifiers.
+ * @param {Array} nodesWithPosition - Array of nodes with precomputed positions.
+ * @param {Function} xHaru - D3 scale function for Haru nodes' x positions.
+ * @param {Function} xUser - D3 scale function for User nodes' x positions.
+ * @param {number} arcHeight - The y-coordinate for all nodes (same for source and target).
+ * @returns {string} A string representing the SVG path for the link.
+ */
+function calculateLinkPath(link, nodesWithPosition, xHaru, xUser, arcHeight) {
+  const sourceNode = nodesWithPosition.find(n => n.id === link.source);
+  const targetNode = nodesWithPosition.find(n => n.id === link.target);
+  if (!sourceNode || !targetNode) return '';
 
+  const start = sourceNode.turn === 'haru' ? xHaru(sourceNode.name) : xUser(sourceNode.name);
+  const end = targetNode.turn === 'haru' ? xHaru(targetNode.name) : xUser(targetNode.name);
+  const nodeMidpoint = Math.abs(start - end) / 2
+  return [
+    "M", start, arcHeight,
+    "A", nodeMidpoint, ",", nodeMidpoint,
+    0, 0, ",", start < end ? 1 : 0, end, ",", arcHeight
+  ].join(" ");
+}
+
+/**
+ * Calculates the engagement score for a node based on its interactions.
+ * The score is a weighted average of the sentiment score and the normalized length of responses.
+ * @function 
+ * @param {Object} node - The node object containing interactions.
+ * @param {number} maxUtteranceLength - The maximum length of an utterance for normalization.
+ * @returns {number} The calculated engagement score for the node.
+ */
+const calcEngagement = (node, maxUtteranceLength) => {
+  const lengthScore = node.interactions.reduce(
+    (acc, interaction) =>
+      acc + interaction.response.length / maxUtteranceLength,
+    0
+  );
+  const sentimentScore = node.interactions.reduce(
+    (acc, interaction) => acc + interaction.sentiment_score,
+    0
+  );
+  const avgLength = lengthScore / node.interactions.length;
+  const avgSentiment = sentimentScore / node.interactions.length;
+  return 0.5 * (avgSentiment + avgLength);
+};
+
+/**
+ * React component for rendering an arc diagram visualization.
+ * The diagram is dynamically generated based on the data received over a WebSocket connection.
+ * @component 
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function ArcDiagram() {
-  const socket = useWebSocket()
+  const socket = useWebSocket();
   const [data, setData] = useState(null);
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [scales, setScales] = useState({});
   const [viewBox, setViewBox] = useState([]);
   // Context for storing the node the user selects
@@ -37,13 +90,11 @@ export default function ArcDiagram() {
     // Listen for data updates from the Flask server
     socket.emit("diagramRequest");
   }, [socket]);
-  
+
   useEffect(() => {
     if (!socket) return;
-    socket.on("diagram-response", handleResponse
-    );
+    socket.on("diagram-response", handleResponse);
   });
-
 
   useEffect(() => {
     if (!data) return;
@@ -82,39 +133,15 @@ export default function ArcDiagram() {
       selectedFilters,
       true
     );
-    const calculatedLinks = filteredLinks.map((link) => {
-      let d;
-      if (idToNode[link.source] !== undefined && idToNode[link.target] !== undefined) {
-        const start = idToNode[link.source].turn === "haru"
-        ? xHaru(idToNode[link.source].name)
-        : xUser(idToNode[link.source].name);
-      const end = idToNode[link.target].turn === "haru"
-        ? xHaru(idToNode[link.target].name)
-        : xUser(idToNode[link.target].name);
-      d = [
-        "M",
-        start,
-        arcHeight,
-        "A",
-        (start - end) / 2,
-        ",",
-        (start - end) / 2,
-        0,
-        0,
-        ",",
-        start < end ? 1 : 0,
-        end,
-        ",",
-        arcHeight,
-      ].join(" ");
-      }
-      
-      return { ...link, d };
-    });
+
+    const linkPaths = filteredLinks.map(link => ({
+      ...link,
+      d: calculateLinkPath(link, filteredNodes, xHaru, xUser, arcHeight)
+    }));
+
     setNodes(filteredNodes);
-    setLinks(calculatedLinks);
-    setLoading(false);
-  }, [selectedTime, data, selectedFilters, loading]);
+    setLinks(linkPaths);
+  }, [selectedTime, data, selectedFilters]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content
@@ -128,28 +155,9 @@ export default function ArcDiagram() {
 
   // A linear scale for node size
   const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
-  
-  /**
-   * Description placeholder
-   *
-   * @param {*} node
-   * @param {number} maxUtteranceLength
-   * @returns {number}
-   */
-  const calcEngagement = (node, maxUtteranceLength) => {
-    let lengthScore = 0
-      let sentimentScore = 0
-    node.interactions.map((interaction) => {
-      lengthScore = lengthScore + interaction.response.length / maxUtteranceLength
-      sentimentScore = sentimentScore + interaction.sentiment_score
-  })
-    const avgLength = lengthScore / node.interactions.length
-    const avgSentiment = sentimentScore / node.interactions.length 
-    
-    return (0.5 * avgSentiment) + (0.5 * avgLength) 
-  }
 
-  if (loading) return <p>loading...</p>;
+
+  if (!data) return <p>loading...</p>;
 
   return (
     <div className="p-6 arcWrapper">
@@ -167,28 +175,29 @@ export default function ArcDiagram() {
           ))}
           {/* Render the nodes on the diagram */}
           {nodes.map((node) => {
-            let engagementScore = 0
-            console.log(data.attributes)
-            node.turn === 'haru' ? 
-            engagementScore = calcEngagement(node, data.attributes.longest_haru_utterance) 
-            : engagementScore = calcEngagement(node, data.attributes.longest_user_utterance)
-            console.log(engagementScore)
-            return(
-            <Node
-              key={node.id}
-              xPosition={
-                node.turn === 'haru'
-                  ? scales.haruScale(node.name)
-                  : scales.userScale(node.name)
-              }
-              node={node}
-              size={size(30*engagementScore)}
-              arcHeight={450}
-              isSelected={node.name === selectedNode}
-              handle={handleNodeSelect}
-            />)
-          }
-          )}
+            const engagementScore = calcEngagement(
+              node,
+              node.turn === "haru"
+                ? data.attributes.longest_haru_utterance
+                : data.attributes.longest_user_utterance
+            );
+
+            return (
+              <Node
+                key={node.id}
+                xPosition={
+                  node.turn === "haru"
+                    ? scales.haruScale(node.name)
+                    : scales.userScale(node.name)
+                }
+                node={node}
+                size={size(30 * engagementScore)}
+                arcHeight={450}
+                isSelected={node.name === selectedNode}
+                handle={handleNodeSelect}
+              />
+            );
+          })}
         </g>
       </svg>
     </div>

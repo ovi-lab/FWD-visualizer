@@ -1,5 +1,6 @@
 /**
  * Represents a node component for an arc diagram.
+ * @component
  * @param {object} props - The props object containing the properties of the node.
  * @param {object} props.node - The node object containing information about the node.
  * @param {number} props.xPosition - The x-coordinate position of the node.
@@ -38,22 +39,23 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
       />
 
       <text
-        x={xPosition - 30}
-        y={arcHeight + 30}
+        className={"label arcLabel text-m"}
+        x={xPosition - 35}
+        y={arcHeight + 35}
         transform={`rotate(-45)`}
         style={{
           textAnchor: "end",
           transformOrigin: `${xPosition}px ${arcHeight - 15}px`,
-          fontSize: "0.8rem",
         }}
-        className="label arcLabel"
       >
         {node.name}
       </text>
     </g>
   );
+
 /**
  * Represents a link component for an arc diagram.
+ * @component
  * @param {object} props - The props object containing the properties of the link.
  * @param {string} props.name - The name of the link.
  * @param {string} props.pathData - The path data for the link.

@@ -1,7 +1,7 @@
-import SideBar from "../ui/sideBar";
-import ControlPanel from "../ui/controlPanel";
-import { SelectedNodeProvider } from "../contexts/selectedNodeContext";
-import { ChatProvider } from "../contexts/chatContext";
+import SideBar from "@/app/components/sideBar";
+import ControlPanel from "@/app/components/controlPanel";
+import { SelectedNodeProvider } from "@/app/contexts/selectedNodeContext";
+import { ChatProvider } from "@/app/contexts/chatContext";
 import { TimeProvider } from "@/app/contexts/timeContext";
 import { FilterProvider } from "@/app/contexts/filterContext";
 import { WebSocketProvider } from "@/app/contexts/webSocketContext";
@@ -10,7 +10,7 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="grid grid-cols-9 w-screen h-screen">
+    <div className="grid grid-cols-9 w-full h-full min-h-screen min-w-screen">
       <WebSocketProvider>
         <div className="col-span-1 flex flex-col h-full">
           <SideBar />
@@ -19,13 +19,14 @@ export default function Layout({
         <div className="col-span-8 flex flex-col h-full">
           <TimeProvider>
             <FilterProvider>
-              <div className="p-3 overflow-y-auto flex-1">
+              <div className="flex-1 overflow-y-auto p-3">
                 <ChatProvider>
-                  <SelectedNodeProvider>{children}</SelectedNodeProvider>
+                  <SelectedNodeProvider>
+                    {children}
+                  </SelectedNodeProvider>
                 </ChatProvider>
-
               </div>
-                <ControlPanel />
+              <ControlPanel />
             </FilterProvider>
           </TimeProvider>
         </div>

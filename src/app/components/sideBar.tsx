@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SelectionForm } from "./dataSourceSelect/selectionForm";
+import { SelectionForm } from "./selectionForm";
 
 interface NavItemProps {
   href: string;

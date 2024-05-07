@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import "./chatBox.css";
-import { useChatAnchor } from "../../contexts/chatContext";
+import { useChatAnchor } from "@/app/contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import { filterData } from "@/app/dashboard/utils/filters";
+import { filterData } from "@/app/utils/filters";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 function checkForCollection(current, previous) {
@@ -34,7 +34,6 @@ export default function Chatbox() {
   let AnchorRef = useRef(null);
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
-  // const {setSelectedNode} = useSelectedNode();
 
   const anchorMoveCallback = useCallback(
     (anchorRef) => {
@@ -99,7 +98,6 @@ export default function Chatbox() {
   useEffect(() => {
     anchorMove(chatAnchor);
   }, [chatAnchor]);
-
   if (!data) return <p>Loading...</p>;
   return (
     <div className="h-[80vh] col-span-2 chatbox-container">

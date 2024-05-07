@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useLayoutEffect} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   sankey as d3sankey,
   sankeyCenter,
@@ -9,21 +9,21 @@ import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./sankeyParts";
-import { filterData } from "@/app/dashboard/utils/filters";
+import { filterData } from "@/app/utils/filters";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 // This const is a D3 sankey generator used to generate the data needed for the nodes and links to display properly in an SVG
 const createSankeyGenerator = (width, height) => {
   return d3sankey()
-  .nodeWidth(15)
-  .nodePadding(10)
-  .nodeId((node) => node.id)
-  .nodeAlign(sankeyCenter)
-  .extent([
-    [1, 1],
-    [width, height - 5],
-  ]);
-}
+    .nodeWidth(15)
+    .nodePadding(10)
+    .nodeId((node) => node.id)
+    .nodeAlign(sankeyCenter)
+    .extent([
+      [1, 1],
+      [width, height - 5],
+    ]);
+};
 
 const SankeyDiagram = (props) => {
   const socket = useWebSocket();
@@ -58,17 +58,16 @@ const SankeyDiagram = (props) => {
 
   useEffect(() => {
     if (!data) return;
-    let rawLinks = [];
     const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
 
-    if (props.dataDirection === "haru-user") {
-      rawLinks = data.links.haru;
-    } else {
-      rawLinks = data.links.user;
-    }
+    const rawLinks =
+      props.dataDirection === "haru-user" ? data.links.haru : data.links.user;
+
     const filteredLinks = filterData(rawLinks, selectedTime, selectedFilters);
-    console.log('viewBox', viewBox)
-    const sankeyGenerator = createSankeyGenerator(viewBox.width, viewBox.height)
+    const sankeyGenerator = createSankeyGenerator(
+      viewBox.width,
+      viewBox.height
+    );
     try {
       const { nodes, links } = sankeyGenerator({
         nodes: filteredNodes,
@@ -85,13 +84,13 @@ const SankeyDiagram = (props) => {
     setSelectedNode(nodeName);
   };
 
-
   if (!data) return <div>Loading...</div>;
+
   return (
     <svg
       className="sankeyDiagram p-1"
       ref={sankeyRef}
-      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}  
+      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
     >
       <g style={{ mixBlendMode: "multiply" }} id={"svg-content"}>
         {links.map((link) => (
@@ -99,7 +98,7 @@ const SankeyDiagram = (props) => {
             key={link.name}
             linkID={link.id}
             dValue={sankeyLinkHorizontal()(link)}
-            linkSourceName={link.source.name.match(/:(.*)/)[1].trim()}
+            linkSourceName={link.sourceName.match(/:(.*)/)[1].trim()}
             linkedNodeSelected={link.name.includes(selectedNode)}
             linkWidth={link.width}
           />

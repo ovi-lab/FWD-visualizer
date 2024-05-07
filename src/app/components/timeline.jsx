@@ -1,14 +1,11 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { useTime } from "../contexts/timeContext";
-import { useWebSocket } from "../contexts/webSocketContext";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { useTime } from "@/app/contexts/timeContext";
+import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 export default function TimeLine() {
   const socket = useWebSocket()
   const [data, setData] = useState([]);
-  const [start, setStart] = useState("1970-01-01 16:26:30");
-  const [end, setEnd] = useState("1970-01-01 16:26:31");
-  const [steps, setSteps] = useState(0);
   const { selectedTime, setSelectedTime } = useTime();
 
   const handleResponse = useCallback((newData) => {
@@ -27,17 +24,22 @@ export default function TimeLine() {
     );
   });
 
-  useEffect(() => {
-    if (!data || data.length === 0) return;
-    const start = data.at(0).timestamp;
-    const final = data.at(-1).timestamp;
-    setStart(start);
-    setEnd(final);
-    setSelectedTime(final);
-    setSteps(
-      Math.ceil((Date.parse(final) - Date.parse(start)) / data.length / 1000)
-    );
+  const { start, end, steps } = useMemo(() => {
+    if (data.length === 0) {
+      return { start: "", end: "", steps: 10000 }; // default to 10 seconds if no data
+    }
+    const startTime = data[0]?.timestamp;
+    const endTime = data[data.length - 1]?.timestamp;
+    setSelectedTime(endTime)
+    const totalDuration = Date.parse(endTime) - Date.parse(startTime);
+    const fullIntervals = Math.floor(totalDuration / 10000);
+    const remainder = totalDuration % 10000;
+    const totalIntervals = remainder > 0 ? fullIntervals + 1 : fullIntervals;
+    const stepSize = totalDuration / totalIntervals; // Adjust step size to exactly fit the range
+
+    return { start: startTime, end: endTime, steps: stepSize };
   }, [data]);
+
 
   const handleTimeSelect = (e) => {
     // Parse the input value as a date string
@@ -49,7 +51,6 @@ export default function TimeLine() {
     }
   };
 
-  const handlePlay = (e) => {};
 
   if (!data || data.length === 0)
     return (

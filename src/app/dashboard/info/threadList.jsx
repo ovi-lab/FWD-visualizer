@@ -1,7 +1,7 @@
 import "./infoStyles.css";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import { filterData } from "../utils/filters";
+import { filterData } from "@/app/utils/filters";
 
 function InfoButton({ interact, conversationNum, handleClick, isClicked }) {
   // Set a maximum length for the response

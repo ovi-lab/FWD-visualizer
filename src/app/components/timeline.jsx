@@ -4,7 +4,7 @@ import { useTime } from "@/app/contexts/timeContext";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 export default function TimeLine() {
-  const {socket} = useWebSocket()
+  const { socket } = useWebSocket();
   const [data, setData] = useState([]);
   const { selectedTime, setSelectedTime } = useTime();
 
@@ -17,11 +17,10 @@ export default function TimeLine() {
     // Listen for data updates from the Flask server
     socket.emit("transcript_request");
   }, [socket]);
-  
+
   useEffect(() => {
     if (!socket) return;
-    socket.on("transcript_response", handleResponse
-    );
+    socket.on("transcript_response", handleResponse);
   });
 
   const { start, end, steps } = useMemo(() => {
@@ -30,7 +29,7 @@ export default function TimeLine() {
     }
     const startTime = data[0]?.timestamp;
     const endTime = data[data.length - 1]?.timestamp;
-    setSelectedTime(endTime)
+    setSelectedTime(endTime);
     const totalDuration = Date.parse(endTime) - Date.parse(startTime);
     const fullIntervals = Math.floor(totalDuration / 10000);
     const remainder = totalDuration % 10000;
@@ -39,7 +38,6 @@ export default function TimeLine() {
 
     return { start: startTime, end: endTime, steps: stepSize };
   }, [data]);
-
 
   const handleTimeSelect = (e) => {
     // Parse the input value as a date string
@@ -50,7 +48,6 @@ export default function TimeLine() {
       setSelectedTime(selectedDate.toString());
     }
   };
-
 
   if (!data || data.length === 0)
     return (

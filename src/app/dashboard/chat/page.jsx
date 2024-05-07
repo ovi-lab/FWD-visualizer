@@ -27,8 +27,7 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
-  const {socket} = useWebSocket();
-  const [data, setData] = useState([]);
+  const {transcriptData} = useWebSocket();
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
@@ -68,21 +67,6 @@ export default function Chatbox() {
 
   const anchorMove = anchorMoveCallback(AnchorRef);
 
-  const handleResponse = useCallback((newData) => {
-    setData(newData);
-  }, []);
-
-  useEffect(() => {
-    if (!socket) return;
-    // Listen for data updates from the Flask server
-    socket.emit("transcript_request");
-  }, [socket]);
-
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("transcript_response", handleResponse);
-  });
-
   useEffect(() => {
     // Scroll to the last line whenever a new last line is added
     if (statements.length > 0) {
@@ -91,14 +75,16 @@ export default function Chatbox() {
   }, [statements, anchorMove]);
 
   useEffect(() => {
-    const filteredLines = filterData(data, selectedTime, selectedFilters);
+    if (!transcriptData) return
+    const filteredLines = filterData(transcriptData, selectedTime, selectedFilters);
     setStatements(filteredLines);
-  }, [data, selectedTime, selectedFilters]);
+  }, [transcriptData, selectedTime, selectedFilters]);
 
   useEffect(() => {
     anchorMove(chatAnchor);
   }, [chatAnchor]);
-  if (!data) return <p>Loading...</p>;
+
+  if (!transcriptData) return <p>Loading...</p>;
   return (
     <div className="h-[80vh] col-span-2 chatbox-container">
       <div className="chatbox-body h-100% overflow-hidden rounded-lg pb-10">

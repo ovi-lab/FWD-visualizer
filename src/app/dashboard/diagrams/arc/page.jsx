@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect} from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
@@ -65,8 +65,7 @@ const calcEngagement = (node, maxUtteranceLength) => {
  * @returns {JSX.Element} The rendered component.
  */
 export default function ArcDiagram() {
-  const {socket} = useWebSocket();
-  const [data, setData] = useState(null);
+  const {diagramData} = useWebSocket();
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [scales, setScales] = useState({});
@@ -81,23 +80,8 @@ export default function ArcDiagram() {
     setSelectedNode(nodeName);
   };
 
-  const handleResponse = useCallback((newData) => {
-    setData(newData);
-  }, []);
-
   useEffect(() => {
-    if (!socket) return;
-    // Listen for data updates from the Flask server
-    socket.emit("diagram_request");
-  }, [socket]);
-
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("diagram_response", handleResponse);
-  });
-
-  useEffect(() => {
-    if (!data) return;
+    if (!diagramData) return;
     const haruNodes = [];
     const userNodes = [];
     const allNodes = [];
@@ -107,7 +91,7 @@ export default function ArcDiagram() {
     const arcHeight = 450;
     const midPoint = arcWidth / 2;
 
-    const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
+    const filteredNodes = filterData(diagramData.nodes, selectedTime, selectedFilters);
     filteredNodes.map((node) => {
       allNodes.push(node.name);
       idToNode[node.id] = node;
@@ -128,7 +112,7 @@ export default function ArcDiagram() {
     setScales({ haruScale: xHaru, userScale: xUser });
 
     const filteredLinks = filterData(
-      data.links.haru.concat(data.links.user),
+      diagramData.links.haru.concat(diagramData.links.user),
       selectedTime,
       selectedFilters,
       true
@@ -141,7 +125,7 @@ export default function ArcDiagram() {
 
     setNodes(filteredNodes);
     setLinks(linkPaths);
-  }, [selectedTime, data, selectedFilters]);
+  }, [selectedTime, diagramData, selectedFilters]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content
@@ -157,7 +141,7 @@ export default function ArcDiagram() {
   const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
 
 
-  if (!data) return <p>loading...</p>;
+  if (!diagramData) return <p>loading...</p>;
 
   return (
     <div className="p-6 arcWrapper">
@@ -178,8 +162,8 @@ export default function ArcDiagram() {
             const engagementScore = calcEngagement(
               node,
               node.turn === "haru"
-                ? data.attributes.longest_haru_utterance
-                : data.attributes.longest_user_utterance
+                ? diagramData.attributes.longest_haru_utterance
+                : diagramData.attributes.longest_user_utterance
             );
 
             return (

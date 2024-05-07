@@ -91,33 +91,18 @@ const FilterDropdown = ({
 // Component for the control panel
 const ControlPanel = () => {
   // States to store filter selections
-  const {socket} = useWebSocket();
-  const [data, setData] = useState([]);
+  const {transcriptData} = useWebSocket();
   const [filterState, setFilterState] = useState(defaultFilters);
   const [availableTopics, setAvailableTopics] = useState([]);
   const { setSelectedFilters } = useFilter();
 
-  const handleResponse = useCallback((newData) => {
-    setData(newData);
-  }, []);
-
   useEffect(() => {
-    if (!socket) return;
-    // Listen for data updates from the Flask server
-    socket.emit("transcript_request");
-  }, [socket]);
-
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("transcript_response", handleResponse);
-  });
-
-  useEffect(() => {
+    if (!transcriptData) return
     // Create a new Set to collect unique topics where 'turn' is 'haru'
     const uniqueTopics = new Set();
   
     // Iterate over the data array to filter out unique 'haru' topics
-    data.forEach((line) => {
+    transcriptData.forEach((line) => {
       if (line.turn === "haru") {
         uniqueTopics.add(line.topic);
       }
@@ -125,7 +110,7 @@ const ControlPanel = () => {
   
     // Convert the Set back to an array and update the state
     setAvailableTopics([...uniqueTopics]);
-  }, [data]);
+  }, [transcriptData]);
 
   /**
    * Sets all the filter states to their default values
@@ -142,7 +127,7 @@ const ControlPanel = () => {
     setSelectedFilters(newFilters);
   };
 
-  if (!data) return <div>loading</div>;
+  if (!transcriptData) return <div>loading</div>;
   return (
     <div className="bottom-0 mr-auto ml-auto pb-1 bg-gray-700 rounded-lg shadow-md">
       <div className="flex">

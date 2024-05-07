@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 export function SelectionForm() {
-  const socket = useWebSocket();
+  const {socket} = useWebSocket();
   const [file, setFile] = useState(null);
   const [isConnected, setConnected] = useState(false);
 

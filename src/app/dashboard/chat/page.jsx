@@ -27,7 +27,7 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
-  const socket = useWebSocket();
+  const {socket} = useWebSocket();
   const [data, setData] = useState([]);
   const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();

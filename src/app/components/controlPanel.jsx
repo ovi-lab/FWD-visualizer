@@ -91,7 +91,7 @@ const FilterDropdown = ({
 // Component for the control panel
 const ControlPanel = () => {
   // States to store filter selections
-  const socket = useWebSocket();
+  const {socket} = useWebSocket();
   const [data, setData] = useState([]);
   const [filterState, setFilterState] = useState(defaultFilters);
   const [availableTopics, setAvailableTopics] = useState([]);

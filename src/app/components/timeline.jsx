@@ -4,7 +4,7 @@ import { useTime } from "@/app/contexts/timeContext";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 export default function TimeLine() {
-  const socket = useWebSocket()
+  const {socket} = useWebSocket()
   const [data, setData] = useState([]);
   const { selectedTime, setSelectedTime } = useTime();
 

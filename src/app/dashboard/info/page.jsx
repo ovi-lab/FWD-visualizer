@@ -7,7 +7,7 @@ import { useChatAnchor } from "../../contexts/chatContext";
 import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 const InfoPanel = () => {
-  const socket = useWebSocket()
+  const {socket} = useWebSocket()
   const [data, setData] = useState([]);
   const { selectedNode } = useSelectedNode();
   const { chatAnchor, setChatAnchor } = useChatAnchor();

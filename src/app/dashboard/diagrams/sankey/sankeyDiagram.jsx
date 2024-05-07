@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect} from "react";
 import {
   sankey as d3sankey,
   sankeyCenter,
@@ -26,8 +26,7 @@ const createSankeyGenerator = (width, height) => {
 };
 
 const SankeyDiagram = (props) => {
-  const socket = useWebSocket();
-  const [data, setData] = useState(null);
+  const {diagramData} = useWebSocket();
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [viewBox, setViewBox] = useState({
@@ -41,27 +40,12 @@ const SankeyDiagram = (props) => {
   const { selectedTime } = useTime();
   const { selectedFilters } = useFilter();
 
-  const handleResponse = useCallback((newData) => {
-    setData(newData);
-  }, []);
-
   useEffect(() => {
-    if (!socket) return;
-    // Listen for data updates from the Flask server
-    socket.emit("diagramRequest");
-  }, [socket]);
-
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("diagram-response", handleResponse);
-  });
-
-  useEffect(() => {
-    if (!data) return;
-    const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
+    if (!diagramData) return;
+    const filteredNodes = filterData(diagramData.nodes, selectedTime, selectedFilters);
 
     const rawLinks =
-      props.dataDirection === "haru-user" ? data.links.haru : data.links.user;
+      props.dataDirection === "haru-user" ? diagramData.links.haru : diagramData.links.user;
 
     const filteredLinks = filterData(rawLinks, selectedTime, selectedFilters);
     const sankeyGenerator = createSankeyGenerator(
@@ -78,13 +62,13 @@ const SankeyDiagram = (props) => {
     } catch (error) {
       console.log("error", error);
     }
-  }, [data, selectedTime, selectedFilters, props.dataDirection, viewBox]);
+  }, [diagramData, selectedTime, selectedFilters, props.dataDirection, viewBox]);
 
   const handleSankeyInteraction = (nodeName) => {
     setSelectedNode(nodeName);
   };
 
-  if (!data) return <div>Loading...</div>;
+  if (!diagramData) return <div>Loading...</div>;
 
   return (
     <svg

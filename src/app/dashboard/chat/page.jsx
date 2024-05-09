@@ -3,10 +3,8 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import "./chatBox.css";
 import { useChatAnchor } from "@/app/contexts/chatContext";
 import Bubble from "./chatBubble";
-import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import { filterData } from "@/app/utils/filters";
-import { useSocketData } from "@/app/contexts/SocketDataContext";
+
 
 function checkForCollection(current, previous) {
   if (previous=== undefined) return false;
@@ -27,12 +25,9 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
-  const {transcriptData} = useSocketData();
-  const [statements, setStatements] = useState([]);
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
-  const { selectedTime } = useTime();
-  const { selectedFilters } = useFilter();
+  const { filteredTranscript} = useFilter();
 
   const anchorMoveCallback = useCallback(
     (anchorRef) => {
@@ -69,22 +64,22 @@ export default function Chatbox() {
 
   useEffect(() => {
     // Scroll to the last line whenever a new last line is added
-    if (statements.length > 0) {
-      anchorMove(`response${statements.length - 1}`);
+    if (filteredTranscript.length > 0) {
+      anchorMove(`response${filteredTranscript.length - 1}`);
     }
-  }, [statements, anchorMove]);
+  }, [filteredTranscript, anchorMove]);
 
-  useEffect(() => {
-    if (!transcriptData) return
-    const filteredLines = filterData(transcriptData, selectedTime, selectedFilters);
-    setStatements(filteredLines);
-  }, [transcriptData, selectedTime, selectedFilters]);
+  // useEffect(() => {
+  //   if (!transcriptData) return
+  //   const filteredLines = filterData(transcriptData, selectedFilters);
+  //   setStatements(filteredLines);
+  // }, [transcriptData, selectedTime, selectedFilters]);
 
   useEffect(() => {
     anchorMove(chatAnchor);
   }, [chatAnchor]);
 
-  if (!transcriptData) return <p>Loading...</p>;
+  if (!filteredTranscript) return <p>Loading...</p>;
   return (
     <div className="h-[80vh] col-span-2 chatbox-container">
       <div className="chatbox-body h-100% overflow-hidden rounded-lg pb-10">
@@ -92,7 +87,7 @@ export default function Chatbox() {
           <h2 className="text-lg font-semibold">Conversation Transcript</h2>
         </div>
         <div className="chatbox-content overflow-y-scroll" id="chatboxContent">
-          {statements.map((stmt, index) => {
+          {filteredTranscript.map((stmt, index) => {
             return (
               <div key={stmt.idx}>
                 <Bubble
@@ -100,10 +95,10 @@ export default function Chatbox() {
                   turn={stmt.turn}
                   sentiLabel={stmt.sentiment_label}
                   sentiScore={stmt.sentiment_score}
-                  timestamp={includeTimestamp(stmt, statements[index - 1])}
+                  timestamp={includeTimestamp(stmt, filteredTranscript[index - 1])}
                   emoLabel={stmt.emotion_label}
                   utterance={stmt.sentence}
-                  wasCollected={checkForCollection(stmt, statements[index - 1])}
+                  wasCollected={checkForCollection(stmt, filteredTranscript[index - 1])}
                 />
               </div>
             );

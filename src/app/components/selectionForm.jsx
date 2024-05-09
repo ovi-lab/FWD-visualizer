@@ -45,10 +45,10 @@ export function SelectionForm() {
 
   const toggleConnection = () => {
     if (isConnected) {
-      socket.emit("killRosFeed");
+      socket.emit("kill_ros_feed");
       setConnected(false);
     } else {
-      socket.emit("initRosFeed");
+      socket.emit("init_ros_feed");
       setConnected(true);
     }
   };

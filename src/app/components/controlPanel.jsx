@@ -94,7 +94,7 @@ const ControlPanel = () => {
   const {transcriptData} = useSocketData();
   const [filterState, setFilterState] = useState(defaultFilters);
   const [availableTopics, setAvailableTopics] = useState([]);
-  const { setSelectedFilters } = useFilter();
+  const { setFilters } = useFilter();
 
   useEffect(() => {
     if (!transcriptData) return
@@ -118,13 +118,13 @@ const ControlPanel = () => {
    */
   const resetFilters = () => {
     setFilterState(defaultFilters);
-    setSelectedFilters(defaultFilters);
+    setFilters(defaultFilters);
   };
 
   const applyFilter = (filter, value) => {
     const newFilters = { ...filterState, [filter]: value };
     setFilterState(newFilters);
-    setSelectedFilters(newFilters);
+    setFilters(newFilters);
   };
 
   if (!transcriptData) return <div>loading</div>;

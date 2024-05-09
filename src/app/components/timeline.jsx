@@ -1,11 +1,13 @@
 "use client";
 import { useMemo } from "react";
 import { useTime } from "@/app/contexts/timeContext";
+import { useFilter } from "@/app/contexts/filterContext";
 import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 export default function TimeLine() {
   const { transcriptData } = useSocketData();
   const { selectedTime, setSelectedTime } = useTime();
+  const {filters, setFilters} = useFilter();
 
   const { start, end, steps } = useMemo(() => {
     if (transcriptData.length === 0) {
@@ -13,7 +15,7 @@ export default function TimeLine() {
     }
     const startTime = transcriptData[0]?.timestamp;
     const endTime = transcriptData[transcriptData.length - 1]?.timestamp;
-    setSelectedTime(endTime);
+    setFilters({...filters, ["timestamp"]: endTime});
     const totalDuration = Date.parse(endTime) - Date.parse(startTime);
     const fullIntervals = Math.floor(totalDuration / 10000);
     const remainder = totalDuration % 10000;
@@ -29,7 +31,7 @@ export default function TimeLine() {
     // Check if the parsed date is valid
     if (!isNaN(selectedDate.getTime())) {
       // If the date is valid, update the selected time in the context
-      setSelectedTime(selectedDate.toString());
+      setSelectedTime(setFilters({...filters, ["timestamp"]: selectedDate.toString()}));
     }
   };
 

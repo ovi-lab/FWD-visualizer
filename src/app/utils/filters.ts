@@ -13,13 +13,13 @@ interface Filters {
   emotion: string;
   sentiment: string;
   topic: string;
+  timestamp: string;
 }
 
-function filterData(data: DataLine[], time: string, filters: Filters, isLink: boolean =false) {
-  const parseDateTime = (timestamp: string) => Date.parse(timestamp)
+function filterData(data: DataLine[], filters: Filters, isLink: boolean =false) {
   return data.filter((line: DataLine) => {
 
-    if (parseDateTime(line.timestamp) > parseDateTime(time)) return false
+    if (Date.parse(line.timestamp) > Date.parse(filters.timestamp)) return false
 
     if (isLink && line.sourceName) {
       const [turn, topic] = line.sourceName.split(": ").map(item => item.trim());

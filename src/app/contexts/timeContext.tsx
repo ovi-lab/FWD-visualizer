@@ -1,5 +1,5 @@
 'use client'
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useMemo } from 'react';
 
 interface TimeContextType {
   selectedTime: string | undefined;
@@ -11,8 +11,13 @@ const TimeContext = createContext<TimeContextType | undefined>(undefined);
 export const TimeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedTime, setSelectedTime] = useState<string>("1970-01-01 16:26:31");
 
+  const values = useMemo(() => ({
+    selectedTime,
+    setSelectedTime
+  }), [selectedTime]);
+
   return (
-    <TimeContext.Provider value={{ selectedTime, setSelectedTime }}>
+    <TimeContext.Provider value={values}>
       {children}
     </TimeContext.Provider>
   );

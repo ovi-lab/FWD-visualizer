@@ -69,11 +69,6 @@ export default function Chatbox() {
     }
   }, [filteredTranscript, anchorMove]);
 
-  // useEffect(() => {
-  //   if (!transcriptData) return
-  //   const filteredLines = filterData(transcriptData, selectedFilters);
-  //   setStatements(filteredLines);
-  // }, [transcriptData, selectedTime, selectedFilters]);
 
   useEffect(() => {
     anchorMove(chatAnchor);

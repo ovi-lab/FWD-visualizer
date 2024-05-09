@@ -3,11 +3,8 @@ import React, { useState, useEffect} from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
-import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./arcParts";
-import { filterData } from "@/app/utils/filters";
-import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 /**
  * Calculates the SVG path for a link between two nodes in an arc diagram.
@@ -65,7 +62,6 @@ const calcEngagement = (node, maxUtteranceLength) => {
  * @returns {JSX.Element} The rendered component.
  */
 export default function ArcDiagram() {
-  const {diagramData} = useSocketData();
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [scales, setScales] = useState({});
@@ -73,15 +69,14 @@ export default function ArcDiagram() {
   // Context for storing the node the user selects
   const { selectedNode, setSelectedNode } = useSelectedNode();
   // Contexts used for filtering
-  const { selectedTime } = useTime();
-  const { selectedFilters } = useFilter();
+  const { filteredDiagram} = useFilter();
 
   const handleNodeSelect = (nodeName) => {
     setSelectedNode(nodeName);
   };
 
   useEffect(() => {
-    if (!diagramData) return;
+    if (!filteredDiagram) return;
     const haruNodes = [];
     const userNodes = [];
     const allNodes = [];
@@ -91,7 +86,7 @@ export default function ArcDiagram() {
     const arcHeight = 450;
     const midPoint = arcWidth / 2;
 
-    const filteredNodes = filterData(diagramData.nodes, selectedTime, selectedFilters);
+    const filteredNodes = filteredDiagram.nodes
     filteredNodes.map((node) => {
       allNodes.push(node.name);
       idToNode[node.id] = node;
@@ -111,21 +106,17 @@ export default function ArcDiagram() {
 
     setScales({ haruScale: xHaru, userScale: xUser });
 
-    const filteredLinks = filterData(
-      diagramData.links.haru.concat(diagramData.links.user),
-      selectedTime,
-      selectedFilters,
-      true
-    );
 
-    const linkPaths = filteredLinks.map(link => ({
+    const filteredCombinedLinks = filteredDiagram.links.haru.concat(filteredDiagram.links.user)
+
+    const linkPaths = filteredCombinedLinks.map(link => ({
       ...link,
       d: calculateLinkPath(link, filteredNodes, xHaru, xUser, arcHeight)
     }));
 
     setNodes(filteredNodes);
     setLinks(linkPaths);
-  }, [selectedTime, diagramData, selectedFilters]);
+  }, [filteredDiagram]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content
@@ -141,7 +132,7 @@ export default function ArcDiagram() {
   const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
 
 
-  if (!diagramData) return <p>loading...</p>;
+  if (!filteredDiagram) return <p>loading...</p>;
 
   return (
     <div className="p-6 arcWrapper">
@@ -162,8 +153,8 @@ export default function ArcDiagram() {
             const engagementScore = calcEngagement(
               node,
               node.turn === "haru"
-                ? diagramData.attributes.longest_haru_utterance
-                : diagramData.attributes.longest_user_utterance
+                ? filteredDiagram.attributes.longest_haru_utterance
+                : filteredDiagram.attributes.longest_user_utterance
             );
 
             return (

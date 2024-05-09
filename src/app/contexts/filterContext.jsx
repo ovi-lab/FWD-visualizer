@@ -1,6 +1,6 @@
 'use client'
 import React, { createContext, useState, useContext, useEffect} from 'react';
-import { useSocketData } from './SocketDataContext';
+import { useSocketData } from './socketDataContext';
 import { filterData } from '../utils/filters';
 import { link } from 'fs';
 import ArcDiagram from '../dashboard/diagrams/arc/page';
@@ -18,8 +18,9 @@ const defaultFilteredDiagramData = {
   nodes: [],
   links: {
     haru: [],
-    user: []
-  }
+    user: [],
+  },
+  attributes: {}
 }
 
 export const FilterProvider = ({ children }) => {
@@ -37,13 +38,13 @@ export const FilterProvider = ({ children }) => {
     const filteredHaruLinks = filterData(diagramData.links.haru, filters)
     const filteredUserLinks = filterData(diagramData.links.user, filters)
 
-    setFilteredDiagram({nodes: filteredNodes, links: {haru: filteredHaruLinks, user: filteredUserLinks}})
+    setFilteredDiagram({nodes: filteredNodes, links: {haru: filteredHaruLinks, user: filteredUserLinks}, attributes: diagramData.attributes})
     
   }, [filters, transcriptData, diagramData])
   
 
   return (
-    <FilterContext.Provider value={{ filters, setFilters , filteredTranscript : filteredTranscript, filteredDiagram : filteredDiagram}}>
+    <FilterContext.Provider value={{ filters, setFilters , filteredTranscript, filteredDiagram}}>
       {children}
     </FilterContext.Provider>
   );

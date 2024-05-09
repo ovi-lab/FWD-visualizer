@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import { useSocketData } from "@/app/contexts/SocketDataContext";
+import { useSocketData } from "@/app/contexts/socketDataContext";
 
 export default function TimeLine() {
   const { transcriptData } = useSocketData();

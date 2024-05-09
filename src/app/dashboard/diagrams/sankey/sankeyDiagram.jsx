@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   sankey as d3sankey,
   sankeyCenter,
@@ -6,11 +6,8 @@ import {
 } from "d3-sankey";
 import "../graphStyles.css";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
-import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./sankeyParts";
-import { filterData } from "@/app/utils/filters";
-import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 // This const is a D3 sankey generator used to generate the data needed for the nodes and links to display properly in an SVG
 const createSankeyGenerator = (width, height) => {
@@ -26,7 +23,6 @@ const createSankeyGenerator = (width, height) => {
 };
 
 const SankeyDiagram = (props) => {
-  const {diagramData} = useSocketData();
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [viewBox, setViewBox] = useState({
@@ -37,22 +33,23 @@ const SankeyDiagram = (props) => {
   });
   const sankeyRef = React.useRef();
   const { selectedNode, setSelectedNode } = useSelectedNode();
-  const { selectedTime } = useTime();
-  const { selectedFilters } = useFilter();
-  console.log('diagramData', diagramData)
+  const { filteredDiagram } = useFilter();
+  console.log("diagramData", filteredDiagram);
 
   useEffect(() => {
-    if (!diagramData) return;
-    const filteredNodes = filterData(diagramData.nodes, selectedTime, selectedFilters);
+    if (!filteredDiagram) return;
 
-    const rawLinks =
-      props.dataDirection === "haru-user" ? diagramData.links.haru : diagramData.links.user;
+    const filteredNodes = filteredDiagram.nodes;
+    const filteredLinks =
+      props.dataDirection === "haru-user"
+        ? filteredDiagram.links.haru
+        : filteredDiagram.links.user;
 
-    const filteredLinks = filterData(rawLinks, selectedTime, selectedFilters);
     const sankeyGenerator = createSankeyGenerator(
       viewBox.width,
       viewBox.height
     );
+
     try {
       const { nodes, links } = sankeyGenerator({
         nodes: filteredNodes,
@@ -63,13 +60,13 @@ const SankeyDiagram = (props) => {
     } catch (error) {
       console.log("error", error);
     }
-  }, [diagramData, selectedTime, selectedFilters, props.dataDirection, viewBox]);
+  }, [filteredDiagram, props.dataDirection, viewBox]);
 
   const handleSankeyInteraction = (nodeName) => {
     setSelectedNode(nodeName);
   };
 
-  if (!diagramData) return <div>Loading...</div>;
+  if (!filteredDiagram) return <div>Loading...</div>;
 
   return (
     <svg

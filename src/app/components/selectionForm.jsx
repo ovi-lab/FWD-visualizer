@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSocketData } from "@/app/contexts/SocketDataContext";
+import { useSocketData } from "@/app/contexts/socketDataContext";
 
 export function SelectionForm() {
   const {socket} = useSocketData();

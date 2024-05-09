@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, use } from "react";
 import { useFilter } from "@/app/contexts/filterContext";
 import TimeLine from "./timeline";
-import { useSocketData } from "@/app/contexts/SocketDataContext";
+import { useSocketData } from "@/app/contexts/socketDataContext";
 
 const defaultFilters = {
   turn: "",

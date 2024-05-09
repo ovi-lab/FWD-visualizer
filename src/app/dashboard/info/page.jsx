@@ -4,7 +4,7 @@ import ThreadList from "./threadList";
 import "./infoStyles.css";
 import { useSelectedNode } from "../../contexts/selectedNodeContext";
 import { useChatAnchor } from "../../contexts/chatContext";
-import { useSocketData } from "@/app/contexts/SocketDataContext";
+import { useSocketData } from "@/app/contexts/socketDataContext";
 
 const InfoPanel = () => {
   const {diagramData} = useSocketData();

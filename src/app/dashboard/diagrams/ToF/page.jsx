@@ -10,7 +10,6 @@ import "./tof-styles.css";
 import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 export default function TiersOfFriendship() {
-  const { transcriptData } = useSocketData();
   const [rows, setRows] = useState([]);
   const [viewBox, setViewBox] = useState({
     x: 0,
@@ -19,7 +18,7 @@ export default function TiersOfFriendship() {
     height: 600,
   });
   const { selectedTime } = useTime();
-  const { selectedFilters } = useFilter();
+  const { filteredTranscript } = useFilter();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   const { selectedNode, setSelectedNode } = useSelectedNode();
 
@@ -34,14 +33,9 @@ export default function TiersOfFriendship() {
   };
 
   useEffect(() => {
-    if (!transcriptData) return;
-    const filteredLines = filterData(
-      transcriptData,
-      selectedTime,
-      selectedFilters
-    );
+    if (!filteredTranscript) return;
     const rows = [[]];
-    filteredLines.map((line) => {
+    filteredTranscript.map((line) => {
       const lineSlots = line.slots
         .filter(
           (slot) =>
@@ -112,11 +106,11 @@ export default function TiersOfFriendship() {
           : rows[placementIndex].push(topicNode);
     });
     setRows(rows);
-  }, [transcriptData, selectedTime, selectedFilters]);
+  }, [filteredTranscript, selectedTime]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content
-    if (!transcriptData) return;
+    if (!filteredTranscript) return;
     const svgContent = document.getElementById("tof-content");
     if (svgContent) {
       const { newX, newY, newWidth, newHeight } = svgContent.getBBox();
@@ -128,9 +122,9 @@ export default function TiersOfFriendship() {
       };
       setViewBox(newViewBox);
     }
-  }, [transcriptData]);
+  }, [filteredTranscript]);
 
-  if (!transcriptData || !rows)
+  if (!filteredTranscript || !rows)
     return <div className="flex flex-col h-full">Loading...</div>;
 
   if (!svgMode) {

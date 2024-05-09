@@ -4,7 +4,7 @@ import { SelectedNodeProvider } from "@/app/contexts/selectedNodeContext";
 import { ChatProvider } from "@/app/contexts/chatContext";
 import { TimeProvider } from "@/app/contexts/timeContext";
 import { FilterProvider } from "@/app/contexts/filterContext";
-import { SocketDataProvider } from "@/app/contexts/SocketDataContext";
+import { SocketDataProvider } from "@/app/contexts/socketDataContext";
 
 export default function Layout({
   children,

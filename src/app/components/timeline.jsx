@@ -1,12 +1,10 @@
 "use client";
 import { useMemo } from "react";
-import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { useSocketData } from "@/app/contexts/socketDataContext";
 
 export default function TimeLine() {
   const { transcriptData } = useSocketData();
-  const { selectedTime, setSelectedTime } = useTime();
   const {filters, setFilters} = useFilter();
 
   const { start, end, steps } = useMemo(() => {
@@ -31,7 +29,7 @@ export default function TimeLine() {
     // Check if the parsed date is valid
     if (!isNaN(selectedDate.getTime())) {
       // If the date is valid, update the selected time in the context
-      setSelectedTime(setFilters({...filters, ["timestamp"]: selectedDate.toString()}));
+      setFilters({...filters, ["timestamp"]: selectedDate.toString()});
     }
   };
 
@@ -53,7 +51,7 @@ export default function TimeLine() {
             htmlFor="steps-range"
             className="text-sm font-medium text-gray-900 mx-auto"
           >
-            {selectedTime}
+            {filters.timestamp}
           </label>
           <label
             htmlFor="steps-range"
@@ -68,7 +66,7 @@ export default function TimeLine() {
           min={Date.parse(start)}
           max={Date.parse(end)}
           step={steps}
-          defaultValue={Date.parse(selectedTime)}
+          defaultValue={Date.parse(filters.timestamp)}
           className="w-full h-3 bg-blue-300 rounded-lg appearance-none cursor-pointer"
           onChange={handleTimeSelect}
         />

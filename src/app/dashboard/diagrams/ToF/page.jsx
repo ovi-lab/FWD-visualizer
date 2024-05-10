@@ -1,13 +1,10 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { Topic } from "./tofParts";
-import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
-import { filterData } from "@/app/utils/filters";
 import { useChatAnchor } from "@/app/contexts/chatContext";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import "./tof-styles.css";
-import { useSocketData } from "@/app/contexts/SocketDataContext";
 
 export default function TiersOfFriendship() {
   const [rows, setRows] = useState([]);
@@ -17,7 +14,6 @@ export default function TiersOfFriendship() {
     width: 800,
     height: 600,
   });
-  const { selectedTime } = useTime();
   const { filteredTranscript } = useFilter();
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   const { selectedNode, setSelectedNode } = useSelectedNode();
@@ -106,7 +102,7 @@ export default function TiersOfFriendship() {
           : rows[placementIndex].push(topicNode);
     });
     setRows(rows);
-  }, [filteredTranscript, selectedTime]);
+  }, [filteredTranscript]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content

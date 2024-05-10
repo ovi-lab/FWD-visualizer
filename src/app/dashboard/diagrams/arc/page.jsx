@@ -6,6 +6,9 @@ import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./arcParts";
 
+  // A linear scale for node size
+  const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
+
 /**
  * Calculates the SVG path for a link between two nodes in an arc diagram.
  * Computes a quadratic bezier curve based on the positions of the source and target nodes.
@@ -69,7 +72,7 @@ export default function ArcDiagram() {
   // Context for storing the node the user selects
   const { selectedNode, setSelectedNode } = useSelectedNode();
   // Contexts used for filtering
-  const { filteredDiagram} = useFilter();
+  const { filteredDiagram } = useFilter();
 
   const handleNodeSelect = (nodeName) => {
     setSelectedNode(nodeName);
@@ -127,9 +130,6 @@ export default function ArcDiagram() {
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
-
-  // A linear scale for node size
-  const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
 
 
   if (!filteredDiagram) return <p>loading...</p>;

@@ -37,7 +37,7 @@ const Node = ({
       <title>{name}</title>
       <text
         key={`${id}a`}
-        fontSize={"0.50em"}
+        className={"text-xs"}
         x={rectPosition}
         y={(y1 + y0) / 2}
         dy={"0.35em"}
@@ -47,9 +47,9 @@ const Node = ({
       </text>
       <text
         key={`${id}b`}
-        fontSize={"0.50em"}
+        className={"text-xs"}
         x={rectPosition}
-        y={((y1 + y0) / 2) + 10}
+        y={((y1 + y0) / 2) + 12}
         dy={"0.35em"}
         textAnchor={textAnchorPosition}
       >

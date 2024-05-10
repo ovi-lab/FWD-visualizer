@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
+import { useSocketData } from "@/app/contexts/socketDataContext";
 
 export function SelectionForm() {
-  const socket = useWebSocket();
+  const {socket} = useSocketData();
   const [file, setFile] = useState(null);
   const [isConnected, setConnected] = useState(false);
 
@@ -45,10 +45,10 @@ export function SelectionForm() {
 
   const toggleConnection = () => {
     if (isConnected) {
-      socket.emit("killRosFeed");
+      socket.emit("kill_ros_feed");
       setConnected(false);
     } else {
-      socket.emit("initRosFeed");
+      socket.emit("init_ros_feed");
       setConnected(true);
     }
   };

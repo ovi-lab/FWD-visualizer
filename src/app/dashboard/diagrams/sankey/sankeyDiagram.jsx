@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   sankey as d3sankey,
   sankeyCenter,
@@ -6,11 +6,8 @@ import {
 } from "d3-sankey";
 import "../graphStyles.css";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
-import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./sankeyParts";
-import { filterData } from "@/app/utils/filters";
-import { useWebSocket } from "@/app/contexts/webSocketContext";
 
 // This const is a D3 sankey generator used to generate the data needed for the nodes and links to display properly in an SVG
 const createSankeyGenerator = (width, height) => {
@@ -26,8 +23,6 @@ const createSankeyGenerator = (width, height) => {
 };
 
 const SankeyDiagram = (props) => {
-  const socket = useWebSocket();
-  const [data, setData] = useState(null);
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [viewBox, setViewBox] = useState({
@@ -38,36 +33,23 @@ const SankeyDiagram = (props) => {
   });
   const sankeyRef = React.useRef();
   const { selectedNode, setSelectedNode } = useSelectedNode();
-  const { selectedTime } = useTime();
-  const { selectedFilters } = useFilter();
-
-  const handleResponse = useCallback((newData) => {
-    setData(newData);
-  }, []);
+  const { filteredDiagram } = useFilter();
+  console.log("diagramData", filteredDiagram);
 
   useEffect(() => {
-    if (!socket) return;
-    // Listen for data updates from the Flask server
-    socket.emit("diagramRequest");
-  }, [socket]);
+    if (!filteredDiagram) return;
 
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("diagram-response", handleResponse);
-  });
+    const filteredNodes = filteredDiagram.nodes;
+    const filteredLinks =
+      props.dataDirection === "haru-user"
+        ? filteredDiagram.links.haru
+        : filteredDiagram.links.user;
 
-  useEffect(() => {
-    if (!data) return;
-    const filteredNodes = filterData(data.nodes, selectedTime, selectedFilters);
-
-    const rawLinks =
-      props.dataDirection === "haru-user" ? data.links.haru : data.links.user;
-
-    const filteredLinks = filterData(rawLinks, selectedTime, selectedFilters);
     const sankeyGenerator = createSankeyGenerator(
       viewBox.width,
       viewBox.height
     );
+
     try {
       const { nodes, links } = sankeyGenerator({
         nodes: filteredNodes,
@@ -78,13 +60,13 @@ const SankeyDiagram = (props) => {
     } catch (error) {
       console.log("error", error);
     }
-  }, [data, selectedTime, selectedFilters, props.dataDirection, viewBox]);
+  }, [filteredDiagram, props.dataDirection, viewBox]);
 
   const handleSankeyInteraction = (nodeName) => {
     setSelectedNode(nodeName);
   };
 
-  if (!data) return <div>Loading...</div>;
+  if (!filteredDiagram) return <div>Loading...</div>;
 
   return (
     <svg

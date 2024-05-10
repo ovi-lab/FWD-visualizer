@@ -1,5 +1,4 @@
 import "./infoStyles.css";
-import { useTime } from "@/app/contexts/timeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { filterData } from "@/app/utils/filters";
 
@@ -42,8 +41,7 @@ export default function ThreadList({
 }) {
   // Find the selected node in the data array
   const selectedNode = data.find((node) => node.name.includes(selected));
-  const { selectedTime } = useTime();
-  const { selectedFilters } = useFilter();
+  const { filters } = useFilter();
 
   if (!selectedNode) {
     return <p>Selected node not found in the data</p>;
@@ -52,7 +50,7 @@ export default function ThreadList({
   // Convert the properties of the selected node into an array of key-value pairs
   const itemsArray = [];
   let numConversations = 1;
-  filterData(selectedNode.interactions, selectedTime, selectedFilters).map(
+  filterData(selectedNode.interactions, filters).map(
     (interact) => {
       if (interact.lastInteraction === true) {
         numConversations++;

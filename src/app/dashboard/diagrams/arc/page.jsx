@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import * as d3 from "d3";
 import "../graphStyles.css";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useFilter } from "@/app/contexts/filterContext";
 import { Node, Link } from "./arcParts";
 
-  // A linear scale for node size
-  const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
+// A linear scale for node size
+const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
 
 /**
  * Calculates the SVG path for a link between two nodes in an arc diagram.
@@ -21,24 +21,41 @@ import { Node, Link } from "./arcParts";
  * @returns {string} A string representing the SVG path for the link.
  */
 function calculateLinkPath(link, nodesWithPosition, xHaru, xUser, arcHeight) {
-  const sourceNode = nodesWithPosition.find(n => n.id === link.source);
-  const targetNode = nodesWithPosition.find(n => n.id === link.target);
-  if (!sourceNode || !targetNode) return '';
+  const sourceNode = nodesWithPosition.find((n) => n.id === link.source);
+  const targetNode = nodesWithPosition.find((n) => n.id === link.target);
+  if (!sourceNode || !targetNode) return "";
 
-  const start = sourceNode.turn === 'haru' ? xHaru(sourceNode.name) : xUser(sourceNode.name);
-  const end = targetNode.turn === 'haru' ? xHaru(targetNode.name) : xUser(targetNode.name);
-  const nodeMidpoint = Math.abs(start - end) / 2
+  const start =
+    sourceNode.turn === "haru"
+      ? xHaru(sourceNode.name)
+      : xUser(sourceNode.name);
+  const end =
+    targetNode.turn === "haru"
+      ? xHaru(targetNode.name)
+      : xUser(targetNode.name);
+  const nodeMidpoint = Math.abs(start - end) / 2;
   return [
-    "M", start, arcHeight,
-    "A", nodeMidpoint, ",", nodeMidpoint,
-    0, 0, ",", start < end ? 1 : 0, end, ",", arcHeight
+    "M",
+    start,
+    arcHeight,
+    "A",
+    nodeMidpoint,
+    ",",
+    nodeMidpoint,
+    0,
+    0,
+    ",",
+    start < end ? 1 : 0,
+    end,
+    ",",
+    arcHeight,
   ].join(" ");
 }
 
 /**
  * Calculates the engagement score for a node based on its interactions.
  * The score is a weighted average of the sentiment score and the normalized length of responses.
- * @function 
+ * @function
  * @param {Object} node - The node object containing interactions.
  * @param {number} maxUtteranceLength - The maximum length of an utterance for normalization.
  * @returns {number} The calculated engagement score for the node.
@@ -61,7 +78,7 @@ const calcEngagement = (node, maxUtteranceLength) => {
 /**
  * React component for rendering an arc diagram visualization.
  * The diagram is dynamically generated based on the data received over a WebSocket connection.
- * @component 
+ * @component
  * @returns {JSX.Element} The rendered component.
  */
 export default function ArcDiagram() {
@@ -89,7 +106,7 @@ export default function ArcDiagram() {
     const arcHeight = 450;
     const midPoint = arcWidth / 2;
 
-    const filteredNodes = filteredDiagram.nodes
+    const filteredNodes = filteredDiagram.nodes;
     filteredNodes.map((node) => {
       allNodes.push(node.name);
       idToNode[node.id] = node;
@@ -109,12 +126,13 @@ export default function ArcDiagram() {
 
     setScales({ haruScale: xHaru, userScale: xUser });
 
+    const filteredCombinedLinks = filteredDiagram.links.haru.concat(
+      filteredDiagram.links.user
+    );
 
-    const filteredCombinedLinks = filteredDiagram.links.haru.concat(filteredDiagram.links.user)
-
-    const linkPaths = filteredCombinedLinks.map(link => ({
+    const linkPaths = filteredCombinedLinks.map((link) => ({
       ...link,
-      d: calculateLinkPath(link, filteredNodes, xHaru, xUser, arcHeight)
+      d: calculateLinkPath(link, filteredNodes, xHaru, xUser, arcHeight),
     }));
 
     setNodes(filteredNodes);
@@ -130,7 +148,6 @@ export default function ArcDiagram() {
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
-
 
   if (!filteredDiagram) return <p>loading...</p>;
 

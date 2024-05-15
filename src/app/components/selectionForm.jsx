@@ -1,9 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSocketData } from "@/app/contexts/socketDataContext";
+import {loadAll as yamlLoadAll, dump as yamlDump} from "js-yaml"
+
+// Function to parse and process all YAML documents
+function yamlParse(yamlData, processDoc) {
+  const docs = yamlLoadAll(yamlData);
+  const processedDocs = docs.map(doc => processDoc ? processDoc(doc) : doc);
+  return yamlDump(processedDocs);
+}
 
 export function SelectionForm() {
-  const {socket} = useSocketData();
+  const { socket } = useSocketData();
   const [file, setFile] = useState(null);
   const [isConnected, setConnected] = useState(false);
 
@@ -16,32 +24,62 @@ export function SelectionForm() {
     }
   };
 
-  const handleDownloadClick = () => {
-    // Request JSON file from the server
-    socket.emit("request_download");
+  const handleDownloadClick = (filetype) => {
+    if (filetype === "j") {
+      // Request JSON file from the server
+      socket.emit("json_download_request");
 
-    // Listen for response containing JSON data
-    socket.once("json_file_response", (response) => {
-      // Create a Blob from the JSON data
-      const jsonData = response[0]
-      const fileName = response[1]
-      const blob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
-      // Create a temporary URL for the Blob
-      const url = URL.createObjectURL(blob);
+      // Listen for response containing JSON data
+      socket.once("json_download_response", (response) => {
+        // Create a Blob from the JSON data
+        const jsonData = response[0];
+        const fileName = response[1];
+        const blob = new Blob([JSON.stringify(jsonData)], {
+          type: "application/json",
+        });
+        // Create a temporary URL for the Blob
+        const url = URL.createObjectURL(blob);
 
-      // Create a link element and trigger the download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
+        // Create a link element and trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
 
-      // Clean up by removing the temporary URL and link element
-      URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    });
+        // Clean up by removing the temporary URL and link element
+        URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      });
+    }
+    if (filetype === "y") {
+      // Request YAML file from the server
+      socket.emit("yaml_download_request");
+
+      // Listen for response containing YAML data
+      socket.once("yaml_download_response", (response) => {
+        // Create a Blob from the YAML data
+        const yamlData = response[0];
+        const fileName = response[1];
+        const blob = new Blob([yamlParse(yamlData, (doc) => doc)], {
+          type: "application/x-yaml",
+        });
+        // Create a temporary URL for the Blob
+        const url = URL.createObjectURL(blob);
+
+        // Create a link element and trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+
+        // Clean up by removing the temporary URL and link element
+        URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      });
+    }
   };
-
 
   const toggleConnection = () => {
     if (isConnected) {
@@ -75,27 +113,43 @@ export function SelectionForm() {
             type="file"
             onChange={(e) => setFile(e.target.files[0])}
           />
-            <button
-              className="select-none cursor-pointer rounded-lg border-2 border-gray-700
+          <button
+            className="select-none cursor-pointer rounded-lg border-2 border-gray-700
                      py-1 px-2 font-bold text-gray-700 bg-white text-sm"
-              type="submit"
-            >
-              Submit
-            </button>
+            type="submit"
+          >
+            Submit
+          </button>
         </div>
       </form>
       <div className="mb-3">
         <label className="inline-flex  items-center cursor-pointer">
-          <input type="checkbox" checked={isConnected} className="sr-only peer" onChange={toggleConnection}/>
+          <input
+            type="checkbox"
+            checked={isConnected}
+            className="sr-only peer"
+            onChange={toggleConnection}
+          />
           <div className="relative w-11 h-6  rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-800 bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           <span className="ms-3 text-sm font-medium text-gray-300">
-          Receive the live feed
+            Receive the live feed
           </span>
-        </label>          
+        </label>
       </div>
-      <button className="flex select-none cursor-pointer rounded-lg border-2 border-gray-700
+      <button
+        className="flex select-none cursor-pointer rounded-lg border-2 border-gray-700
                      py-1 px-2 font-bold text-gray-700 bg-white text-sm"
-                     onClick={handleDownloadClick}>Download JSON</button>
+        onClick={() => handleDownloadClick("j")}
+      >
+        Download JSON
+      </button>
+      <button
+        className="flex select-none cursor-pointer rounded-lg border-2 border-gray-700
+                     py-1 px-2 font-bold text-gray-700 bg-white text-sm"
+        onClick={() => handleDownloadClick("y")}
+      >
+        Download YAML
+      </button>
     </div>
   );
 }

@@ -4,13 +4,14 @@ import { useFilter } from "@/app/contexts/filterContext";
 import TimeLine from "./timeline";
 import { useSocketData } from "@/app/contexts/socketDataContext";
 
+
 const defaultFilters = {
   turn: "",
   sentiment: "",
   emotion: "",
   topic: "",
   keywords: false,
-  timestamp: "1970-01-01 16:26:31"
+  timestamp: "",
 };
 
 const turnList = ["haru", "user"];
@@ -25,6 +26,18 @@ const emotionList = [
   "surprise",
 ];
 
+/**
+ * Component for rendering checkbox style filters.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<string>} props.data - List of filter options.
+ * @param {string} props.title - Title of the filter.
+ * @param {string} props.filterType - Type of the filter.
+ * @param {string} props.stateValue - Current state value of the filter.
+ * @param {function} props.handleChange - Function to handle filter change.
+ * @returns {JSX.Element} The FilterCheckbox component.
+ */
 const FilterCheckbox = ({
   data,
   title,
@@ -62,6 +75,18 @@ const FilterCheckbox = ({
   );
 };
 
+/**
+ * Component for rendering dropdown style filters. (mainly for topic selection)
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<string>} props.dropdownList - List of dropdown options.
+ * @param {string} props.title - Title of the filter.
+ * @param {string} props.promptOption - Prompt option for the dropdown.
+ * @param {string} props.stateValue - Current state value of the filter.
+ * @param {function} props.handleChange - Function to handle filter change.
+ * @returns {JSX.Element} The FilterDropdown component.
+ */
 const FilterDropdown = ({
   dropdownList,
   title,
@@ -89,26 +114,31 @@ const FilterDropdown = ({
   );
 };
 
-// Component for the control panel
+/**
+ * Component for rendering the control panel with filters.
+ *
+ * @component
+ * @returns {JSX.Element} The ControlPanel component.
+ */
 const ControlPanel = () => {
   // States to store filter selections
-  const {transcriptData} = useSocketData();
+  const { transcriptData } = useSocketData();
   const [filterState, setFilterState] = useState(defaultFilters);
   const [availableTopics, setAvailableTopics] = useState([]);
   const { setFilters } = useFilter();
 
   useEffect(() => {
-    if (!transcriptData) return
+    if (!transcriptData) return;
     // Create a new Set to collect unique topics where 'turn' is 'haru'
     const uniqueTopics = new Set();
-  
+
     // Iterate over the data array to filter out unique 'haru' topics
     transcriptData.forEach((line) => {
       if (line.turn === "haru") {
         uniqueTopics.add(line.topic);
       }
     });
-  
+
     // Convert the Set back to an array and update the state
     setAvailableTopics([...uniqueTopics]);
   }, [transcriptData]);
@@ -118,15 +148,22 @@ const ControlPanel = () => {
    * and also applies them to the selectedFilters context to reset any filtered components
    */
   const resetFilters = () => {
-    setFilterState(defaultFilters);
-    setFilters(defaultFilters);
+    const resetValue = {...defaultFilters, ["timestamp"]: filterState.timestamp}
+    setFilterState(resetValue);
+    setFilters(resetValue);
   };
 
-  const applyFilter = useCallback((filter, value) => {
+  /**
+   * Applies a filter and updates the filter state and context.
+   *
+   * @param {string} filter - The filter type.
+   * @param {string|boolean} value - The value to set for the filter.
+   */
+  const applyFilter = (filter, value) => {
     const newFilters = { ...filterState, [filter]: value };
     setFilterState(newFilters);
     setFilters(newFilters);
-  }, []);
+  };
 
   if (!transcriptData) return <div>loading</div>;
 
@@ -182,15 +219,14 @@ const ControlPanel = () => {
         {/* Button to apply filters */}
         <div className="flex-left rounded-lg bg-gray-100 p-1 shadow-md m-2">
           <button
-            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1
-     py-1 px-2 font-bold text-gray-700 text-sm"
+            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1 py-1 px-2 font-bold text-gray-700 text-sm"
             onClick={resetFilters}
           >
             Reset
           </button>
         </div>
       </div>
-      <TimeLine timestamp={filterState.timestamp} selectTime={applyFilter}/>
+      <TimeLine timestamp={filterState.timestamp} selectTime={applyFilter} />
     </div>
   );
 };

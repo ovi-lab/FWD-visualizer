@@ -2,6 +2,15 @@
 import { useMemo, useEffect } from "react";
 import { useSocketData } from "@/app/contexts/socketDataContext";
 
+/**
+ * TimeLine component renders a timeline slider to select a timestamp.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {string} props.timestamp - The current timestamp in filters.
+ * @param {function} props.selectTime - Function to update the selected timestamp in filters.
+ * @returns {JSX.Element} The TimeLine component.
+ */
 export default function TimeLine({timestamp, selectTime}) {
   const { transcriptData } = useSocketData();
 
@@ -21,10 +30,10 @@ export default function TimeLine({timestamp, selectTime}) {
   }, [transcriptData]);
 
   useEffect(() => {
-    if (end) {
+    if (end && timestamp === "") {
       selectTime("timestamp", end);
     }
-  }, [end, selectTime]);
+  }, [end, timestamp]);
 
   const handleTimeSelect = (e) => {
     // Parse the input value as a date string

@@ -10,6 +10,7 @@ const defaultFilters = {
   emotion: "",
   topic: "",
   keywords: false,
+  timestamp: "1970-01-01 16:26:31"
 };
 
 const turnList = ["haru", "user"];
@@ -121,13 +122,14 @@ const ControlPanel = () => {
     setFilters(defaultFilters);
   };
 
-  const applyFilter = (filter, value) => {
+  const applyFilter = useCallback((filter, value) => {
     const newFilters = { ...filterState, [filter]: value };
     setFilterState(newFilters);
     setFilters(newFilters);
-  };
+  }, []);
 
   if (!transcriptData) return <div>loading</div>;
+
   return (
     <div className="bottom-0 mr-auto ml-auto pb-1 bg-gray-700 rounded-lg shadow-md">
       <div className="flex">
@@ -188,7 +190,7 @@ const ControlPanel = () => {
           </button>
         </div>
       </div>
-      <TimeLine />
+      <TimeLine timestamp={filterState.timestamp} selectTime={applyFilter}/>
     </div>
   );
 };

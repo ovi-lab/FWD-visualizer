@@ -12,7 +12,7 @@ sentiment: "",
 emotion: "",
 topic: "",
 keywords: false,
-timestamp: "1970-01-01 16:26:31"}
+timestamp: ""}
 
 const defaultFilteredDiagramData = {
   nodes: [],

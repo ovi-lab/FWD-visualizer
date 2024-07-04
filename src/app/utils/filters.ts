@@ -1,11 +1,11 @@
 
 interface DataLine {
   timestamp: string;
-  turn?: string;
-  emotion_label?: string;
-  sentiment_label?: string;
-  topic?: string;
-  sourceName?: string;
+  turn: string;
+  emotion_label: string;
+  sentiment_label: string;
+  topic: string;
+  sourceName: string;
 }
 
 interface Filters {
@@ -17,6 +17,7 @@ interface Filters {
 }
 
 function filterData(data: DataLine[], filters: Filters, isLink: boolean =false) {
+  if (!data) return [];
   return data.filter((line: DataLine) => {
 
     if (Date.parse(line.timestamp) > Date.parse(filters.timestamp)) return false

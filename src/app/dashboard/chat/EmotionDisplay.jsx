@@ -19,7 +19,7 @@ export const EmotionDisplay = ({ label, speaker }) => {
         {char}
       </div>
       <div className="mt-2 ml-2">
-        {speaker === "Haru" ? <HaruAvatar size={30} /> : <UserAvatar size={30} />}
+        {speaker.toLowerCase() !== "user" ? <HaruAvatar size={30} /> : <UserAvatar size={30} />}
       </div>
     </div>
   );

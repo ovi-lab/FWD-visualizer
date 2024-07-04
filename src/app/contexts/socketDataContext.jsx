@@ -17,10 +17,18 @@ export const SocketDataProvider = ({ children }) => {
 
   // Callback to handle incoming data
   const handleDiagramResponse = useCallback((newData) => {
+    if (newData === undefined) {
+      print("No correct diagram data received from server");
+      return;
+    }
     setDiagramData(newData);
   }, []);
   
   const handleTranscriptResponse = useCallback((newData) => {
+    if (newData === undefined) {
+      print("No correct transcript data received from server");
+      return;
+    }
     setTranscriptData(newData);
   }, []);
 

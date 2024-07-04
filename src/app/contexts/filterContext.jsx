@@ -2,8 +2,6 @@
 import React, { createContext, useState, useContext, useEffect} from 'react';
 import { useSocketData } from './socketDataContext';
 import { filterData } from '../utils/filters';
-import { link } from 'fs';
-import ArcDiagram from '../dashboard/diagrams/arc/page';
 
 const FilterContext = createContext();
 
@@ -17,7 +15,7 @@ timestamp: ""}
 const defaultFilteredDiagramData = {
   nodes: [],
   links: {
-    haru: [],
+    robot: [],
     user: [],
   },
   attributes: {}
@@ -35,10 +33,10 @@ export const FilterProvider = ({ children }) => {
     setFilteredTranscript(filterData(transcriptData, filters))
     
     const filteredNodes = filterData(diagramData.nodes, filters)
-    const filteredHaruLinks = filterData(diagramData.links.haru, filters)
+    const filteredRobotLinks = filterData(diagramData.links.robot, filters)
     const filteredUserLinks = filterData(diagramData.links.user, filters)
 
-    setFilteredDiagram({nodes: filteredNodes, links: {haru: filteredHaruLinks, user: filteredUserLinks}, attributes: diagramData.attributes})
+    setFilteredDiagram({nodes: filteredNodes, links: {robot: filteredRobotLinks, user: filteredUserLinks}, attributes: diagramData.attributes})
     
   }, [filters, transcriptData, diagramData])
   

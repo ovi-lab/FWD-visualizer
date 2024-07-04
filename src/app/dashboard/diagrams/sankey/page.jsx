@@ -25,13 +25,13 @@ const SelectorButton = ({
         checked={directionState === buttonDirection}
         onChange={handleRadioChange}
       />
-      {buttonDirection === "user-haru" ? "User to Haru" : "Haru to User"}
+      {buttonDirection === "user-robot" ? "User to Robot" : "Robot to User"}
     </label>
   );
 };
 
 function SankeySelector() {
-  const [dataDirection, setDataDirection] = useState("haru-user");
+  const [dataDirection, setDataDirection] = useState("robot-user");
 
   // Event handler for radio button change
   const handleRadioChange = (event) => {
@@ -44,13 +44,13 @@ function SankeySelector() {
         <h3 className="float-left text-md font-bold mr-4">Sankey Diagram</h3>
         <div className="direction-selector float-right ">
           <SelectorButton
-            buttonDirection={"haru-user"}
+            buttonDirection={"robot-user"}
             directionState={dataDirection}
             handleRadioChange={handleRadioChange}
           />
 
           <SelectorButton
-            buttonDirection={"user-haru"}
+            buttonDirection={"user-robot"}
             directionState={dataDirection}
             handleRadioChange={handleRadioChange}
           />

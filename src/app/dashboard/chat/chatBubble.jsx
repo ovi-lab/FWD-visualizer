@@ -57,8 +57,8 @@ const DataCollectionNotice = ({ wasCollected, text }) => (
  * @param {emoLabel} param0.emoLabel
  */
 const BubbleContent = ({ speaker, id, color, text, emoLabel }) => (
-  <div className={`bubble items-start ${speaker}`}>
-    {speaker === "Haru" ? (
+  <div className={`bubble items-start ${speaker.toLowerCase() === 'user' ? "justify-end" : "justify-start"}`}>
+    {speaker.toLowerCase() !== "user" ? (
       <>
         <EmotionDisplay label={emoLabel} speaker={speaker} />
         <MessageDisplay id={id} speaker={speaker} color={color} message={text} />
@@ -79,7 +79,7 @@ const BubbleContent = ({ speaker, id, color, text, emoLabel }) => (
  * @returns
  */
 const Bubble = ({ id, turn, sentiLabel, sentiScore, timestamp, emoLabel, utterance, wasCollected }) => {
-  const speaker = turn === "haru" ? "Haru" : "User";
+  const speaker = turn
   const color = getSentimentColor(sentiLabel, sentiScore);
   return (
     <div className="bubbleContainer">

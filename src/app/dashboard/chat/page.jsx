@@ -12,7 +12,7 @@ function checkForCollection(current, previous) {
 }
 
 function includeTimestamp(current, previous) {
-  if (previous === undefined || current.turn === "haru") return null;
+  if (previous === undefined || current.turn === "robot") return null;
   return current.turn !== previous.turn ? current.timestamp : null;
 }
 

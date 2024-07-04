@@ -30,7 +30,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
         fill={
           isSelected
             ? "rgb(139, 227, 139)"
-            : node.turn === "haru"
+            : node.turn.toLowerCase() !== "user"
             ? "#80b1d3"
             : "#fb8072"
         }

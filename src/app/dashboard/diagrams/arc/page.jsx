@@ -15,23 +15,26 @@ const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
  * @function
  * @param {Object} link - The link object containing source and target node identifiers.
  * @param {Array} nodesWithPosition - Array of nodes with precomputed positions.
- * @param {Function} xHaru - D3 scale function for Haru nodes' x positions.
+ * @param {Function} xRobot - D3 scale function for Robot nodes' x positions.
  * @param {Function} xUser - D3 scale function for User nodes' x positions.
  * @param {number} arcHeight - The y-coordinate for all nodes (same for source and target).
  * @returns {string} A string representing the SVG path for the link.
  */
-function calculateLinkPath(link, nodesWithPosition, xHaru, xUser, arcHeight) {
+function calculateLinkPath(link, nodesWithPosition, xRobot, xUser, arcHeight) {
   const sourceNode = nodesWithPosition.find((n) => n.id === link.source);
   const targetNode = nodesWithPosition.find((n) => n.id === link.target);
-  if (!sourceNode || !targetNode) return "";
+  if (!sourceNode || !targetNode) {
+    console.log('Error: source or target node not found in nodesWithPosition array.')
+    return "";
+  } 
 
   const start =
-    sourceNode.turn === "haru"
-      ? xHaru(sourceNode.name)
+    sourceNode.turn.toLowerCase() === "user"
+      ? xRobot(sourceNode.name)
       : xUser(sourceNode.name);
   const end =
-    targetNode.turn === "haru"
-      ? xHaru(targetNode.name)
+    targetNode.turn.toLowerCase() === "robot"
+      ? xRobot(targetNode.name)
       : xUser(targetNode.name);
   const nodeMidpoint = Math.abs(start - end) / 2;
   return [
@@ -97,7 +100,7 @@ export default function ArcDiagram() {
 
   useEffect(() => {
     if (!filteredDiagram) return;
-    const haruNodes = [];
+    const robotNodes = [];
     const userNodes = [];
     const allNodes = [];
     const idToNode = {};
@@ -110,13 +113,13 @@ export default function ArcDiagram() {
     filteredNodes.map((node) => {
       allNodes.push(node.name);
       idToNode[node.id] = node;
-      node.turn === "haru" ? haruNodes.push(node) : userNodes.push(node);
+      node.turn.toLowerCase() !== "user" ? robotNodes.push(node) : userNodes.push(node);
     });
 
     // A linear scale to position the nodes on the X axis
-    const xHaru = d3
+    const xRobot = d3
       .scalePoint()
-      .domain(haruNodes.map((node) => node.name))
+      .domain(robotNodes.map((node) => node.name))
       .range([midPoint - 30, 0]);
 
     const xUser = d3
@@ -124,15 +127,15 @@ export default function ArcDiagram() {
       .domain(userNodes.map((node) => node.name))
       .range([midPoint + 30, arcWidth]);
 
-    setScales({ haruScale: xHaru, userScale: xUser });
+    setScales({ robotScale: xRobot, userScale: xUser });
 
-    const filteredCombinedLinks = filteredDiagram.links.haru.concat(
+    const filteredCombinedLinks = filteredDiagram.links.robot.concat(
       filteredDiagram.links.user
     );
 
     const linkPaths = filteredCombinedLinks.map((link) => ({
       ...link,
-      d: calculateLinkPath(link, filteredNodes, xHaru, xUser, arcHeight),
+      d: calculateLinkPath(link, filteredNodes, xRobot, xUser, arcHeight),
     }));
 
     setNodes(filteredNodes);
@@ -169,8 +172,8 @@ export default function ArcDiagram() {
           {nodes.map((node) => {
             const engagementScore = calcEngagement(
               node,
-              node.turn === "haru"
-                ? filteredDiagram.attributes.longest_haru_utterance
+              node.turn.toLowerCase() !== "user"
+                ? filteredDiagram.attributes.longest_robot_utterance
                 : filteredDiagram.attributes.longest_user_utterance
             );
 
@@ -178,8 +181,8 @@ export default function ArcDiagram() {
               <Node
                 key={node.id}
                 xPosition={
-                  node.turn === "haru"
-                    ? scales.haruScale(node.name)
+                  node.turn.toLowerCase() !== "user"
+                    ? scales.robotScale(node.name)
                     : scales.userScale(node.name)
                 }
                 node={node}

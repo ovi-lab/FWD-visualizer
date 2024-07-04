@@ -41,8 +41,8 @@ const SankeyDiagram = (props) => {
 
     const filteredNodes = filteredDiagram.nodes;
     const filteredLinks =
-      props.dataDirection === "haru-user"
-        ? filteredDiagram.links.haru
+      props.dataDirection === "robot-user"
+        ? filteredDiagram.links.robot
         : filteredDiagram.links.user;
 
     const sankeyGenerator = createSankeyGenerator(

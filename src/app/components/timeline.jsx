@@ -25,7 +25,7 @@ export default function TimeLine({timestamp, selectTime}) {
     const remainder = totalDuration % 10000;
     const totalIntervals = remainder > 0 ? fullIntervals + 1 : fullIntervals;
     const stepSize = totalDuration / totalIntervals; // Adjust step size to exactly fit the range
-
+    timestamp = endTime;
     return { start: startTime, end: endTime, steps: stepSize };
   }, [transcriptData]);
 

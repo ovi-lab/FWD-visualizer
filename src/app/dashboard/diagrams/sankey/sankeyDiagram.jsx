@@ -22,9 +22,32 @@ const createSankeyGenerator = (width, height) => {
     ]);
 };
 
-const SankeyDiagram = (props) => {
+const separateBidirectionalLinks = (links1, links2) => {
+  const combinedLinks = [];
+
+  links1.forEach((link) => {
+    combinedLinks.push({ ...link, direction: "forward" });
+  });
+
+  links2.forEach((link) => {
+    const existingLink = combinedLinks.find(
+      (l) => l.source === link.target && l.target === link.source
+    );
+    if (existingLink) {
+      console.log("existingLink", existingLink);
+      
+    } else {
+      combinedLinks.push({ ...link, direction: "forward" });
+    }
+  });
+
+  return combinedLinks;
+};
+
+const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
+  const [biLinks, setBiLinks] = useState([]);
   const [viewBox, setViewBox] = useState({
     x: 0,
     y: 0,
@@ -34,16 +57,23 @@ const SankeyDiagram = (props) => {
   const sankeyRef = React.useRef();
   const { selectedNode, setSelectedNode } = useSelectedNode();
   const { filteredDiagram } = useFilter();
-  console.log("diagramData", filteredDiagram);
 
   useEffect(() => {
     if (!filteredDiagram) return;
 
     const filteredNodes = filteredDiagram.nodes;
-    const filteredLinks =
-      props.dataDirection === "robot-user"
+
+    let filteredLinks;
+    if (isBidirectional)
+      filteredLinks = separateBidirectionalLinks(
+        filteredDiagram.links.user,
+        filteredDiagram.links.robot
+      );
+    else {
+      filteredLinks =   dataDirection === "robot-user"
         ? filteredDiagram.links.robot
         : filteredDiagram.links.user;
+    }
 
     const sankeyGenerator = createSankeyGenerator(
       viewBox.width,
@@ -60,7 +90,7 @@ const SankeyDiagram = (props) => {
     } catch (error) {
       console.log("error", error);
     }
-  }, [filteredDiagram, props.dataDirection, viewBox]);
+  }, [filteredDiagram, dataDirection, viewBox]);
 
   const handleSankeyInteraction = (nodeName) => {
     setSelectedNode(nodeName);
@@ -72,7 +102,9 @@ const SankeyDiagram = (props) => {
     <svg
       className="sankeyDiagram p-1"
       ref={sankeyRef}
-      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height+50}`}
+      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width + 20} ${
+        viewBox.height + 50
+      }`}
     >
       <g style={{ mixBlendMode: "multiply" }} id={"svg-content"}>
         {links.map((link) => (
@@ -83,21 +115,23 @@ const SankeyDiagram = (props) => {
             linkSourceName={link.sourceName.match(/:(.*)/)[1].trim()}
             linkedNodeSelected={link.name.includes(selectedNode)}
             linkWidth={link.width}
+            linkDirection={link.direction !== undefined ? link.direction : "forward"}
           />
         ))}
-        {nodes.map((node) =>
-          node.show ? (
-            <Node
-              key={node.name}
-              node
-              {...node}
-              width={viewBox.width}
-              height={viewBox.height}
-              isSelected={node.name === selectedNode}
-              handle={handleSankeyInteraction}
-              show={node.show}
-            />
-          ) : null
+        {nodes.map(
+          (node) =>
+            // node.show && (
+              <Node
+                key={node.name}
+                node
+                {...node}
+                width={viewBox.width}
+                height={viewBox.height}
+                isSelected={node.name === selectedNode}
+                handle={handleSankeyInteraction}
+                show={true}
+              />
+            // )
         )}
       </g>
     </svg>

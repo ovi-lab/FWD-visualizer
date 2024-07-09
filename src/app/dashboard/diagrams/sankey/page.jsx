@@ -7,6 +7,18 @@ const SelectorButton = ({
   directionState,
   handleRadioChange,
 }) => {
+  const labeltext = () => {
+    switch (buttonDirection) {
+      case "robot-user":
+        return "Robot to User";
+      case "user-robot":
+        return "User to Robot";
+      case "both":
+        return "Both";
+      default:
+        return "Unknown";
+    }
+  };
   return (
     <label
       htmlFor={buttonDirection}
@@ -25,7 +37,7 @@ const SelectorButton = ({
         checked={directionState === buttonDirection}
         onChange={handleRadioChange}
       />
-      {buttonDirection === "user-robot" ? "User to Robot" : "Robot to User"}
+      {labeltext()}
     </label>
   );
 };
@@ -54,9 +66,15 @@ function SankeySelector() {
             directionState={dataDirection}
             handleRadioChange={handleRadioChange}
           />
+
+          <SelectorButton
+            buttonDirection={"both"}
+            directionState={dataDirection}
+            handleRadioChange={handleRadioChange}
+          />
         </div>
       </div>
-      <SankeyDiagram dataDirection={dataDirection} />
+      <SankeyDiagram dataDirection={dataDirection} isBidirectional={dataDirection==="both"}/>
     </div>
   );
 }

@@ -66,6 +66,7 @@ const Link = ({
   linkSourceName,
   linkedNodeSelected,
   linkWidth,
+  linkDirection
 }) => {
   return (
     <g>
@@ -79,6 +80,7 @@ const Link = ({
         strokeWidth={Math.max(1, linkWidth)}
         style={{ mixBlendMode: "multiply" }}
       />
+
     </g>
   );
 };

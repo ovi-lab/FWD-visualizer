@@ -72,7 +72,7 @@ const SankeyDiagram = (props) => {
     <svg
       className="sankeyDiagram p-1"
       ref={sankeyRef}
-      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
+      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height+50}`}
     >
       <g style={{ mixBlendMode: "multiply" }} id={"svg-content"}>
         {links.map((link) => (

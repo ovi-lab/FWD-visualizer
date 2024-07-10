@@ -19,7 +19,7 @@ const createSankeyGenerator = (width, height) => {
     .extent([
       [1, 1],
       [width, height - 5],
-    ]);
+    ])
 };
 
 const separateBidirectionalLinks = (links1, links2) => {
@@ -47,7 +47,6 @@ const separateBidirectionalLinks = (links1, links2) => {
 const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
-  const [biLinks, setBiLinks] = useState([]);
   const [viewBox, setViewBox] = useState({
     x: 0,
     y: 0,
@@ -66,8 +65,8 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
     let filteredLinks;
     if (isBidirectional)
       filteredLinks = separateBidirectionalLinks(
-        filteredDiagram.links.user,
-        filteredDiagram.links.robot
+        filteredDiagram.links.robot,
+        filteredDiagram.links.user
       );
     else {
       filteredLinks =   dataDirection === "robot-user"
@@ -120,10 +119,10 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
         ))}
         {nodes.map(
           (node) =>
-            // node.show && (
+            node.show && (
               <Node
                 key={node.name}
-                node
+                node      
                 {...node}
                 width={viewBox.width}
                 height={viewBox.height}
@@ -131,7 +130,7 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
                 handle={handleSankeyInteraction}
                 show={true}
               />
-            // )
+            )
         )}
       </g>
     </svg>

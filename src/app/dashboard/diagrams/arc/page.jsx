@@ -30,8 +30,8 @@ function calculateLinkPath(link, nodesWithPosition, xRobot, xUser, arcHeight) {
 
   const start =
     sourceNode.turn.toLowerCase() === "user"
-      ? xRobot(sourceNode.name)
-      : xUser(sourceNode.name);
+      ? xUser(sourceNode.name)
+      : xRobot(sourceNode.name);
   const end =
     targetNode.turn.toLowerCase() === "robot"
       ? xRobot(targetNode.name)
@@ -66,7 +66,7 @@ function calculateLinkPath(link, nodesWithPosition, xRobot, xUser, arcHeight) {
 const calcEngagement = (node, maxUtteranceLength) => {
   const lengthScore = node.interactions.reduce(
     (acc, interaction) =>
-      acc + interaction.response.length / maxUtteranceLength,
+      acc + interaction.prompt.length / maxUtteranceLength,
     0
   );
   const sentimentScore = node.interactions.reduce(
@@ -137,7 +137,7 @@ export default function ArcDiagram() {
       ...link,
       d: calculateLinkPath(link, filteredNodes, xRobot, xUser, arcHeight),
     }));
-
+    console.log('linkPaths', linkPaths);    
     setNodes(filteredNodes);
     setLinks(linkPaths);
   }, [filteredDiagram]);

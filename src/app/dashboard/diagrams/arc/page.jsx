@@ -9,6 +9,30 @@ import { Node, Link } from "./arcParts";
 // A linear scale for node size
 const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
 
+// let selectedLink = null;
+
+// const renderedLinks = (links, selectedNode) =>
+//   links.map((link) => {
+//     const isConnectedNodeSelected = link.name.includes(selectedNode);
+//     if (isConnectedNodeSelected) {
+//       selectedLink = {
+//         name: link.name,
+//         source: link.sourceName,
+//         d: link.d,
+//         isConnectedNodeSelected: isConnectedNodeSelected,
+//       };
+//     }
+//     return (
+//       <Link
+//         key={link.name}
+//         name={link.name}
+//         source={link.sourceName}
+//         pathData={link.d}
+//         isConnectedNodeSelected={isConnectedNodeSelected}
+//       />
+//     );
+//   });
+
 /**
  * Calculates the SVG path for a link between two nodes in an arc diagram.
  * Computes a quadratic bezier curve based on the positions of the source and target nodes.
@@ -24,9 +48,11 @@ function calculateLinkPath(link, nodesWithPosition, xRobot, xUser, arcHeight) {
   const sourceNode = nodesWithPosition.find((n) => n.id === link.source);
   const targetNode = nodesWithPosition.find((n) => n.id === link.target);
   if (!sourceNode || !targetNode) {
-    console.log('Error: source or target node not found in nodesWithPosition array.')
+    console.log(
+      "Error: source or target node not found in nodesWithPosition array."
+    );
     return "";
-  } 
+  }
 
   const start =
     sourceNode.turn.toLowerCase() === "user"
@@ -64,18 +90,37 @@ function calculateLinkPath(link, nodesWithPosition, xRobot, xUser, arcHeight) {
  * @returns {number} The calculated engagement score for the node.
  */
 const calcEngagement = (node, maxUtteranceLength) => {
-  const lengthScore = node.interactions.reduce(
-    (acc, interaction) =>
-      acc + interaction.prompt.length / maxUtteranceLength,
-    0
-  );
+  const numericScore = (label, score) => {
+    switch (label.toLowerCase()) {
+      case "positive":
+        return score; // Score remains the same for positive sentiment
+      case "negative":
+        return -score; // Score is negated for negative sentiment
+      case "neutral":
+        return 0; // Neutral sentiment is represented as 0
+      default:
+        throw new Error("Invalid sentiment label");
+    }
+  };
+
+  // const lengthScore = node.interactions.reduce(
+  //   (acc, interaction) =>
+  //     acc + interaction.prompt.length / maxUtteranceLength,
+  //   0
+  // );
   const sentimentScore = node.interactions.reduce(
-    (acc, interaction) => acc + interaction.sentiment_score,
+    (acc, interaction) =>
+      acc +
+      numericScore(interaction.sentiment_label, interaction.sentiment_score),
     0
   );
-  const avgLength = lengthScore / node.interactions.length;
-  const avgSentiment = sentimentScore / node.interactions.length;
-  return 0.5 * (avgSentiment + avgLength);
+  // const avgLength = lengthScore / node.interactions.length;
+  // const avgSentiment = sentimentScore / node.interactions.length;
+  // return 0.5 * (avgLength + avgSentiment); // Normalize sentiment score to range
+  return node.turn.toLowerCase() === "user"
+    ? 0.5 * (sentimentScore * 0.4 + 1)
+    : 0.5 * 1;
+  return 0.5 * (avgSentiment + 1);
 };
 
 /**
@@ -113,7 +158,9 @@ export default function ArcDiagram() {
     filteredNodes.map((node) => {
       allNodes.push(node.name);
       idToNode[node.id] = node;
-      node.turn.toLowerCase() !== "user" ? robotNodes.push(node) : userNodes.push(node);
+      node.turn.toLowerCase() !== "user"
+        ? robotNodes.push(node)
+        : userNodes.push(node);
     });
 
     // A linear scale to position the nodes on the X axis
@@ -135,9 +182,9 @@ export default function ArcDiagram() {
 
     const linkPaths = filteredCombinedLinks.map((link) => ({
       ...link,
-      d: calculateLinkPath(link, filteredNodes, xRobot, xUser, arcHeight),
+      d: calculateLinkPath(link, filteredNodes, xUser, xRobot, arcHeight),
     }));
-    console.log('linkPaths', linkPaths);    
+    console.log("linkPaths", linkPaths);
     setNodes(filteredNodes);
     setLinks(linkPaths);
   }, [filteredDiagram]);
@@ -147,27 +194,49 @@ export default function ArcDiagram() {
     const svgContent = document.getElementById("arc-content");
     if (svgContent) {
       const { x, y, width, height } = svgContent.getBBox();
-      const newViewBox = `${x} ${y} ${width} ${height}`;
+      const newViewBox = `${x} ${y} ${width + 50} ${height + 20}`;
       setViewBox(newViewBox);
     }
   }, [nodes, links]);
 
   if (!filteredDiagram) return <p>loading...</p>;
 
+  let selectedLink = [];
+  const regularLinks = [];
+  
+  links.forEach((link) => {
+    const isConnectedNodeSelected = link.name.includes(selectedNode);
+    if (isConnectedNodeSelected) {
+      selectedLink.push(<Link
+        key={link.name}
+        name={link.name}
+        source={link.sourceName}
+        pathData={link.d}
+        isConnectedNodeSelected={isConnectedNodeSelected}
+      />)
+    } else {
+      regularLinks.push(
+        <Link
+          key={link.name}
+          name={link.name}
+          source={link.sourceName}
+          pathData={link.d}
+          isConnectedNodeSelected={isConnectedNodeSelected}
+        />
+      );
+    }
+  });
+
   return (
     <div className="p-6 arcWrapper">
       <h3 className="float-left text-md font-bold mr-4">Arc Diagram</h3>
       <svg width={"100%"} height={"100%"} viewBox={viewBox}>
         <g id="arc-content">
-          {/* Render links on the diagram */}
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              name={link.name}
-              pathData={link.d}
-              isConnectedNodeSelected={link.name.includes(selectedNode)}
-            />
-          ))}
+          {/* Render non-selected Links */}
+          {regularLinks}
+          {/* Render selected link */}
+          {console.log("selectedLink", selectedLink)}
+          {selectedLink         }
           {/* Render the nodes on the diagram */}
           {nodes.map((node) => {
             const engagementScore = calcEngagement(
@@ -179,7 +248,7 @@ export default function ArcDiagram() {
 
             return (
               <Node
-                key={node.id}
+                key={`${node.id} ${node.name}`}
                 xPosition={
                   node.turn.toLowerCase() !== "user"
                     ? scales.robotScale(node.name)

@@ -37,15 +37,16 @@ const Node = ({
       <title>{name}</title>
       <text
         key={`${id}a`}
-        className={"text-xs"}
+        className={"text-xs font-mono"}
         x={rectPosition}
         y={(y1 + y0) / 2}
         dy={"0.35em"}
         textAnchor={textAnchorPosition}
       >
-        {name.split(": ")[0]}:
+        {/* {name.split(": ")[0]}: */}
+        {name}
       </text>
-      <text
+      {/* <text
         key={`${id}b`}
         className={"text-xs"}
         x={rectPosition}
@@ -54,7 +55,7 @@ const Node = ({
         textAnchor={textAnchorPosition}
       >
         {name.split(": ")[1]}
-      </text>
+      </text> */}
       
     </g>
   );
@@ -76,7 +77,7 @@ const Link = ({
         d={dValue}
         stroke={color(linkSourceName)}
         fill="none"
-        strokeOpacity={linkedNodeSelected ? "100%" : "20%"}
+        strokeOpacity={linkedNodeSelected ? "100%" : "80%"}
         strokeWidth={Math.max(1, linkWidth)}
         style={{ mixBlendMode: "multiply" }}
       />

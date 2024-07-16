@@ -84,7 +84,7 @@ export default function Chatbox() {
         <div className="chatbox-content overflow-y-scroll" id="chatboxContent">
           {filteredTranscript.map((stmt, index) => {
             return (
-              <div key={stmt.idx}>
+              <div key={`${stmt.turn}${stmt.idx}-${index}`}>
                 <Bubble
                   id={stmt.idx}
                   turn={stmt.turn}

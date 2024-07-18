@@ -119,8 +119,8 @@ const calcEngagement = (node, maxUtteranceLength) => {
   // return 0.5 * (avgLength + avgSentiment); // Normalize sentiment score to range
   return node.turn.toLowerCase() === "user"
     ? 0.5 * (sentimentScore * 0.4 + 1)
-    : 0.5 * 1;
-  return 0.5 * (avgSentiment + 1);
+    : 0.5;
+  // return 0.5 * (avgSentiment + 1);
 };
 
 /**
@@ -182,7 +182,7 @@ export default function ArcDiagram() {
 
     const linkPaths = filteredCombinedLinks.map((link) => ({
       ...link,
-      d: calculateLinkPath(link, filteredNodes, xUser, xRobot, arcHeight),
+      d: calculateLinkPath(link, filteredNodes, xRobot, xUser, arcHeight),
     }));
     console.log("linkPaths", linkPaths);
     setNodes(filteredNodes);
@@ -201,42 +201,21 @@ export default function ArcDiagram() {
 
   if (!filteredDiagram) return <p>loading...</p>;
 
-  let selectedLink = [];
-  const regularLinks = [];
-  
-  links.forEach((link) => {
-    const isConnectedNodeSelected = link.name.includes(selectedNode);
-    if (isConnectedNodeSelected) {
-      selectedLink.push(<Link
-        key={link.name}
-        name={link.name}
-        source={link.sourceName}
-        pathData={link.d}
-        isConnectedNodeSelected={isConnectedNodeSelected}
-      />)
-    } else {
-      regularLinks.push(
-        <Link
-          key={link.name}
-          name={link.name}
-          source={link.sourceName}
-          pathData={link.d}
-          isConnectedNodeSelected={isConnectedNodeSelected}
-        />
-      );
-    }
-  });
-
   return (
     <div className="p-6 arcWrapper">
       <h3 className="float-left text-md font-bold mr-4">Arc Diagram</h3>
       <svg width={"100%"} height={"100%"} viewBox={viewBox}>
         <g id="arc-content">
-          {/* Render non-selected Links */}
-          {regularLinks}
-          {/* Render selected link */}
-          {console.log("selectedLink", selectedLink)}
-          {selectedLink         }
+          {/* Render Links */}
+          {links.map((link) => (
+            <Link
+              key={link.name}
+              name={link.name}
+              source={link.sourceName}
+              pathData={link.d}
+              isConnectedNodeSelected={link.name.includes(selectedNode)}
+            />
+          ))}
           {/* Render the nodes on the diagram */}
           {nodes.map((node) => {
             const engagementScore = calcEngagement(

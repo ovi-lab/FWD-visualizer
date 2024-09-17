@@ -119,7 +119,7 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
         ))}
         {nodes.map(
           (node, i ) =>
-          (node.show && i != 1) && (
+          (node.show && i != 1    ) && (
               <Node
                 key={node.name}
                 node      

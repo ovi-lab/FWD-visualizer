@@ -32,8 +32,8 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
     strokeWidth={!isSelected? 1: 2}
     fill={!isSelected
       ? color(node.name.match(/:(.*)/)[1].trim())
-      // : "rgb(139, 227, 139)"
-      : color(node.name.match(/:(.*)/)[1].trim())
+      : "rgb(139, 227, 139)"
+      // : color(node.name.match(/:(.*)/)[1].trim())
       // : "#80b1d3"
     }
     onClick={() => handle(node.name)}
@@ -48,8 +48,8 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => (
     strokeWidth={!isSelected? 1: 2}
     fill={!isSelected
       ? color(node.name.match(/:(.*)/)[1].trim())
-      // : "rgb(139, 227, 139)"
-      : color(node.name.match(/:(.*)/)[1].trim())
+      : "rgb(139, 227, 139)"
+      // : color(node.name.match(/:(.*)/)[1].trim())
       // : "#80b1d3"
     }
       onClick={() => handle(node.name)}
@@ -83,7 +83,7 @@ const Link = ({ name, source, pathData, isConnectedNodeSelected }) => (
     key={name}
     d={pathData}
     fill="none"
-    stroke={color(source.match(/:(.*)/)[1].trim())}
+    stroke={isConnectedNodeSelected ? "rgb(139, 227, 139)" : color(source.match(/:(.*)/)[1].trim())}
     opacity={isConnectedNodeSelected ? "100%" : "50%"}
     strokeWidth={7}
     className="link arcLink"

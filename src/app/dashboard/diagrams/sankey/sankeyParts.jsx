@@ -75,9 +75,9 @@ const Link = ({
         className="link sankeyLink"
         id={linkID}
         d={dValue}
-        stroke={color(linkSourceName)}
+        stroke={linkedNodeSelected ? "rgb(139, 227, 139)" : color(linkSourceName)}
         fill="none"
-        strokeOpacity={linkedNodeSelected ? "100%" : "80%"}
+        strokeOpacity={linkedNodeSelected ? "100%" : "8 0%"}
         strokeWidth={Math.max(1, linkWidth)}
         style={{ mixBlendMode: "multiply" }}
       />

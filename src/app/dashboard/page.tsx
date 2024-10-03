@@ -1,7 +1,7 @@
-import InfoPanel from "./info/page";
+import InfoPanel from "./info/infoPanel";
 import ArcDiagram from "./diagrams/arc/page";
 import Chatbox from "./chat/page";
-import SankeySelector from "./diagrams/sankey/page";
+import SankeyInterface from "./diagrams/sankey/page";
 
 export default function Dashboard() {
   return (
@@ -17,7 +17,7 @@ export default function Dashboard() {
           >
             
             <ArcDiagram/>
-            <SankeySelector/>
+            <SankeyInterface/>
           </div>
           <Chatbox/>
         </div>

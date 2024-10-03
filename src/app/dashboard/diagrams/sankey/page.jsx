@@ -42,7 +42,7 @@ const SelectorButton = ({
   );
 };
 
-function SankeySelector() {
+function SankeyInterface() {
   const [dataDirection, setDataDirection] = useState("robot-user");
 
   // Event handler for radio button change
@@ -79,4 +79,4 @@ function SankeySelector() {
   );
 }
 
-export default SankeySelector;
+export default SankeyInterface;

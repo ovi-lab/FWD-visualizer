@@ -60,18 +60,19 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
   useEffect(() => {
     if (!filteredDiagramData) return;
 
-    const filteredNodes = filteredDiagramData.nodes;
+    const filteredNodes = structuredClone(filteredDiagramData.nodes);
+    const linkClone = structuredClone(filteredDiagramData.links);
 
     let filteredLinks;
     if (isBidirectional)
       filteredLinks = separateBidirectionalLinks(
-        filteredDiagramData.links.robot,
-        filteredDiagramData.links.user
+        linkClone.robot,
+        linkClone.user
       );
     else {
       filteredLinks = dataDirection === "robot-user"
-        ? filteredDiagramData.links.robot
-        : filteredDiagramData.links.user;
+        ? linkClone.robot
+        : linkClone.user;
     }
 
     const sankeyGenerator = createSankeyGenerator(

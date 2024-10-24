@@ -8,7 +8,7 @@ const ArcDiagramPage = () => {
 
   return (
     <div>
-      <h1 className="float-left text-xl font-bold mx-4">Arc Diagram</h1>
+      <h1 className="float-left text-xl  font-bold mx-4">Arc Diagram</h1>
       <ArcDiagram data={filteredDiagramData} />
     </div>
   );

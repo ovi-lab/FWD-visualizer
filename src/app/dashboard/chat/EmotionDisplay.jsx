@@ -1,7 +1,7 @@
 
 import { UserAvatar, HaruAvatar } from './avatars';
 
-const emotions = {
+const emotionMap = {
   anger: { char: ">:(", color: "#ff7866" },
   disgust: { char: ">:P", color: "#8B4513" },
   fear: { char: ":{", color: "#cdabff" },
@@ -12,7 +12,7 @@ const emotions = {
 };
 
 export const EmotionDisplay = ({ label, speaker }) => {
-  const { char, color } = emotions[label] || { char: ":|", color: "#a3e635" };
+  const { char, color } = emotionMap[label] || { char: ":|", color: "#a3e635" };
   return (
     <div>
       <div className="profile h-8 w-8 rounded-full mx-2 text-center" style={{ backgroundColor: color }}>

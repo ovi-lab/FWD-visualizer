@@ -154,7 +154,7 @@ const ControlPanel = () => {
   if (!transcriptData) return <div>Loading...</div>;
 
   return (
-    <div className="bottom-0 mx-auto pr-2 pb-1 bg-gray-700 rounded-lg shadow-md w-full max-w-full overflow-x-hidden">
+    <div className="bottom-0 mx-auto pr-3 pb-1 bg-gray-700 rounded-lg shadow-md w-50 max-w-full overflow-x-hidden">
       <div className="flex flex-wrap justify-center">
         {/* Speaker filter */}
         <FilterRadioButton
@@ -213,7 +213,7 @@ const ControlPanel = () => {
       </div>
 
       {/* TimeLine component */}
-        <TimeLine timestamp={filterState.timestamp} selectTime={applyFilter} /> 
+      <TimeLine timestamp={filterState.timestamp} selectTime={applyFilter} />
     </div>
   );
 };

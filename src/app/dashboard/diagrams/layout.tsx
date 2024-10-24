@@ -1,5 +1,5 @@
 import Chatbox from "../chat/page";
-import InfoPanel from "../info-panel/infoPanel";
+import InfoPanel from "../../components/infoPanel";
 
 export default function Layout({
   children,

@@ -4,6 +4,7 @@ import { SelectedNodeProvider } from "@/app/contexts/selectedNodeContext";
 import { ChatProvider } from "@/app/contexts/chatContext";
 import { FilterProvider } from "@/app/contexts/filterContext";
 import { SocketDataProvider } from "@/app/contexts/socketDataContext";
+import InfoPanel from "@/app/components/infoPanel";
 
 export default function Layout({
   children,
@@ -17,8 +18,8 @@ export default function Layout({
         <div className="col-span-8 flex flex-col h-full">
             <FilterProvider>
               <div className="flex-1 overflow-y-auto p-3">
-                <ChatProvider>
-                  <SelectedNodeProvider>
+                <ChatProvider>  
+                  <SelectedNodeProvider>  
                     {children}
                   </SelectedNodeProvider>
                 </ChatProvider>

@@ -137,14 +137,14 @@ export default function ArcDiagram() {
   // Context for storing the node the user selects
   const { selectedNode, setSelectedNode } = useSelectedNode();
   // Contexts used for filtering
-  const { filteredDiagram } = useFilter();
+  const { filteredDiagramData } = useFilter();
 
   const handleNodeSelect = (nodeName) => {
     setSelectedNode(nodeName);
   };
 
   useEffect(() => {
-    if (!filteredDiagram) return;
+    if (!filteredDiagramData) return;
     const robotNodes = [];
     const userNodes = [];
     const allNodes = [];
@@ -154,7 +154,7 @@ export default function ArcDiagram() {
     const arcHeight = 450;
     const midPoint = arcWidth / 2;
 
-    const filteredNodes = filteredDiagram.nodes;
+    const filteredNodes = filteredDiagramData.nodes;
     filteredNodes.map((node) => {
       allNodes.push(node.name);
       idToNode[node.id] = node;
@@ -176,8 +176,8 @@ export default function ArcDiagram() {
 
     setScales({ robotScale: xRobot, userScale: xUser });
 
-    const filteredCombinedLinks = filteredDiagram.links.robot.concat(
-      filteredDiagram.links.user
+    const filteredCombinedLinks = filteredDiagramData.links.robot.concat(
+      filteredDiagramData.links.user
     );
 
     const linkPaths = filteredCombinedLinks.map((link) => ({
@@ -187,7 +187,7 @@ export default function ArcDiagram() {
     console.log("linkPaths", linkPaths);
     setNodes(filteredNodes);
     setLinks(linkPaths);
-  }, [filteredDiagram]);
+  }, [filteredDiagramData]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content
@@ -199,7 +199,7 @@ export default function ArcDiagram() {
     }
   }, [nodes, links]);
 
-  if (!filteredDiagram) return <p>loading...</p>;
+  if (!filteredDiagramData) return <p>loading...</p>;
 
   return (
     <div className="p-6 arcWrapper">
@@ -221,8 +221,8 @@ export default function ArcDiagram() {
             const engagementScore = calcEngagement(
               node,
               node.turn.toLowerCase() !== "user"
-                ? filteredDiagram.attributes.longest_robot_utterance
-                : filteredDiagram.attributes.longest_user_utterance
+                ? filteredDiagramData.attributes.longest_robot_utterance
+                : filteredDiagramData.attributes.longest_user_utterance
             );
 
             return (

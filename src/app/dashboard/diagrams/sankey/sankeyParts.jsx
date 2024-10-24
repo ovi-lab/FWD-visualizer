@@ -19,7 +19,7 @@ const Node = ({
   return (
     <g key={id}>
       <rect
-        className="node sankeyNode "
+        className="node sankeyNode hover:fill-[#8be38b]"
         height={y1 - y0}
         width={x1 - x0}
         x={x0}
@@ -43,19 +43,8 @@ const Node = ({
         dy={"0.35em"}
         textAnchor={textAnchorPosition}
       >
-        {/* {name.split(": ")[0]}: */}
         {name}
       </text>
-      {/* <text
-        key={`${id}b`}
-        className={"text-xs"}
-        x={rectPosition}
-        y={((y1 + y0) / 2) + 12}
-        dy={"0.35em"}
-        textAnchor={textAnchorPosition}
-      >
-        {name.split(": ")[1]}
-      </text> */}
       
     </g>
   );
@@ -66,8 +55,7 @@ const Link = ({
   dValue,
   linkSourceName,
   linkedNodeSelected,
-  linkWidth,
-  linkDirection
+  linkWidth
 }) => {
   return (
     <g>

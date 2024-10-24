@@ -9,8 +9,10 @@ interface FerrisWheelProps {
 }
 
 const FerrisWheel: React.FC<FerrisWheelProps> = ({ colorscheme = 'blue' }) => {
-    const { selectedNode } = useSelectedNode();
-    const { filteredData } = useFilter();
+    // Context for storing the node the user selects
+    const { selectedNode, setSelectedNode } = useSelectedNode();
+    // Contexts used for filtering
+    const { filteredDiagram } = useFilter();
 
     return (
         <div className="ferris-wheel">

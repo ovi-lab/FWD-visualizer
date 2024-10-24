@@ -25,7 +25,7 @@ export const FilterProvider = ({ children }) => {
   const {transcriptData, diagramData} = useSocketData();
   const [filters, setFilters] = useState(defaultFilters);
   const [filteredTranscript, setFilteredTranscript] = useState([])
-  const [filteredDiagram, setFilteredDiagram] = useState(defaultFilteredDiagramData)
+  const [filteredDiagramData, setFilteredDiagramData] = useState(defaultFilteredDiagramData)
 
   useEffect(() => {
     if (!transcriptData || !diagramData) return
@@ -36,13 +36,13 @@ export const FilterProvider = ({ children }) => {
     const filteredRobotLinks = filterData(diagramData.links.robot, filters)
     const filteredUserLinks = filterData(diagramData.links.user, filters)
 
-    setFilteredDiagram({nodes: filteredNodes, links: {robot: filteredRobotLinks, user: filteredUserLinks}, attributes: diagramData.attributes})
+    setFilteredDiagramData({nodes: filteredNodes, links: {robot: filteredRobotLinks, user: filteredUserLinks}, attributes: diagramData.attributes})
     
   }, [filters, transcriptData, diagramData])
   
 
   return (
-    <FilterContext.Provider value={{ filters, setFilters , filteredTranscript, filteredDiagram}}>
+    <FilterContext.Provider value={{ filters, setFilters , filteredTranscript, filteredDiagramData}}>
       {children}
     </FilterContext.Provider>
   );

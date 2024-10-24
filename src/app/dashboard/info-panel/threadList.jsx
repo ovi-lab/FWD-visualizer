@@ -65,7 +65,7 @@ export default function ThreadList({
    * handles clicking a response in the threadlist.
    * This not only sends the anchor to context for scrolling the chatbox component to the selected dialog,
    * but also ads the id of the selected button to state for changing its color
-   * @param {*} responseClicked The response that is clicked in the list
+   * @param responseClicked The response that is clicked in the list
    */
   const handleListClick = (clickedID) => {
     anchorClick(clickedID);

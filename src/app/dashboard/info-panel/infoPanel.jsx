@@ -1,9 +1,9 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect} from "react";
 import ThreadList from "./threadList";
 import "./infoStyles.css";
-import { useSelectedNode } from "../../contexts/selectedNodeContext";
-import { useChatAnchor } from "../../contexts/chatContext";
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
+import { useChatAnchor } from "@/app/contexts/chatContext";
 import { useSocketData } from "@/app/contexts/socketDataContext";
 
 const InfoPanel = () => {
@@ -27,7 +27,7 @@ const InfoPanel = () => {
       <h3 className="text-lg font-semibold">Information Panel</h3>
       </div>
       {!selectedNode ? (
-        <p>Select an item on either diagram to get started</p>
+        <p>Select an item on a diagram to get started</p>
       ) : (
         <div>
         <div className="items-center justify-center p-1">

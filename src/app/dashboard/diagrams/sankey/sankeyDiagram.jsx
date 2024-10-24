@@ -55,23 +55,23 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
   });
   const sankeyRef = React.useRef();
   const { selectedNode, setSelectedNode } = useSelectedNode();
-  const { filteredData } = useFilter();
+  const { filteredDiagramData } = useFilter();
 
   useEffect(() => {
-    if (!filteredData) return;
+    if (!filteredDiagramData) return;
 
-    const filteredNodes = filteredData.nodes;
+    const filteredNodes = filteredDiagramData.nodes;
 
     let filteredLinks;
     if (isBidirectional)
       filteredLinks = separateBidirectionalLinks(
-        filteredData.links.robot,
-        filteredData.links.user
+        filteredDiagramData.links.robot,
+        filteredDiagramData.links.user
       );
     else {
       filteredLinks =   dataDirection === "robot-user"
-        ? filteredData.links.robot
-        : filteredData.links.user;
+        ? filteredDiagramData.links.robot
+        : filteredDiagramData.links.user;
     }
 
     const sankeyGenerator = createSankeyGenerator(
@@ -89,13 +89,13 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
     } catch (error) {
       console.log("error", error);
     }
-  }, [filteredData, dataDirection, viewBox]);
+  }, [filteredDiagramData, dataDirection, viewBox]);
 
   const handleSankeyInteraction = (nodeName) => {
     setSelectedNode(nodeName);
   };
 
-  if (!filteredData) return <div>Loading...</div>;
+  if (!filteredDiagramData) return <div>Loading...</div>;
 
   return (
     <svg
@@ -114,7 +114,6 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
             linkSourceName={link.sourceName.match(/:(.*)/)[1].trim()}
             linkedNodeSelected={link.name.includes(selectedNode)}
             linkWidth={link.width}
-            linkDirection={link.direction !== undefined ? link.direction : "forward"}
           />
         ))}
         {nodes.map(

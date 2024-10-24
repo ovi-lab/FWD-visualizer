@@ -1,4 +1,4 @@
-import InfoPanel from "./info/infoPanel";
+import InfoPanel from "../info-panel/infoPanel";
 import ArcDiagram from "./diagrams/arc/page";
 import Chatbox from "./chat/page";
 import SankeyInterface from "./diagrams/sankey/page";

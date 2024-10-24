@@ -11,65 +11,64 @@ import { useSocketData } from "@/app/contexts/socketDataContext";
  * @param {function} props.selectTime - Function to update the selected timestamp in filters.
  * @returns {JSX.Element} The TimeLine component.
  */
-export default function TimeLine({timestamp, selectTime}) {
+export default function TimeLine({ timestamp, selectTime }) {
   const { transcriptData } = useSocketData();
 
-  const { start, end, steps } = useMemo(() => {
+  const { start, end, stepSize } = useMemo(() => {
     if (transcriptData.length === 0) {
-      return { start: "", end: "", steps: 10000 }; // default to 10 seconds if no data
+      return { start: "", end: "", stepSize: 10000 }; // default to 10 seconds if no data
     }
+
     const startTime = transcriptData[0]?.timestamp;
     const endTime = transcriptData[transcriptData.length - 1]?.timestamp;
     const totalDuration = Date.parse(endTime) - Date.parse(startTime);
-    const fullIntervals = Math.floor(totalDuration / 10000);
+
+    // Ensure at least one step to prevent division by zero
+    const totalIntervals = Math.max(1, Math.floor(totalDuration / 10000));
     const remainder = totalDuration % 10000;
-    const totalIntervals = remainder > 0 ? fullIntervals + 1 : fullIntervals;
-    const stepSize = totalDuration / totalIntervals; // Adjust step size to exactly fit the range
-    timestamp = endTime;
-    return { start: startTime, end: endTime, steps: stepSize };
+    const adjustedIntervals = remainder > 0 ? totalIntervals + 1 : totalIntervals;
+    const stepSize = totalDuration / adjustedIntervals; // Adjust step size to fit the range
+
+    return { start: startTime, end: endTime, stepSize };
   }, [transcriptData]);
 
   useEffect(() => {
-    if (end && timestamp === "") {
+    // If timestamp is empty or undefined, set it to the end time
+    if (end && (!timestamp || timestamp === "")) {
       selectTime("timestamp", end);
     }
-  }, [end, timestamp]);
+  }, [end, timestamp, selectTime]);
 
   const handleTimeSelect = (e) => {
-    // Parse the input value as a date string
-    const selectedDate = new Date(Number(e.target.value));
-    // Check if the parsed date is valid
-    if (!isNaN(selectedDate.getTime())) {
-      // If the date is valid, update the selected time in the context
-      selectTime("timestamp", selectedDate.toString());
-    }
+    const selectedTimestamp = new Date(Number(e.target.value)).toISOString();
+    selectTime("timestamp", selectedTimestamp);
   };
 
-  if (!transcriptData || transcriptData.length === 0)
+  if (!transcriptData || transcriptData.length === 0) {
     return (
-      <div className=" rounded-lg bg-gray-100 p-1 shadow-md m-2">Loading</div>
+      <div className="rounded-lg bg-gray-100 p-1 shadow-md m-2">Loading</div>
     );
-  else
+  } else {
     return (
-      <div className="rounded-lg bg-gray-100 p-1 shadow-md m-2 w-100%">
-        <div className="flex items-center justify-between">
+<div className="rounded-lg bg-gray-100 p-2 shadow-md m-2 w-full max-w-full overflow-x-hidden">
+<div className="flex items-center justify-between mb-2">
           <label
             htmlFor="steps-range"
-            className="text-sm font-medium text-gray-900 mr-auto"
+            className="text-sm font-medium text-gray-900"
           >
-            {start}
+            {new Date(start).toLocaleTimeString()}
           </label>
           <label
             htmlFor="steps-range"
-            className="text-sm font-medium text-gray-900 mx-auto"
+            className="text-sm font-medium text-gray-900"
           >
-            {timestamp}
+            {timestamp ? new Date(timestamp).toLocaleTimeString() : new Date(end).toLocaleTimeString()}
           </label>
           <label
             htmlFor="steps-range"
-            className="text-sm font-medium text-gray-900 ml-auto"
+            className="text-sm font-medium text-gray-900"
           >
-            {end}
+            {new Date(end).toLocaleTimeString()}
           </label>
         </div>
         <input
@@ -77,11 +76,12 @@ export default function TimeLine({timestamp, selectTime}) {
           type="range"
           min={Date.parse(start)}
           max={Date.parse(end)}
-          step={steps}
-          defaultValue={Date.parse(timestamp)}
+          step={stepSize}
+          value={Date.parse(timestamp || end)}
           className="w-full h-3 bg-blue-300 rounded-lg appearance-none cursor-pointer"
           onChange={handleTimeSelect}
         />
       </div>
     );
+  }
 }

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 import { useFilter } from "@/app/contexts/filterContext";
 import TimeLine from "./timeline";
 import { useSocketData } from "@/app/contexts/socketDataContext";
@@ -13,7 +13,7 @@ const defaultFilters = {
   timestamp: "",
 };
 
-const turnList = ["robot", "user"];
+const turnList = ["haru", "user"];
 const sentimentList = ["positive", "neutral", "negative"];
 const emotionList = [
   "anger",
@@ -98,7 +98,7 @@ const FilterDropdown = ({
       <select
         value={stateValue}
         onChange={(e) => handleChange("topic", e.target.value)}
-        className="border-2 border-gray-700 rounded-lg p-1"
+        className="border-2 border-gray-700 rounded-lg p-1 w-full"
       >
         <option className="m-1" value="">
           {promptOption}
@@ -129,8 +129,9 @@ const ControlPanel = () => {
     if (!transcriptData) return;
     const uniqueTopics = new Set();
     transcriptData.forEach((line) => {
-      (line.turn !== "user") && uniqueTopics.add(line.topic);
-      
+      if (line.turn === "haru") {
+        uniqueTopics.add(line.topic);
+      }
     });
     setAvailableTopics([...uniqueTopics]);
   }, [transcriptData]);
@@ -153,8 +154,8 @@ const ControlPanel = () => {
   if (!transcriptData) return <div>Loading...</div>;
 
   return (
-    <div className="bottom-0 mr-auto ml-auto pb-1 bg-gray-700 rounded-lg shadow-md">
-      <div className="flex">
+    <div className="bottom-0 mx-auto pr-2 pb-1 bg-gray-700 rounded-lg shadow-md w-full max-w-full overflow-x-hidden">
+      <div className="flex flex-wrap justify-center">
         {/* Speaker filter */}
         <FilterRadioButton
           data={turnList}
@@ -197,25 +198,22 @@ const ControlPanel = () => {
           title={"Use the safety list?"}
           filterType={"keywords"}
           stateValue={filterState.keywords ? "yes" : "no"}
-          handleChange={(filter, value) =>
-            applyFilter(filter, value === "yes")
-          }
+          handleChange={(filter, value) => applyFilter(filter, value === "yes")}
         />
 
         {/* Reset button */}
-        <div className="flex-left rounded-lg bg-gray-100 p-1 shadow-md m-2">
+        <div className="rounded-lg bg-gray-100 p-2 shadow-md m-2">
           <button
-            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 m-1 py-1 px-2 font-bold text-gray-700 text-sm"
+            className="select-none cursor-pointer rounded-lg border-2 border-gray-700 py-1 px-2 font-bold text-gray-700 text-sm w-full"
             onClick={resetFilters}
           >
             Reset
           </button>
         </div>
       </div>
-      <TimeLine
-        timestamp={filterState.timestamp}
-        selectTime={applyFilter}
-      />
+
+      {/* TimeLine component */}
+        <TimeLine timestamp={filterState.timestamp} selectTime={applyFilter} /> 
     </div>
   );
 };

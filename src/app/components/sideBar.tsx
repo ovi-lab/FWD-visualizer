@@ -43,11 +43,11 @@ export default function SideBar() {
               </svg>
             <h1 className="h3, ml-5">Haru Chat Visualizer</h1>
           </li>
-          <NavItem href="/dashboard/chat" title="Chat View" />
-          <NavItem href="/dashboard/diagrams/arc" title="Arc Diagram" />
-          <NavItem href="/dashboard/diagrams/sankey" title="Sankey Diagram" />
-          <NavItem href="/dashboard/diagrams/ferris-wheel" title="Ferris Wheel" />
-          <NavItem href="/dashboard/diagrams/ToF" title="Tiers of Friendship" />
+          <NavItem href="/chat" title="Chat View" />
+          <NavItem href="/diagrams/arc" title="Arc Diagram" />
+          <NavItem href="/diagrams/sankey" title="Sankey Diagram" />
+          <NavItem href="/diagrams/ferris-wheel" title="Ferris Wheel" />
+          <NavItem href="/diagrams/ToF" title="Tiers of Friendship" />
           <li className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700"></li>
           <SelectionForm/>
         </ul>

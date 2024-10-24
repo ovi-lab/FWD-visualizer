@@ -1,37 +1,129 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import * as d3 from "d3";
-import "../graphStyles.css";
+import { scaleLinear, scalePoint, scaleOrdinal, schemeSet3 } from "d3";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
-import { useFilter } from "@/app/contexts/filterContext";
-import { Node, Link } from "./arcParts";
+
+// Define the color scale with D3 schemeSet3
+const color = scaleOrdinal(schemeSet3);
+
+// Determine if the node is a "user" type or a different entity
+const checkIsUser = (node) => {
+  return node.turn.toLowerCase() === "user";
+};
+
+/**
+ * Represents a node component for an arc diagram.
+ * @component
+ * @param {object} props - The props object containing the properties of the node.
+ * @param {object} props.node - The node object containing information about the node.
+ * @param {number} props.xPosition - The x-coordinate position of the node.
+ * @param {number} props.arcHeight - The height of the arc where the node is positioned.
+ * @param {number} props.size - The size of the node.
+ * @param {boolean} props.isSelected - A boolean indicating whether the node is selected.
+ * @param {Function} props.handle - The function to handle the node click event.
+ * @returns {JSX.Element} - A JSX element representing the node.
+ */
+const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
+  // Determine stroke and fill colors based on whether the node is selected
+  const strokeColor = isSelected ? "rgb(139, 227, 139)" : "grey";
+  const strokeWidth = isSelected ? 2 : 1;
+  const fillColor = isSelected
+    ? "rgb(139, 227, 139)"
+    : color(node.name.match(/:(.*)/)[1].trim());
+
+  // Handle node click event
+  const handleClick = () => handle(node.name);
+
+  return (
+    <g key={`node${node.name}`}>
+      {/* Render the line connecting the node */}
+      <line
+        x1={xPosition}
+        y1={arcHeight + size + 5}
+        x2={xPosition}
+        y2={arcHeight + 30}
+        stroke="grey"
+        strokeWidth="1"
+      />
+
+      {/* Conditionally render a rect for "robot" type nodes or a circle for others */}
+      {checkIsUser(node) ? (
+        <circle
+          className="hover:fill-[#8be38b] cursor-pointer"
+          cx={xPosition}
+          cy={arcHeight}
+          id={node.name}
+          r={size}
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+          fill={fillColor}
+          onClick={handleClick}
+        />
+      ) : (
+        <rect
+          className="hover:fill-[#8be38b] cursor-pointer"
+          height={size * 1.5}
+          width={size * 1.5}
+          x={xPosition - size / 1.5}
+          y={arcHeight - size / 2}
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+          fill={fillColor}
+          onClick={handleClick}
+        />
+      )}
+
+      {/* Render node label */}
+      <text
+        className="text-sm font-mono"
+        x={xPosition - 35}
+        y={arcHeight + 35}
+        transform="rotate(-45)"
+        style={{
+          textAnchor: "end",
+          transformOrigin: `${xPosition}px ${arcHeight - 15}px`,
+        }}
+      >
+        {node.name}
+      </text>
+    </g>
+  );
+};
+
+/**
+ * Represents a link component for an arc diagram.
+ * @component
+ * @param {object} props - The props object containing the properties of the link.
+ * @param {string} props.name - The name of the link.
+ * @param {string} props.source - The source node's name associated with the link.
+ * @param {string} props.pathData - The path data for the link (SVG path data).
+ * @param {boolean} props.isConnectedNodeSelected - A boolean indicating if the connected node is selected.
+ * @returns {JSX.Element} - A JSX element representing the link.
+ */
+const Link = ({ name, source, pathData, isConnectedNodeSelected }) => {
+  // Determine stroke color based on whether the connected node is selected
+  const strokeColor = isConnectedNodeSelected
+    ? "rgb(139, 227, 139)"
+    : color(source.match(/:(.*)/)[1].trim());
+
+  // Set opacity based on selection status
+  const opacity = isConnectedNodeSelected ? 1 : 0.5;
+
+  return (
+    <path
+      d={pathData}
+      fill="none"
+      stroke={strokeColor}
+      opacity={opacity}
+      strokeWidth={7}
+      className=""
+      id={name}
+    />
+  );
+};
 
 // A linear scale for node size
-const size = d3.scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
-
-// let selectedLink = null;
-
-// const renderedLinks = (links, selectedNode) =>
-//   links.map((link) => {
-//     const isConnectedNodeSelected = link.name.includes(selectedNode);
-//     if (isConnectedNodeSelected) {
-//       selectedLink = {
-//         name: link.name,
-//         source: link.sourceName,
-//         d: link.d,
-//         isConnectedNodeSelected: isConnectedNodeSelected,
-//       };
-//     }
-//     return (
-//       <Link
-//         key={link.name}
-//         name={link.name}
-//         source={link.sourceName}
-//         pathData={link.d}
-//         isConnectedNodeSelected={isConnectedNodeSelected}
-//       />
-//     );
-//   });
+const sizeScale = scaleLinear().domain([0, 30]).range([1, 40]).clamp(true);
 
 /**
  * Calculates the SVG path for a link between two nodes in an arc diagram.
@@ -54,14 +146,12 @@ function calculateLinkPath(link, nodesWithPosition, xRobot, xUser, arcHeight) {
     return "";
   }
 
-  const start =
-    sourceNode.turn.toLowerCase() === "user"
-      ? xUser(sourceNode.name)
-      : xRobot(sourceNode.name);
-  const end =
-    targetNode.turn.toLowerCase() === "robot"
-      ? xRobot(targetNode.name)
-      : xUser(targetNode.name);
+  const start = checkIsUser(sourceNode)
+    ? xUser(sourceNode.name)
+    : xRobot(sourceNode.name);
+  const end = checkIsUser(targetNode)
+    ? xUser(targetNode.name)
+    : xRobot(targetNode.name);
   const nodeMidpoint = Math.abs(start - end) / 2;
   return [
     "M",
@@ -99,28 +189,20 @@ const calcEngagement = (node, maxUtteranceLength) => {
       case "neutral":
         return 0; // Neutral sentiment is represented as 0
       default:
-        throw new Error("Invalid sentiment label");
+        return 0;
     }
   };
 
-  // const lengthScore = node.interactions.reduce(
-  //   (acc, interaction) =>
-  //     acc + interaction.prompt.length / maxUtteranceLength,
-  //   0
-  // );
   const sentimentScore = node.interactions.reduce(
     (acc, interaction) =>
       acc +
       numericScore(interaction.sentiment_label, interaction.sentiment_score),
     0
   );
-  // const avgLength = lengthScore / node.interactions.length;
-  // const avgSentiment = sentimentScore / node.interactions.length;
-  // return 0.5 * (avgLength + avgSentiment); // Normalize sentiment score to range
+
   return node.turn.toLowerCase() === "user"
     ? 0.5 * (sentimentScore * 0.4 + 1)
     : 0.5;
-  // return 0.5 * (avgSentiment + 1);
 };
 
 /**
@@ -129,65 +211,55 @@ const calcEngagement = (node, maxUtteranceLength) => {
  * @component
  * @returns {JSX.Element} The rendered component.
  */
-export default function ArcDiagram() {
+function ArcDiagram({data}) {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [scales, setScales] = useState({});
   const [viewBox, setViewBox] = useState([]);
   // Context for storing the node the user selects
   const { selectedNode, setSelectedNode } = useSelectedNode();
-  // Contexts used for filtering
-  const { filteredDiagramData } = useFilter();
 
   const handleNodeSelect = (nodeName) => {
     setSelectedNode(nodeName);
   };
 
   useEffect(() => {
-    if (!filteredDiagramData) return;
+    if (!data) return;
     const robotNodes = [];
     const userNodes = [];
-    const allNodes = [];
-    const idToNode = {};
     // Diagram properties
     const arcWidth = 1000;
     const arcHeight = 450;
     const midPoint = arcWidth / 2;
 
-    const filteredNodes = filteredDiagramData.nodes;
-    filteredNodes.map((node) => {
-      allNodes.push(node.name);
-      idToNode[node.id] = node;
+    const filteredNodes = data.nodes;
+    filteredNodes.forEach((node) => {
       node.turn.toLowerCase() !== "user"
         ? robotNodes.push(node)
         : userNodes.push(node);
     });
 
     // A linear scale to position the nodes on the X axis
-    const xRobot = d3
-      .scalePoint()
+    const xRobot = scalePoint()
       .domain(robotNodes.map((node) => node.name))
       .range([midPoint - 30, 0]);
 
-    const xUser = d3
-      .scalePoint()
+    const xUser = scalePoint()
       .domain(userNodes.map((node) => node.name))
       .range([midPoint + 30, arcWidth]);
 
     setScales({ robotScale: xRobot, userScale: xUser });
 
-    const filteredCombinedLinks = filteredDiagramData.links.robot.concat(
-      filteredDiagramData.links.user
-    );
+    const filteredCombinedLinks = data.links.robot.concat(data.links.user);
 
     const linkPaths = filteredCombinedLinks.map((link) => ({
       ...link,
       d: calculateLinkPath(link, filteredNodes, xRobot, xUser, arcHeight),
     }));
-    console.log("linkPaths", linkPaths);
+
     setNodes(filteredNodes);
     setLinks(linkPaths);
-  }, [filteredDiagramData]);
+  }, [data]);
 
   useEffect(() => {
     // Calculate bounding box of the generated content
@@ -199,12 +271,11 @@ export default function ArcDiagram() {
     }
   }, [nodes, links]);
 
-  if (!filteredDiagramData) return <p>loading...</p>;
+  if (!data) return <p>Loading...</p>;
 
   return (
-    <div className="p-6 arcWrapper">
-      <h3 className="float-left text-md font-bold mr-4">Arc Diagram</h3>
-      <svg width={"100%"} height={"100%"} viewBox={viewBox}>
+    <div className="p-6">
+      <svg width="100%" height="100%" viewBox={viewBox}>
         <g id="arc-content">
           {/* Render Links */}
           {links.map((link) => (
@@ -221,8 +292,8 @@ export default function ArcDiagram() {
             const engagementScore = calcEngagement(
               node,
               node.turn.toLowerCase() !== "user"
-                ? filteredDiagramData.attributes.longest_robot_utterance
-                : filteredDiagramData.attributes.longest_user_utterance
+                ? data.attributes.longest_robot_utterance
+                : data.attributes.longest_user_utterance
             );
 
             return (
@@ -234,7 +305,7 @@ export default function ArcDiagram() {
                     : scales.userScale(node.name)
                 }
                 node={node}
-                size={size(30 * engagementScore)}
+                size={sizeScale(30 * engagementScore)}
                 arcHeight={450}
                 isSelected={node.name === selectedNode}
                 handle={handleNodeSelect}
@@ -246,3 +317,5 @@ export default function ArcDiagram() {
     </div>
   );
 }
+
+export default ArcDiagram;

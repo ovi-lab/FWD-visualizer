@@ -69,7 +69,7 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
         filteredDiagramData.links.user
       );
     else {
-      filteredLinks =   dataDirection === "robot-user"
+      filteredLinks = dataDirection === "robot-user"
         ? filteredDiagramData.links.robot
         : filteredDiagramData.links.user;
     }

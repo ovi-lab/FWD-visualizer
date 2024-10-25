@@ -31,3 +31,10 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Keyframe for lines connecting nodes in diagrams */
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

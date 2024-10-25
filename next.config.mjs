@@ -12,12 +12,12 @@ const nextConfig = {
         
         return config;
       },
-    // This function redirects from the base page to the dashboard on load
+    // This function redirects from the base page to the chat on load
     async redirects() {
         return [
           {
             source: '/',
-            destination: '/dashboard/chat',
+            destination: '/chat',
             permanent: true,
           },
         ]

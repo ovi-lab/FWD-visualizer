@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="fear" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 207.08 238.08">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #004d81;
+      }
+
+      .cls-2 {
+        stroke: #004d81;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 7px;
+      }
+
+      .cls-4 {
+        fill: #929292;
+      }
+
+      .cls-3 {
+        stroke: #929292;
+      }
+
+      .cls-5 {
+        fill: #eee;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer_1">
+    <g>
+      <g>
+        <path class="cls-4" d="M112.5,119.52s-14,0-21,1c0,0,2-31-.1-40.1-.3-1.32-.13-2.73-.87-3.87-1.14-1.77-7.62-3.57-13.04-3.03,0,0,2-17,2-19l43.1-2.4,4.92,19.29s-12,.09-13,8.02"/>
+        <rect class="cls-5" x="3.23" y="11.94" width="80.96" height="80.66" rx="17.2" ry="17.2" transform="translate(79.03 110.54) rotate(-171.32)"/>
+        <path class="cls-5" d="M35.71,229.74S-3.04,118.62,104.23,115.83c0,0,91.27-11.13,74.27,100.15,0,0-26.57,30.28-142.79,13.75Z"/>
+        <path class="cls-3" d="M33.71,227.67s72.29,21.35,144.57-11.02"/>
+        <rect class="cls-5" x="120.23" y="5.94" width="80.96" height="80.66" rx="17.2" ry="17.2" transform="translate(-6.47 50.51) rotate(-17.51)"/>
+      </g>
+      <circle class="cls-1" cx="45.92" cy="57.35" r="20"/>
+      <circle class="cls-1" cx="158.92" cy="50.35" r="20"/>
+      <line class="cls-2" x1="23.69" y1="39.67" x2="42.14" y2="27.04"/>
+      <line class="cls-2" x1="161.47" y1="21.34" x2="181.93" y2="30.37"/>
+      <path class="cls-2" d="M104.42,157.85h-3.01c-8,0-25.49,7.27-25.49-3.5h0c0-10.77,15.41-14.5,23.41-14.5h10.41c8,0,21.18,3.73,21.18,14.5h0c0,10.77-18.49,3.5-26.49,3.5Z"/>
+    </g>
+  </g>
+</svg>

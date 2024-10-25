@@ -1,13 +1,9 @@
-import React from 'react';
-import FerrisWheel from './ferrisWheel';
+import NodeList from "./NodeList";
 
-const FerrisWheelPage: React.FC = () => {
-    return (
-        <div>
-            <h1>Ferris Wheel Diagram</h1>
-            <FerrisWheel />
-        </div>
-    );
-};
-
-export default FerrisWheelPage;
+export default function Home() {
+  return (
+    <>
+      <NodeList />
+    </>
+  );
+}

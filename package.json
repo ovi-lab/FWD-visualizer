@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@svgr/webpack": "^8.1.0",
     "d3": "^7.8.5",
     "d3-sankey": "^0.12.3",
     "fs": "^0.0.1-security",

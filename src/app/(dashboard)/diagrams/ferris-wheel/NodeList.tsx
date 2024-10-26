@@ -1,72 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import Bubbles from "./Bubbles";
-import { useFilter } from "@/app/contexts/filterContext";
 
 // Main function NodeList()
-export default function NodeList() {
-  const { filteredDiagramData } = useFilter();
-
-  const [nodes, setNodes] = useState([]);
-  const [links, setLinks] = useState([]);
-  useEffect(() => {
-    if (!filteredDiagramData) return;
-    setNodes(filteredDiagramData.nodes);
-    setLinks(filteredDiagramData.links);
-  }, [filteredDiagramData]);
-
-  useEffect(() => {
-    if (nodes === undefined) return;
-    nodes.forEach(
-      (node: {
-        id: number;
-        topic: string;
-        interactions: {
-          turn: string;
-          emotion_label: string;
-          emotion_score: number;
-          sentiment_score: number;
-        }[];
-      }) => {
-        // Iterate through interactions(inner) array
-        node.interactions.forEach((interaction) => {
-          // If the topic already exists in topicMap, update frequency, analysis
-          if (topicMap.has(node.topic)) {
-            const topicData = topicMap.get(node.topic);
-            if (topicData) {
-              topicData.frequency += 1;
-
-              if (interaction.turn === "user") {
-                topicData.analysis.push(interaction);
-              }
-
-              // Add id only if it's not already present
-              if (!topicData.ids.includes(node.id)) {
-                topicData.ids.push(node.id);
-              }
-              console.log(
-                "ID Already Exists " +
-                  node.topic +
-                  " " +
-                  node.id +
-                  " topicData.ids " +
-                  topicData.ids
-              );
-            }
-
-            // If the topic doesn't exist in topicMap, create new entry with the initial data
-          } else {
-            topicMap.set(node.topic, {
-              frequency: 1,
-              analysis: [interaction],
-              ids: [node.id],
-            });
-            console.log("NEW ID " + node.topic + " " + node.id);
-          }
-        });
-      }
-    );
-  }, [nodes, links]);
+export default function NodeList({ nodes, links }) {
+  const linksMap = {
+    robot: new Map<number, number[]>(),
+    user: new Map<number, number[]>(),
+  };
 
   const topicMap = new Map<
     string,
@@ -77,6 +18,75 @@ export default function NodeList() {
     }
   >();
 
+  if (nodes.length === 0) return;
+  nodes.forEach(
+    (node: {
+      id: number;
+      topic: string;
+      interactions: {
+        turn: string;
+        emotion_label: string;
+        emotion_score: number;
+        sentiment_score: number;
+      }[];
+    }) => {
+      // Iterate through interactions(inner) array
+      node.interactions.forEach((interaction) => {
+        // If the topic already exists in topicMap, update frequency, analysis
+        if (topicMap.has(node.topic)) {
+          const topicData = topicMap.get(node.topic);
+          if (topicData) {
+            topicData.frequency += 1;
+
+            if (interaction.turn === "user") {
+              topicData.analysis.push(interaction);
+            }
+
+            // Add id only if it's not already present
+            if (!topicData.ids.includes(node.id)) {
+              topicData.ids.push(node.id);
+            }
+            console.log(
+              "ID Already Exists " +
+                node.topic +
+                " " +
+                node.id +
+                " topicData.ids " +
+                topicData.ids
+            );
+          }
+
+          // If the topic doesn't exist in topicMap, create new entry with the initial data
+        } else {
+          topicMap.set(node.topic, {
+            frequency: 1,
+            analysis: [interaction],
+            ids: [node.id],
+          });
+          console.log("NEW ID " + node.topic + " " + node.id);
+        }
+      });
+    }
+  );
+
+  console.log("links", links);
+  if (links.length === 0) return;
+  // Process robot-initiated links
+  links.robot.forEach((link: { source: number; target: number }) => {
+    if (!linksMap.robot.has(link.source)) {
+      linksMap.robot.set(link.source, []);
+    }
+    linksMap.robot.get(link.source)?.push(link.target);
+  });
+
+  // Process user-initiated links
+  links.user.forEach((link: { source: number; target: number }) => {
+    if (!linksMap.user.has(link.source)) {
+      linksMap.user.set(link.source, []);
+    }
+    linksMap.user.get(link.source)?.push(link.target);
+  });
+
   // Store the fetched data to the map
   // Iterate through nodes(outer) array
   /* Array.forEach(item) => { //statement to apply to each item } 
@@ -84,12 +94,6 @@ export default function NodeList() {
     In this case, item is each entry of values
     Populate map with only required entries
   */
-
-  // Create a new map to sotre the fetched links data
-  const linksMap = {
-    robot: new Map<number, number[]>(),
-    user: new Map<number, number[]>(),
-  };
 
   // Store an array of target ids (value) for each source id(key)
   /*
@@ -107,24 +111,8 @@ export default function NodeList() {
     The ?. (optional chaining) ensures that if link.source does not exist (though it should after the previous step), the code won't throw an error.
   */
   // Arrays to store userTransitionLinks and robotTransitionLinks
-  const userTransitionLinks: { source: number; target: number }[] = [];
-  const robotTransitionLinks: { source: number; target: number }[] = [];
-
-  // Process robot-initiated links
-  links.robot.forEach((link: { source: number; target: number }) => {
-    if (!linksMap.robot.has(link.source)) {
-      linksMap.robot.set(link.source, []);
-    }
-    linksMap.robot.get(link.source)?.push(link.target);
-  });
-
-  // Process user-initiated links
-  links.user.forEach((link: { source: number; target: number }) => {
-    if (!linksMap.user.has(link.source)) {
-      linksMap.user.set(link.source, []);
-    }
-    linksMap.user.get(link.source)?.push(link.target);
-  });
+  // const userTransitionLinks: { source: number; target: number }[] = [];
+  // const robotTransitionLinks: { source: number; target: number }[] = [];
 
   // // Add userTransitionLinks to linksMap.user
   // userTransitionLinks.forEach((link) => {

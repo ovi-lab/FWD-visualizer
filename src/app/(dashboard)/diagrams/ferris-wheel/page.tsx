@@ -1,9 +1,14 @@
+"use client";
 import NodeList from "./NodeList";
+import { useFilter } from "@/app/contexts/filterContext";
 
-export default function Home() {
+const  FerrisWheelPage = () => {
+  const {filteredDiagramData} = useFilter();
   return (
     <>
-      <NodeList />
+      <NodeList nodes={filteredDiagramData.nodes} links={filteredDiagramData.links} />
     </>
   );
 }
+
+export default FerrisWheelPage;

@@ -1,22 +1,23 @@
 "use client";
 import { useState, useEffect } from "react";
 import Bubbles from "./Bubbles";
-import { useFilter } from "@/app/contexts/filterContext";
 
 // Main function NodeList()
-export default function NodeList() {
-  const { filteredDiagramData } = useFilter();
-
-  const [nodes, setNodes] = useState([]);
-  const [links, setLinks] = useState([]);
-  useEffect(() => {
-    if (!filteredDiagramData) return;
-    setNodes(filteredDiagramData.nodes);
-    setLinks(filteredDiagramData.links);
-  }, [filteredDiagramData]);
-
-  useEffect(() => {
-    if (nodes === undefined) return;
+export default function NodeList({nodes, links}) {
+  const linksMap = {
+    robot: new Map<number, number[]>(),
+    user: new Map<number, number[]>()}
+    
+    const topicMap = new Map<
+    string,
+    {
+      frequency: number;
+      analysis: any[];
+      ids: number[];
+    }
+  >();
+  
+    if (nodes.length === 0  ) return;
     nodes.forEach(
       (node: {
         id: number;
@@ -66,16 +67,28 @@ export default function NodeList() {
         });
       }
     );
-  }, [nodes, links]);
 
-  const topicMap = new Map<
-    string,
-    {
-      frequency: number;
-      analysis: any[];
-      ids: number[];
+  
+    console.log('links', links)
+    if (links.length === 0) return;
+    // Process robot-initiated links
+  links.robot.forEach((link: { source: number; target: number }) => {
+    if (!linksMap.robot.has(link.source)) {
+      linksMap.robot.set(link.source, []);
     }
-  >();
+    linksMap.robot.get(link.source)?.push(link.target);
+  });
+
+  // Process user-initiated links
+  links.user.forEach((link: { source: number; target: number }) => {
+    if (!linksMap.user.has(link.source)) {
+      linksMap.user.set(link.source, []);
+    }
+    linksMap.user.get(link.source)?.push(link.target);
+  });
+
+
+
 
   // Store the fetched data to the map
   // Iterate through nodes(outer) array
@@ -84,12 +97,6 @@ export default function NodeList() {
     In this case, item is each entry of values
     Populate map with only required entries
   */
-
-  // Create a new map to sotre the fetched links data
-  const linksMap = {
-    robot: new Map<number, number[]>(),
-    user: new Map<number, number[]>(),
-  };
 
   // Store an array of target ids (value) for each source id(key)
   /*
@@ -107,40 +114,26 @@ export default function NodeList() {
     The ?. (optional chaining) ensures that if link.source does not exist (though it should after the previous step), the code won't throw an error.
   */
   // Arrays to store userTransitionLinks and robotTransitionLinks
-  const userTransitionLinks: { source: number; target: number }[] = [];
-  const robotTransitionLinks: { source: number; target: number }[] = [];
+  // const userTransitionLinks: { source: number; target: number }[] = [];
+  // const robotTransitionLinks: { source: number; target: number }[] = [];
 
-  // Process robot-initiated links
-  links.robot.forEach((link: { source: number; target: number }) => {
-    if (!linksMap.robot.has(link.source)) {
-      linksMap.robot.set(link.source, []);
-    }
-    linksMap.robot.get(link.source)?.push(link.target);
-  });
+  
 
-  // Process user-initiated links
-  links.user.forEach((link: { source: number; target: number }) => {
-    if (!linksMap.user.has(link.source)) {
-      linksMap.user.set(link.source, []);
-    }
-    linksMap.user.get(link.source)?.push(link.target);
-  });
+  // // Add userTransitionLinks to linksMap.user
+  // userTransitionLinks.forEach((link) => {
+  //   if (!linksMap.user.has(link.source)) {
+  //     linksMap.user.set(link.source, []);
+  //   }
+  //   linksMap.user.get(link.source)?.push(link.target);
+  // });
 
-  // Add userTransitionLinks to linksMap.user
-  userTransitionLinks.forEach((link) => {
-    if (!linksMap.user.has(link.source)) {
-      linksMap.user.set(link.source, []);
-    }
-    linksMap.user.get(link.source)?.push(link.target);
-  });
-
-  // Add robotTransitionLinks to linksMap.robot
-  robotTransitionLinks.forEach((link) => {
-    if (!linksMap.robot.has(link.source)) {
-      linksMap.robot.set(link.source, []);
-    }
-    linksMap.robot.get(link.source)?.push(link.target);
-  });
+  // // Add robotTransitionLinks to linksMap.robot
+  // robotTransitionLinks.forEach((link) => {
+  //   if (!linksMap.robot.has(link.source)) {
+  //     linksMap.robot.set(link.source, []);
+  //   }
+  //   linksMap.robot.get(link.source)?.push(link.target);
+  // });
 
   return (
     <>

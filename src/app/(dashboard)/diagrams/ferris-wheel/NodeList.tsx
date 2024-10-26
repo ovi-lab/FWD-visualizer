@@ -126,21 +126,21 @@ export default function NodeList() {
     linksMap.user.get(link.source)?.push(link.target);
   });
 
-  // Add userTransitionLinks to linksMap.user
-  userTransitionLinks.forEach((link) => {
-    if (!linksMap.user.has(link.source)) {
-      linksMap.user.set(link.source, []);
-    }
-    linksMap.user.get(link.source)?.push(link.target);
-  });
+  // // Add userTransitionLinks to linksMap.user
+  // userTransitionLinks.forEach((link) => {
+  //   if (!linksMap.user.has(link.source)) {
+  //     linksMap.user.set(link.source, []);
+  //   }
+  //   linksMap.user.get(link.source)?.push(link.target);
+  // });
 
-  // Add robotTransitionLinks to linksMap.robot
-  robotTransitionLinks.forEach((link) => {
-    if (!linksMap.robot.has(link.source)) {
-      linksMap.robot.set(link.source, []);
-    }
-    linksMap.robot.get(link.source)?.push(link.target);
-  });
+  // // Add robotTransitionLinks to linksMap.robot
+  // robotTransitionLinks.forEach((link) => {
+  //   if (!linksMap.robot.has(link.source)) {
+  //     linksMap.robot.set(link.source, []);
+  //   }
+  //   linksMap.robot.get(link.source)?.push(link.target);
+  // });
 
   return (
     <>

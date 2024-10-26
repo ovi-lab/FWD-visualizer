@@ -91,17 +91,9 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     };
     switch (emotion) {
       case "joy":
-        if (bubble == "robot") {
-          return <Joy {...svgProps} />;
-        } else if (bubble == "user") {
-          return <Joy_User {...svgProps} />;
-        }
+        return <Joy {...svgProps} />;
       case "sadness":
-        if (bubble == "robot") {
-          return <Sadness {...svgProps} />;
-        } else if (bubble == "user") {
-          return <Sadness_User {...svgProps} />;
-        }
+        return <Sadness {...svgProps} />;
       case "anger":
         return <Anger {...svgProps} />;
       case "fear":
@@ -109,17 +101,10 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
       case "disgust":
         return <Disgust {...svgProps} />;
       case "neutral":
-        if (bubble == "robot") {
-          return <Neutral {...svgProps} />;
-        } else if (bubble == "user") {
-          return <Neutral_User {...svgProps} />;
-        }
+        return <Neutral {...svgProps} />;
       case "surprise":
-        if (bubble == "robot") {
-          return <Surprise {...svgProps} />;
-        } else if (bubble == "user") {
-          return <Surprise_User {...svgProps} />;
-        }
+        return <Surprise {...svgProps} />;
+
       default:
         return null;
     }
@@ -535,7 +520,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                     topicY - topicSize - 35
                   })`}
                 >
-                  <Flag width={40} height={45} style={{ color: color }} />{" "}
+                  <Flag width={40} height={45} style={{ color: color }} />
                 </g>
               )}
               {/* Topic bubble text */}

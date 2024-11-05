@@ -18,7 +18,7 @@ const nextConfig = {
       },
     // This function redirects from the base page to the chat on load
     async redirects() {
-        return [
+        return [  
           {
             source: '/',
             destination: '/chat',

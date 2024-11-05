@@ -519,7 +519,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                     topicY - topicSize - 35
                   })`}
                 >
-                <Flag width={40} height={45} style={{ color: color }} />{" "}
+                  <Flag width={40} height={45} style={{ color: color }} />{" "}
                 </g>
               )}
               {/* Topic bubble text */}

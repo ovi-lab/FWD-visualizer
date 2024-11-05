@@ -2,13 +2,17 @@
 import NodeList from "./NodeList";
 import { useFilter } from "@/app/contexts/filterContext";
 
-const  FerrisWheelPage = () => {
-  const {filteredDiagramData} = useFilter();
+const FerrisWheelPage = () => {
+  const { filteredDiagramData } = useFilter();
+
   return (
-    <>
-      <NodeList nodes={filteredDiagramData.nodes} links={filteredDiagramData.links} />
-    </>
+    <div>
+      <NodeList
+        nodes={filteredDiagramData.nodes}
+        links={filteredDiagramData.links}
+      />
+    </div>
   );
-}
+};
 
 export default FerrisWheelPage;

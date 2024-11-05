@@ -11,37 +11,39 @@ import {
   Neutral,
   Sadness,
   Surprise,
-  Flag,
-  Arrow,
+  Anger_User,
+  Disgust_User,
+  Fear_User,
   Joy_User,
   Neutral_User,
   Sadness_User,
   Surprise_User,
+  Flag,
 } from "@/app/components/svgs";
+import { useVisibleDivs } from "../../contexts/VisibleDivsContext";
+import { useSelectedColour } from "../../contexts/SelectedColourContext";
+import { useDarkMode } from "../../../contexts/DarkModeContext";
+import { useClickedBubble } from "../../contexts/ClickedBubbleContext";
 
-// Define interface for Analysis
-interface Analysis {
+// Define the types for the passed parameters
+interface TopicMap {
+  frequency: number;
+  analysis: Interaction[];
+  ids: number[];
+}
+
+interface Interaction {
   turn: string;
   emotion_label: string;
   emotion_score: number;
   sentiment_score: number;
-  // sentence: string;
 }
 
-// Define interface for TopicMap
-interface TopicMap {
-  frequency: number;
-  analysis: Analysis[];
-  ids: number[];
-}
-
-// Define interface for LinksMap
 interface LinksMap {
   robot: Map<number, number[]>;
   user: Map<number, number[]>;
 }
 
-// Define interface for BubbleProps
 interface BubbleProps {
   topicMap: Map<string, TopicMap>;
   linksMap: LinksMap;
@@ -49,25 +51,60 @@ interface BubbleProps {
 
 // Main function to create the outer and inner bubble set with the passed topic Map & linksMap
 const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
-  // Define colors for the bubbles
-  const colors = [
-    "#8CD0C7",
-    "#F4EC90",
-    "#BDBBD9",
-    "#FE7F70",
-    "#81B1D1",
-    "#FEB363",
-    "#B2DD6A",
-    "#FDCDE4",
-    "#D7D8D9",
-    "#C181BD",
-    "#CBEAC7",
-  ];
+  // Fetch the selected colour scheme and darkmode setting passed from ColorPicker and DarkModeSwitch components using useContext
+  const { selectedColour } = useSelectedColour();
+  // If no colour is selected, set default colour
+  const colors =
+    Array.isArray(selectedColour) && selectedColour.length > 0
+      ? selectedColour
+      : [
+          "#8CD0C7",
+          "#F4EC90",
+          "#BDBBD9",
+          "#FE7F70",
+          "#81B1D1",
+          "#FEB363",
+          "#B2DD6A",
+          "#FDCDE4",
+          "#D7D8D9",
+          "#C181BD",
+          "#CBEAC7",
+        ];
+  const { darkMode } = useDarkMode();
 
+  // Pass clicked bubble topic name to chatbox component using useContext
+  const { setClickedBubble } = useClickedBubble();
+
+  // Track hovered bubble
+  const [hoveredBubble, setHoveredBubble] = useState<string | null>(null);
+
+  // Track visible chat boxes by fetching visible div ids passed from chatbox page using useContext
+  const { visibleDivs } = useVisibleDivs();
+  /* Create a new array by modifying the value of existing array
+     const newArray = Array.from(new Set(existingArr.map((item)=>callback(item))));
+  */
+  /* Array.from(): creates a new, shallow-copied Array instance from an iterable or array-like object */
+  /* new Set(): constructor that creates Set objects */
+  /* Array.map((item) => callback_func(item)) */
+  /* map vs foreach
+    - map creates and returns a new array
+    - forEach does not return a new array
+  */
+  /* String.split(separator): returns an array of substrings resulted from dividing the string by the given separator */
+  const visibleTopics = Array.from(
+    new Set(visibleDivs.map((divId) => divId.split("-")[0]))
+  );
+
+  // Convert topicMap and linkMap to Array
+  /* Array.from(Map.entries): converts Map into Array */
+  /* Map.entries(): returns a new map iterator object that contains the [key, value] pairs for each element in this map */
   const topicArray = Array.from(topicMap.entries());
   const totalTopicNum = topicArray.length;
 
-  // Define basic configurations for the bubbles
+  const linkRobotArray = Array.from(linksMap.robot.entries());
+  const linkUserArray = Array.from(linksMap.user.entries());
+
+  // Define configurations for the bubbles
   const userRadius = 275;
   const topicRadius = 175;
   const robotRadius = 85;
@@ -79,142 +116,140 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const startingAngle = -Math.PI / 2;
   const startingPosition = 300;
 
-  // Track hovered bubble
-  const [hoveredBubble, setHoveredBubble] = useState<string | null>(null);
-
   // Helper function to return corresponding svg
   const getEmotionSVG = (bubble: string, emotion: string, size: number) => {
     const svgProps = {
-      width: size,
-      height: size,
+      width: bubble === "user" ? 25 : size,
+      height: bubble === "user" ? 25 : size,
       filter: "url(#drop-shadow)",
     };
     switch (emotion) {
       case "joy":
-        return <Joy {...svgProps} />;
+        return bubble === "robot" ? (
+          <Joy {...svgProps} />
+        ) : (
+          <Joy_User {...svgProps} />
+        );
       case "sadness":
-        return <Sadness {...svgProps} />;
+        return bubble === "robot" ? (
+          <Sadness {...svgProps} />
+        ) : (
+          <Sadness_User {...svgProps} />
+        );
       case "anger":
-        return <Anger {...svgProps} />;
+        return bubble === "robot" ? (
+          <Anger {...svgProps} />
+        ) : (
+          <Anger_User {...svgProps} />
+        );
       case "fear":
-        return <Fear {...svgProps} />;
+        return bubble === "robot" ? (
+          <Fear {...svgProps} />
+        ) : (
+          <Fear_User {...svgProps} />
+        );
       case "disgust":
-        return <Disgust {...svgProps} />;
+        return bubble === "robot" ? (
+          <Disgust {...svgProps} />
+        ) : (
+          <Disgust_User {...svgProps} />
+        );
       case "neutral":
-        return <Neutral {...svgProps} />;
+        return bubble === "robot" ? (
+          <Neutral {...svgProps} />
+        ) : (
+          <Neutral_User {...svgProps} />
+        );
       case "surprise":
-        return <Surprise {...svgProps} />;
+        return bubble === "robot" ? (
+          <Surprise {...svgProps} />
+        ) : (
+          <Surprise_User {...svgProps} />
+        );
       default:
         return null;
     }
   };
 
-  // Helper function to wrap text to fit in the outer bubble
-  /* FIX: Look up if there is a way to make text fit-content in svg */
-  const wrapText = (text: string, topicSize: number, fontSize: number) => {
-    const maxLength = Math.floor(topicSize / fontSize);
-    const words = text.split(" ");
-    const lines: string[] = [];
-    let currentLine = "";
-
-    words.forEach((word) => {
-      if ((currentLine + word).length <= maxLength) {
-        currentLine += `${word} `;
-      } else {
-        lines.push(currentLine.trim());
-        currentLine = `${word} `;
-      }
-    });
-    lines.push(currentLine.trim());
-    return lines;
-  };
+  /* reduce() vs flatMap()
+     reduce(): returns a single, accumulated result based on a custom logic defined in its callback 
+     flatMap(): returns a new array by flattening the results of mapping over each element by one level */
 
   // Helper function to create a mapping of topicId to topic name for easy lookup
-  const topicIdToNameMap = Array.from(topicMap.entries()).reduce(
-    (acc, [key, { ids }]) => {
-      ids.forEach((id) => {
-        acc.set(id, key);
-      });
-      return acc;
-    },
-    new Map<number, string>()
-  );
-  console.log("topicIdToNameMap:", Array.from(topicIdToNameMap.entries()));
-
-  // Helper functions to extract the links initated by robot and user separately from the linksMap
   /*
-   Destructure each entry of linksMap with `sourceId` being the key (source topic ID) and `targetIds` being the array values (target topic IDs)
-   Iterate over the array `targetId`s, creating an object `{ sourceId, targetId }` for each one
-   flatMap((item) => ( callback_func(item) ))
-   * Method of Array instances
-   * Return a new array formed by applying a given callback function to each element of the array
-   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap
-    Before: linksMap<number, number[]>
-   Stores each key (source ID) pointing to an array of values(target IDs)
-   {
-     0 => [2],
-     2 => [2, 4],
-    ...
-   }
-   After: robotLinks{sourceid: num, targetId: num}
-   Flattens map structure to create individual link objects
-   [
-     { sourceId: 0, targetId: 2 },
-     { sourceId: 2, targetId: 2 },
-     { sourceId: 2, targetId: 4 },
-     ...
-   ]
+   * Array.prototype.reduce((newMap, [existingKey, {existingValues}]) => {
+      existingValues.forEach(item) => newMap.set(existing key, value); 
+      return newMap;
+    }, newMap<newKeyType, newValueType>());
+    Initially create an empty map and add each id and its name to the map
  */
-  const robotLinks = Array.from(linksMap.robot.entries()).flatMap(
-    ([sourceId, targetIds]) =>
-      targetIds.map((targetId) => ({ sourceId, targetId }))
+  const topicIdToNameMap = topicArray.reduce((idToNameMap, [name, { ids }]) => {
+    ids.forEach((id) => {
+      idToNameMap.set(id, name);
+    });
+    return idToNameMap;
+  }, new Map<number, string>());
+
+  // Helper functions to extract the links initated by robot and user separately from the linksMap by deconstructing for each target Id to have each entry
+  /*
+    Destructure each entry of linksMap with `sourceId` as the key and `targetIds` as the array values 
+    Iterate over the array `targetId`s, creating an object `{ sourceId, targetId }` for each entry
+
+    Before: linksMap<number, number[]>
+    Stores each key (source ID) pointing to an array of values(target IDs)
+    {
+      0 => [2],
+      2 => [2, 4],
+    ...
+    }
+    After: robotLinks{sourceid: num, targetId: num}
+    Flattens map structure to create individual link objects
+    [
+      { sourceId: 0, targetId: 2 },
+      { sourceId: 2, targetId: 2 },
+      { sourceId: 2, targetId: 4 },
+      ...
+    ]
+  */
+
+  /* Array.flatMap((item) => (callback_func(item))
+     returns a new array formed by applying a given callback function to each element of the array
+     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap
+  */
+  const robotLinks = linkRobotArray.flatMap(([sourceId, targetIds]) =>
+    targetIds.map((targetId) => ({ sourceId, targetId }))
   );
-  const userLinks = Array.from(linksMap.user.entries()).flatMap(
-    ([sourceId, targetIds]) =>
-      targetIds.map((targetId) => ({ sourceId, targetId }))
+  const userLinks = linkUserArray.flatMap(([sourceId, targetIds]) =>
+    targetIds.map((targetId) => ({ sourceId, targetId }))
   );
 
-  // Helper function to get the actual topic name for the topic id using topicIdToNameMap
+  // Helper function to get the actual topic name for each topic id using topicIdToNameMap
   const getTopicName = (link: { sourceId: number; targetId: number }) => {
+    /* let var: possibleType1 | possibleType2 | possibleType3... = initialType */
     let sourceTopicName: string | number | undefined = undefined;
     let targetTopicName: string | number | undefined = undefined;
-
+    /* Map.forEach((key, value) => {callback_func(value or key)}); */
     topicIdToNameMap.forEach((key, value) => {
       if (value == link.sourceId) {
-        console.log(
-          "Robot Source Topic Name: " + key + " Robot Source Topic Id: " + value
-        );
         sourceTopicName = key;
       } else if (value == link.targetId) {
-        console.log(
-          "Robot Target Topic Name: " + key + " Robot Target Topic Id: " + value
-        );
         targetTopicName = key;
       }
     });
-
     return {
       sourceTopicName,
       targetTopicName,
     };
   };
 
+  // topicMap only stores unique topic names
+  const uniqueTopicNameArray = Array.from(topicMap.keys());
+
   // Helper function to reindexize topic id to calculate configuration
+  /* Array.indexOf(searchValue): returns index of the search value in the array */
   const getReIndex = (sourceTopicName: string, targetTopicName: string) => {
-    const sourceIndex = Array.from(topicMap.keys()).indexOf(
-      String(sourceTopicName)
-    );
-    const targetIndex = Array.from(topicMap.keys()).indexOf(
-      String(targetTopicName)
-    );
-
-    console.log(
-      "Robot Source Index: " +
-        sourceIndex +
-        " Robot Target Index: " +
-        targetIndex
-    );
-
+    const sourceIndex = uniqueTopicNameArray.indexOf(String(sourceTopicName));
+    const targetIndex = uniqueTopicNameArray.indexOf(String(targetTopicName));
     return {
       sourceIndex,
       targetIndex,
@@ -230,7 +265,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     const sourceAngle = startingAngle + sourceIndex * angleSlice;
     const targetAngle = startingAngle + targetIndex * angleSlice;
 
-    /* TODO: Find whose turn each source and target is, and startingPosition - speakerBubbleSize/2 */
     const sourceX = startingPosition + radius * Math.cos(sourceAngle);
     const sourceY = startingPosition + radius * Math.sin(sourceAngle);
     const targetX = startingPosition + topicRadius * Math.cos(targetAngle);
@@ -245,19 +279,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   };
 
   // Define type of configuration_trans and configuration_add to resue for both robot and user links
-  let configuration_trans: {
-    sourceX: number;
-    sourceY: number;
-    targetX: number;
-    targetY: number;
-  } | null = null;
-
-  let configuration_add: {
-    sourceX: number;
-    sourceY: number;
-    targetX: number;
-    targetY: number;
-  } | null = null;
 
   // Helper function to render the link lines using the configuration values
   /*
@@ -296,6 +317,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
           let configuration_add = null;
           let configuration_trans = null;
 
+          // If topic changes,switch source and target speaker (prompt-sentence -> sentence-sentence )
           if (sourceTopicName !== targetTopicName) {
             configuration_trans = prepareConfiguration(
               transRadius,
@@ -317,7 +339,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
 
           return (
             <React.Fragment key={`${link.sourceId}-${link.targetId}`}>
-              {/* QUESTION: How to set the target coordinate to be the outline not the center point */}
               <line
                 x1={configuration_trans.sourceX}
                 y1={configuration_trans.sourceY}
@@ -332,11 +353,10 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                       : 0.2
                     : 1
                 }
-                markerEnd="url(#arrow)"
                 style={{
                   transition: "opacity 0.4s ease-out",
-                  markerEnd: `url(#arrow)`,
-                  fill: "black",
+                  strokeDasharray:
+                    link.targetId - link.sourceId < -1 ? "5, 5" : "none",
                 }}
                 // filter="url(#drop-shadow)" // FIX: Not working
               />
@@ -359,6 +379,8 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                   }
                   style={{
                     transition: "opacity 0.4s ease-out",
+                    strokeDasharray:
+                      link.targetId - link.sourceId < -1 ? "5, 5" : "none",
                   }}
                 />
               )}
@@ -369,6 +391,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     );
   };
 
+  // Helper function to render circles
   const renderCircles = (
     cx: number,
     cy: number,
@@ -377,20 +400,172 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     opacity: number,
     topic: string
   ) => {
+    // Helper function to return lighten the given colour by the given percentage
+    function lightenColor(hexColor: string, percent: number) {
+      let r = parseInt(hexColor.slice(1, 3), 16);
+      let g = parseInt(hexColor.slice(3, 5), 16);
+      let b = parseInt(hexColor.slice(5, 7), 16);
+
+      r = Math.min(255, Math.floor(r + (255 - r) * percent));
+      g = Math.min(255, Math.floor(g + (255 - g) * percent));
+      b = Math.min(255, Math.floor(b + (255 - b) * percent));
+
+      return `#${r.toString(16).padStart(2, "0")}${g
+        .toString(16)
+        .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+    }
+
     return (
       <circle
         cx={cx}
         cy={cy}
         r={r}
         fill={color}
-        filter="url(#drop-shadow)"
         opacity={opacity}
+        // If the current topic is visible on chatbox display, create stroke in lighter fill color with glow effect
+        stroke={
+          /* Array.includes(searchValue): returns true is search value exists in the array */
+          visibleTopics.includes(topic) ? lightenColor(color, 0.4) : "none"
+        }
+        strokeWidth={visibleTopics.includes(topic) ? 4 : 0}
+        filter={
+          visibleTopics.includes(topic) ? "url(#glow)" : "url(#drop-shadow)"
+        }
         style={{
           transition: "opacity 0.4s ease-out",
         }}
+        // Set HoveredBubble and ClickedBubble on mouse event
         onMouseEnter={() => setHoveredBubble(topic)}
         onMouseLeave={() => setHoveredBubble(null)}
+        onClick={() => setClickedBubble(topic)}
       />
+    );
+  };
+
+  // Helper function to calculate the width of the text for a given font size
+  const getTextWidth = (text: string, fontSize: number) => {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    if (context) {
+      context.font = `${fontSize}px Arial`;
+      return context.measureText(text).width;
+    }
+    return 0;
+  };
+
+  // Helper function to wrap text within the circle based on the available width
+  const wrapText = (text: string, fontSize: number, availableWidth: number) => {
+    const words = text.split(" ");
+    const lines: string[] = [];
+    let currentLine = "";
+
+    words.forEach((word) => {
+      // Wrap long words (longer than 10) by letter
+      if (word.length > 10) {
+        for (let i = 0; i < word.length; i += 1) {
+          const letter = word[i];
+          const testLine = currentLine ? `${currentLine}${letter}` : letter; // If currentLine is not empty, add the new letter to the currentLine. If currentLine is empty, set the testLine to be the new letter
+          const testWidth = getTextWidth(testLine, fontSize); // Get the width of the testLine
+
+          if (testWidth > availableWidth) {
+            // If the test line width (added new letter) is bigger than avialable width
+            lines.push(currentLine); // Just push currentLine without adding the new letter (don't add new letter)
+            currentLine = letter; // Reset currentLine with the new letter
+          } else {
+            // If the test line width (added new letter) is smaller than avialble legnth
+            currentLine = testLine; // Set the currentLine to be testLine (add new letter)
+          }
+        }
+        if (currentLine) {
+          // If there are remaining letters  in the currentLine after the loop
+          lines.push(currentLine); // Add the remaining words to the lines
+          currentLine = ""; // Reset currentLine for the next word
+        }
+        // Wrap short words (less long than 10) by word
+      } else {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        const testWidth = getTextWidth(testLine, fontSize);
+
+        if (testWidth > availableWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine; // Add the word to the current line
+        }
+      }
+    });
+
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+
+    return lines;
+  };
+
+  // Calculate optimal font size to fit within a circle with padding
+  const calculateFontSize = (
+    circleRadius: number,
+    text: string,
+    padding = 10
+  ) => {
+    const circleDiameter = circleRadius * 2;
+    const availableWidth = circleDiameter - padding * 2;
+
+    let fontSize = 20;
+
+    if (text === "family ski trips") {
+      text = "ski trips";
+    }
+    let wrappedLines = wrapText(text, fontSize, availableWidth);
+
+    while (
+      wrappedLines.some(
+        (line) => getTextWidth(line, fontSize) > availableWidth
+      ) &&
+      fontSize > 10
+    ) {
+      fontSize -= 1; // Decrease font size if any line overflows
+      wrappedLines = wrapText(text, fontSize, availableWidth); // Rewrap with new font size
+    }
+
+    return fontSize;
+  };
+
+  // Render function for text inside the circle
+  const renderText = (
+    text: string,
+    cx: number,
+    cy: number,
+    circleSize: number,
+    opactiy: number
+  ) => {
+    if (text === "family ski trips") {
+      text = "ski trips";
+    }
+    const fontSize = calculateFontSize(circleSize, text);
+    const availableWidth = circleSize * 2 - 10;
+    const lines = wrapText(text, fontSize, availableWidth);
+    const lineHeight = fontSize * 1.2;
+
+    return (
+      <text
+        x={cx}
+        y={cy - ((lines.length - 1) * lineHeight) / 4}
+        textAnchor="middle"
+        fontSize={fontSize}
+        fill="white"
+        filter="url(#drop-shadow)"
+        opacity={opactiy}
+        style={{
+          transition: "opacity 0.4s ease-out",
+        }}
+      >
+        {lines.map((line, index) => (
+          <tspan x={cx} dy={index === 0 ? 0 : lineHeight} key={index}>
+            {line}
+          </tspan>
+        ))}
+      </text>
     );
   };
 
@@ -399,9 +574,11 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     <div
       style={{
         display: "flex",
+        width: "100wh",
         height: "100vh",
         alignItems: "center",
         justifyContent: "center",
+        background: darkMode ? "#383838" : "white",
       }}
     >
       <svg width="600" height="600">
@@ -418,17 +595,13 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
             </feMerge>
           </filter>
 
-          {/* <marker */}
-          {/* id="arrow"
-            markerWidth="3"
-            markerHeight="3" 
-            refX="8.5"
-            refY="1.5" 
-            orient="auto"
-            markerUnits="strokeWidth"
-          >
-            <path d="M0,0 L0,3 L4,1.5 Z" fill="white" /> */}
-          {/* </marker> */}
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />{" "}
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
         {/* Links Section */}
         {/* Display robot links */}
@@ -451,18 +624,16 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
           const robotX = startingPosition + robotRadius * Math.cos(angle);
           const robotY = startingPosition + robotRadius * Math.sin(angle);
 
-          const robotSize = 22.5;
+          const robotSize = 22;
 
-          const minTopicSize = 25;
+          const minTopicSize = 27.5;
           const topicSize = minTopicSize + frequency * topicScaleFactor;
 
-          const fontSize = topicSize / 2.75;
-
+          // Get the sum of all sentiment scores by accumulating current senitment score from initial value 0
           const totalSentimentScore = analysis.reduce(
             (sum, current) => sum + current.sentiment_score,
             0
           );
-
           const averageSentimentScore = totalSentimentScore / analysis.length;
 
           const minUserSize = 15;
@@ -488,20 +659,19 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                 hoveredOpacity,
                 topic
               )}
-
               {/* User bubble emotion svg */}
-              {/* <g
+              <g
                 transform={`translate(
-                     ${userX - userSize / 2},
-                     ${userY - robotSize / 2}
+                     ${userX - 25 / 2},
+                     ${userY - 25 / 2}
                    )`}
                 style={{
+                  opacity: hoveredOpacity,
                   transition: "opacity 0.4s ease-out",
                 }}
               >
                 {getEmotionSVG("user", emotionLabel, userSize)}
-              </g> */}
-
+              </g>
               {/* Topic bubble */}
               {renderCircles(
                 topicX,
@@ -511,42 +681,18 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                 hoveredOpacity,
                 topic
               )}
-
               {/* Topic bubble flag - Draw flag only for the first topic buble (id 0) */}
               {index === 0 && (
                 <g
-                  transform={`translate(${topicX - 5}, ${
+                  transform={`translate(${topicX + 5}, ${
                     topicY - topicSize - 35
-                  })`}
+                  }) rotate(15)`}
                 >
                   <Flag width={40} height={45} style={{ color: color }} />{" "}
                 </g>
               )}
               {/* Topic bubble text */}
-              <text
-                x={topicX}
-                y={
-                  topicY -
-                  ((wrapText(topic, topicSize - 10, fontSize).length - 1) *
-                    fontSize) /
-                    2
-                }
-                textAnchor="middle"
-                fontSize={fontSize}
-                fill="white"
-                filter="url(#drop-shadow)"
-                opacity={hoveredOpacity}
-                style={{
-                  transition: "opacity 0.4s ease-out",
-                }}
-              >
-                {wrapText(topic, topicSize, fontSize).map((line, i) => (
-                  <tspan x={topicX} dy={i === 0 ? 0 : fontSize} key={i}>
-                    {line}
-                  </tspan>
-                ))}
-              </text>
-
+              {renderText(topic, topicX, topicY, topicSize, hoveredOpacity)}
               {/* Robot bubble */}
               {renderCircles(
                 robotX,
@@ -556,7 +702,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                 hoveredOpacity,
                 topic
               )}
-
               {/* Robot bubble emotion svg */}
               <g
                 transform={`translate(
@@ -564,6 +709,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                      ${robotY - robotSize / 2}
                    )`}
                 style={{
+                  opacity: hoveredOpacity,
                   transition: "opacity 0.4s ease-out",
                 }}
               >
@@ -573,41 +719,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
           );
         })}
       </svg>
-
-      {/* Chat Box Section */}
-      {/* <div
-        style={{
-          marginTop: "20px",
-          padding: "15px",
-          backgroundColor: "transparent",
-          color: "#03304f",
-          border: `3px solid ${
-            colors[
-              topicArray.findIndex(
-                ([topicName]) => topicName === hoveredBubble
-              ) % colors.length
-            ]
-          }`,
-          borderRadius: "8px",
-          boxSizing: "border-box",x
-          maxWidth: "500px",
-          maxHeight: "fit-content",
-          display: hoveredBubble ? "flex" : "none",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "flex-start",
-        }}
-      >
-        {hoveredBubble &&
-          topicMap.get(hoveredBubble)!.analysis.map((interaction, index) => (
-            <h4 key={index} style={{ margin: "5px 0" }}>
-              <strong>
-                {interaction.turn === "robot" ? "Robot:" : "User:"}
-              </strong>{" "}
-              {interaction.sentence} <br />
-            </h4>
-          ))}
-      </div> */}
     </div>
   );
 };

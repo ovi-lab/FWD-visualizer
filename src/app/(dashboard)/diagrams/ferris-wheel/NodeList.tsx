@@ -1,78 +1,98 @@
 "use client";
-import { useState, useEffect } from "react";
+import { DarkModeSwitch } from "@/app/(dashboard)/diagrams/ferris-wheel/DarkModeSwitch";
 import Bubbles from "./Bubbles";
+import ColorPicker from "./ColorPicker";
+
+// Define the types for the node(interaction) and links
+interface Nodes {
+  id: number;
+  topic: string;
+  interactions: Interaction[];
+}
+
+interface Interaction {
+  turn: string;
+  emotion_label: string;
+  emotion_score: number;
+  sentiment_score: number;
+}
+
+interface Links {
+  robot: { source: number; target: number }[];
+  user: { source: number; target: number }[];
+}
 
 // Main function NodeList()
-export default function NodeList({ nodes, links }) {
+export default function NodeList({
+  nodes,
+  links,
+}: {
+  nodes: Nodes[];
+  links: Links;
+}) {
+  // Create topicMap(a single map with key and object value) to store data fetched from nodes
+  const topicMap = new Map<
+    string,
+    {
+      frequency: number; // manually track frequency count
+      analysis: Interaction[]; // array of only user interaction
+      ids: number[]; // array of topic ids (each topic can have upto 2 ids, child and robot)
+    }
+  >();
+
+  // Need to ensure there is conversation data before iteration
+  if (nodes.length === 0) return null;
+
+  // Iterate through nodes (outer) array
+  nodes.forEach((node) => {
+    // Iterate through interactions (inner) array
+    node.interactions.forEach((interaction) => {
+      // If the topic already exists in topicMap, update frequency, analysis
+      if (topicMap.has(node.topic)) {
+        const topicData = topicMap.get(node.topic);
+        if (topicData) {
+          // Include frequency count from robot but exclude emotion related interactions to separate from robot sentiment score and emotion label
+          topicData.frequency += 1;
+          if (interaction.turn === "user") {
+            topicData.analysis.push(interaction);
+          }
+
+          // Add id only if it's not already present
+          if (!topicData.ids.includes(node.id)) {
+            topicData.ids.push(node.id);
+          }
+          console.log(
+            "ID Already Exists " +
+              node.topic +
+              " " +
+              node.id +
+              " topicData.ids " +
+              topicData.ids
+          );
+        }
+      } else {
+        // If the topic doesn't exist in topicMap, create new entry with the initial data
+        topicMap.set(node.topic, {
+          frequency: 1,
+          analysis: interaction.turn === "user" ? [interaction] : [],
+          ids: [node.id],
+        });
+        console.log("NEW ID " + node.topic + " " + node.id);
+      }
+    });
+  });
+
+  // Create linksMap(a single object with two maps) to store data fetched from nodes
   const linksMap = {
     robot: new Map<number, number[]>(),
     user: new Map<number, number[]>(),
   };
 
-  const topicMap = new Map<
-    string,
-    {
-      frequency: number;
-      analysis: any[];
-      ids: number[];
-    }
-  >();
+  // Need to ensure there are links data before iteration
+  if (links.robot.length === 0 && links.user.length === 0) return null;
 
-  if (nodes.length === 0) return;
-  nodes.forEach(
-    (node: {
-      id: number;
-      topic: string;
-      interactions: {
-        turn: string;
-        emotion_label: string;
-        emotion_score: number;
-        sentiment_score: number;
-      }[];
-    }) => {
-      // Iterate through interactions(inner) array
-      node.interactions.forEach((interaction) => {
-        // If the topic already exists in topicMap, update frequency, analysis
-        if (topicMap.has(node.topic)) {
-          const topicData = topicMap.get(node.topic);
-          if (topicData) {
-            topicData.frequency += 1;
-
-            if (interaction.turn === "user") {
-              topicData.analysis.push(interaction);
-            }
-
-            // Add id only if it's not already present
-            if (!topicData.ids.includes(node.id)) {
-              topicData.ids.push(node.id);
-            }
-            console.log(
-              "ID Already Exists " +
-                node.topic +
-                " " +
-                node.id +
-                " topicData.ids " +
-                topicData.ids
-            );
-          }
-
-          // If the topic doesn't exist in topicMap, create new entry with the initial data
-        } else {
-          topicMap.set(node.topic, {
-            frequency: 1,
-            analysis: [interaction],
-            ids: [node.id],
-          });
-          console.log("NEW ID " + node.topic + " " + node.id);
-        }
-      });
-    }
-  );
-
-  console.log("links", links);
-  if (links.length === 0) return;
   // Process robot-initiated links
-  links.robot.forEach((link: { source: number; target: number }) => {
+  links.robot.forEach((link) => {
     if (!linksMap.robot.has(link.source)) {
       linksMap.robot.set(link.source, []);
     }
@@ -80,60 +100,22 @@ export default function NodeList({ nodes, links }) {
   });
 
   // Process user-initiated links
-  links.user.forEach((link: { source: number; target: number }) => {
+  links.user.forEach((link) => {
     if (!linksMap.user.has(link.source)) {
       linksMap.user.set(link.source, []);
     }
     linksMap.user.get(link.source)?.push(link.target);
   });
 
-  // Store the fetched data to the map
-  // Iterate through nodes(outer) array
-  /* Array.forEach(item) => { //statement to apply to each item } 
-     
-    In this case, item is each entry of values
-    Populate map with only required entries
-  */
-
-  // Store an array of target ids (value) for each source id(key)
-  /*
-    Map.prototype.get(key) 
-
-    * Method of Map instances 
-    * Returns a specified element from this map
-    * If the value that is associated to the provided key is an object, 
-      you will get a reference to that object 
-      ex. myMap.set("bar", arr);
-          myMap.get("bar").push("foo");
-          console.log(arr); // ["foo"]
-
-    In this case, source id(link.source) is key and linksMap.user.get(link.source) retrieves array values and adds (pushes) link.target to that array.
-    The ?. (optional chaining) ensures that if link.source does not exist (though it should after the previous step), the code won't throw an error.
-  */
-  // Arrays to store userTransitionLinks and robotTransitionLinks
-  // const userTransitionLinks: { source: number; target: number }[] = [];
-  // const robotTransitionLinks: { source: number; target: number }[] = [];
-
-  // // Add userTransitionLinks to linksMap.user
-  // userTransitionLinks.forEach((link) => {
-  //   if (!linksMap.user.has(link.source)) {
-  //     linksMap.user.set(link.source, []);
-  //   }
-  //   linksMap.user.get(link.source)?.push(link.target);
-  // });
-
-  // // Add robotTransitionLinks to linksMap.robot
-  // robotTransitionLinks.forEach((link) => {
-  //   if (!linksMap.robot.has(link.source)) {
-  //     linksMap.robot.set(link.source, []);
-  //   }
-  //   linksMap.robot.get(link.source)?.push(link.target);
-  // });
-
   return (
-    <>
-      {/* Pass the topicMap and linksMap to Bubbles */}
+    <div>
+      <div style={{ position: "absolute", padding: "0em 1em" }}>
+        <ColorPicker />
+      </div>
+      <div style={{ position: "absolute", padding: "5em 1em" }}>
+        <DarkModeSwitch />
+      </div>
       <Bubbles topicMap={topicMap} linksMap={linksMap} />
-    </>
+    </div>
   );
 }

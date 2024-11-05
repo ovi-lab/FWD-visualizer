@@ -4,10 +4,13 @@ import "./chatBox.css";
 import { useChatAnchor } from "@/app/contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useFilter } from "@/app/contexts/filterContext";
+import { useClickedBubble } from '../contexts/ClickedBubbleContext';
+import { useVisibleDivs } from '../contexts/VisibleDivsContext';
+
 
 
 function checkForCollection(current, previous) {
-  if (previous=== undefined) return false;
+  if (previous === undefined) return false;
   return previous.slots.length < current.slots.length;
 }
 
@@ -25,10 +28,18 @@ function includeTimestamp(current, previous) {
  * @returns A scrollable, updating chat box component for the dialog transcript
  */
 export default function Chatbox() {
+
+  /* TODO: I'd like to pass visibleDivs from page.jsx to Bubbles.tsx using useContext. can you create context file? */
+  // Keep track of visible divs
+  const {setVisibleDivs } = useVisibleDivs();
+
+  // Importing ClickedBubbleState allows access to the clickedBubble 
+  const { clickedBubble } = useClickedBubble();
+
+  const { filteredTranscript } = useFilter();  
+  
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
-  const { filteredTranscript} = useFilter();
-
   const anchorMoveCallback = useCallback(
     (anchorRef) => {
       return function (anchor) {
@@ -50,7 +61,7 @@ export default function Chatbox() {
             if (currentElement !== null) {
               currentElement.style.border = "none";
             }
-            targetElement.style.border = "5px solid #a5faee";
+            // targetElement.style.border = "5px solid #a5faee";
             anchorRef.current = anchor;
             setChatAnchor(anchor);
           }
@@ -62,17 +73,84 @@ export default function Chatbox() {
 
   const anchorMove = anchorMoveCallback(AnchorRef);
 
+  // Effect to scroll to the last line whenever a new last line is added
   useEffect(() => {
-    // Scroll to the last line whenever a new last line is added
     if (filteredTranscript.length > 0) {
       anchorMove(`response${filteredTranscript.length - 1}`);
     }
   }, [filteredTranscript, anchorMove]);
-
-
   useEffect(() => {
     anchorMove(chatAnchor);
   }, [chatAnchor]);
+
+  // Effect to scroll to the matching topic when clickedBubble changes
+  useEffect(() => {
+    if (clickedBubble) {
+      // Find the statements that match the clickedBubble
+      const matchingStatements = filteredTranscript.filter(
+        (stmt) => stmt.topic === clickedBubble
+      );
+      // Find the statement with the minimum index
+      const minIndexStmt = matchingStatements.reduce((minStmt, currentStmt) => {
+        return currentStmt.idx < minStmt.idx ? currentStmt : minStmt;
+      }, matchingStatements[0]);
+
+      if (minIndexStmt) {
+
+        console.log("Find minIndexStmt.topic: " +  minIndexStmt.topic)
+        console.log("Find minIndexStmt.idx: " + minIndexStmt.idx)
+        console.log("Find filteredTranscript.indexOf(minIndexStmt): " + filteredTranscript.indexOf(minIndexStmt))
+
+        const anchorId = `${minIndexStmt.topic}-${minIndexStmt.idx}-${filteredTranscript.indexOf(minIndexStmt)}`;
+        anchorMove(anchorId);
+        console.log("scroll to: "+anchorId);
+      }
+    }
+  }, [clickedBubble, filteredTranscript, anchorMove]);
+
+  // Effect to keep track of visible chatboxes wtihin chatcontainer 
+  useEffect(() => {
+    const chatboxElement = document.getElementById("chatboxContent");
+    /* 
+      Create Observer
+      const observer = new IntersectionObserver((entries) => {
+        const visibleEntries = entries.filter(entry => entry.isIntersecting).map(entry => entry.id)
+      }, {
+        root: document.getElementById("container"),
+        threshold: 1.0(for the entire entry) or 0.5(for the partial entry)
+      }); 
+    */
+    const observer = new IntersectionObserver((entries) => {
+      const visibleIds = entries // All observed elements
+        .filter(entry => entry.isIntersecting) // Only keep entries that are visible
+        .map(entry => entry.target.id); // Extract the IDs of visible divs
+  
+      setVisibleDivs(visibleIds); // Update the state with the visible div IDs
+    }, {
+      root: chatboxElement, // The scrollable area to observe
+      threshold: 1.0 // Trigger when the entire element is visible (1: entire, 0.5: half)
+    });
+  
+    // Observe - Find visible divIds and their elements and observe them
+    filteredTranscript.forEach((stmt, index) => {
+      const divId = `${stmt.topic}-${stmt.idx}-${index}`;
+      const divElement = document.getElementById(divId);
+      if (divElement) {
+        observer.observe(divElement); // Start observing the div
+      }
+    });
+
+    // Unobserve - Find visible divIds and their elements and unobserve them
+    return () => {
+      filteredTranscript.forEach((stmt, index) => {
+        const divId = `${stmt.topic}-${stmt.idx}-${index}`;
+        const divElement = document.getElementById(divId);
+        if (divElement) {
+          observer.unobserve(divElement); // Stop observing the div
+        }
+      });
+    };
+  }, [anchorMove]); 
 
   if (!filteredTranscript) return <p>Loading...</p>;
   return (
@@ -84,9 +162,9 @@ export default function Chatbox() {
         <div className="chatbox-content overflow-y-scroll" id="chatboxContent">
           {filteredTranscript.map((stmt, index) => {
             return (
-              <div key={`${stmt.turn}${stmt.idx}-${index}`}>
-                <Bubble
-                  id={stmt.idx}
+              <div id={`${stmt.topic}-${stmt.idx}-${index}`} key={`${stmt.topic}-${stmt.idx}-${index}`}>
+                <Bubble 
+                  id = {stmt.id} 
                   turn={stmt.turn}
                   sentiLabel={stmt.sentiment_label}
                   sentiScore={stmt.sentiment_score}
@@ -100,6 +178,14 @@ export default function Chatbox() {
           })}
         </div>
       </div>
+      {/* <div>
+        <h3>Visible Divs:</h3>
+        <ul>
+          {visibleDivs.map(id => (
+            <li key={id}>{id}</li>
+          ))}
+        </ul>
+      </div> */}
     </div>
   );
 }

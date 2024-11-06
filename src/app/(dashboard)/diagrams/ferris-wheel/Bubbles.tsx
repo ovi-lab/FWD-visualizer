@@ -20,10 +20,10 @@ import {
   Surprise_User,
   Flag,
 } from "@/app/components/svgs";
-import { useVisibleDivs } from "../../contexts/VisibleDivsContext";
-import { useSelectedColour } from "../../contexts/SelectedColourContext";
+import { useVisibleDivs } from "../../../contexts/VisibleTranscriptContext";
+import { useSelectedColour } from "../../../contexts/SelectedColourContext";
 import { useDarkMode } from "../../../contexts/DarkModeContext";
-import { useClickedBubble } from "../../contexts/ClickedBubbleContext";
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 // Define the types for the passed parameters
 interface TopicMap {
@@ -73,7 +73,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const { darkMode } = useDarkMode();
 
   // Pass clicked bubble topic name to chatbox component using useContext
-  const { setClickedBubble } = useClickedBubble();
+  const { setSelectedNode } = useSelectedNode();
 
   // Track hovered bubble
   const [hoveredBubble, setHoveredBubble] = useState<string | null>(null);
@@ -415,6 +415,21 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
     }
 
+    // Helper function to darken the given color by the given percentage
+    function darkenColor(hexColor: string, percent: number) {
+      let r = parseInt(hexColor.slice(1, 3), 16);
+      let g = parseInt(hexColor.slice(3, 5), 16);
+      let b = parseInt(hexColor.slice(5, 7), 16);
+
+      r = Math.max(0, Math.floor(r - r * percent));
+      g = Math.max(0, Math.floor(g - g * percent));
+      b = Math.max(0, Math.floor(b - b * percent));
+
+      return `#${r.toString(16).padStart(2, "0")}${g
+        .toString(16)
+        .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+    }
+
     return (
       <circle
         cx={cx}
@@ -425,7 +440,11 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         // If the current topic is visible on chatbox display, create stroke in lighter fill color with glow effect
         stroke={
           /* Array.includes(searchValue): returns true is search value exists in the array */
-          visibleTopics.includes(topic) ? lightenColor(color, 0.4) : "none"
+          visibleTopics.includes(topic)
+            ? darkMode
+              ? lightenColor(color, 0.4)
+              : darkenColor(color, 0.05)
+            : "none"
         }
         strokeWidth={visibleTopics.includes(topic) ? 4 : 0}
         filter={
@@ -437,7 +456,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         // Set HoveredBubble and ClickedBubble on mouse event
         onMouseEnter={() => setHoveredBubble(topic)}
         onMouseLeave={() => setHoveredBubble(null)}
-        onClick={() => setClickedBubble(topic)}
+        onClick={() => setSelectedNode(topic)}
       />
     );
   };
@@ -578,7 +597,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         height: "100vh",
         alignItems: "center",
         justifyContent: "center",
-        background: darkMode ? "#383838" : "white",
+        background: darkMode ? "#3C3C3C" : "white",
       }}
     >
       <svg width="600" height="600">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useSelectedColour } from "../../contexts/SelectedColourContext";
+import { useSelectedColour } from "../../../contexts/SelectedColourContext";
+import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 // Define arrays of colour optoins
 const colors = [
@@ -148,11 +149,19 @@ const ColorPicker = () => {
     setSelectedColor(scheme);
     setIsOpen(false);
   };
+  const { darkMode } = useDarkMode();
 
   return (
     <div style={{ display: "inline-block", position: "relative" }}>
-      <label style={{ display: "block", marginBottom: "8px" }}>
-        Colour Scheme
+      <label
+        style={{
+          display: "block",
+          marginBottom: "8px",
+        }}
+      >
+        <span style={{ color: darkMode ? "white" : "black" }}>
+          Color Scheme
+        </span>
       </label>
       {/* Container for only the selected color scheme */}
       <div

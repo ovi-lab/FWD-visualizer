@@ -1,7 +1,7 @@
 "use client";
-import { DarkModeSwitch } from "@/app/(dashboard)/diagrams/ferris-wheel/DarkModeSwitch";
 import Bubbles from "./Bubbles";
-import ColorPicker from "./ColorPicker";
+import ColorPicker from "../../../components/ColorPicker";
+import { DarkModeSwitch } from "@/app/components/DarkModeSwitch";
 
 // Define the types for the node(interaction) and links
 interface Nodes {
@@ -109,12 +109,12 @@ export default function NodeList({
 
   return (
     <div>
-      <div style={{ position: "absolute", padding: "0em 1em" }}>
+      {/* <div style={{ position: "absolute", padding: "0em 1em" }}>
         <ColorPicker />
       </div>
       <div style={{ position: "absolute", padding: "5em 1em" }}>
         <DarkModeSwitch />
-      </div>
+      </div> */}
       <Bubbles topicMap={topicMap} linksMap={linksMap} />
     </div>
   );

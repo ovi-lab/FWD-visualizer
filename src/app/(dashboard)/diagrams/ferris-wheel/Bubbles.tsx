@@ -532,9 +532,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
 
     let fontSize = 20;
 
-    if (text === "family ski trips") {
-      text = "ski trips";
-    }
     let wrappedLines = wrapText(text, fontSize, availableWidth);
 
     while (
@@ -559,7 +556,11 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     opactiy: number
   ) => {
     if (text === "family ski trips") {
-      text = "ski trips";
+      text = "family trips";
+    } else if (text === "goalkeeping") {
+      text = "goalie";
+    } else if (text === "watching with family") {
+      text = "watching sports";
     }
     const fontSize = calculateFontSize(circleSize, text);
     const availableWidth = circleSize * 2 - 10;
@@ -575,12 +576,19 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         fill="white"
         filter="url(#drop-shadow)"
         opacity={opactiy}
+        stroke="white"
+        strokeWidth="0.8px"
         style={{
           transition: "opacity 0.4s ease-out",
         }}
       >
         {lines.map((line, index) => (
-          <tspan x={cx} dy={index === 0 ? 0 : lineHeight} key={index}>
+          <tspan
+            // style={{ fontWeight: "bold" }}
+            x={cx}
+            dy={index === 0 ? 0 : lineHeight}
+            key={index}
+          >
             {line}
           </tspan>
         ))}

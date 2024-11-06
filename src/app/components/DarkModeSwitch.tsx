@@ -1,7 +1,7 @@
 import { SwitchProps } from "@nextui-org/react";
-import { SunIcon } from "../../../components/svgs/sun_icon";
-import { MoonIcon } from "../../../components/svgs/moon_icon";
-import { useDarkMode } from "../../../contexts/DarkModeContext";
+import { useDarkMode } from "../contexts/DarkModeContext";
+import { MoonIcon } from "./svgs/moon_icon";
+import { SunIcon } from "./svgs/sun_icon";
 
 export const DarkModeSwitch = (props: SwitchProps) => {
   const { darkMode, setDarkMode } = useDarkMode();

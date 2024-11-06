@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { scaleLinear, scalePoint, scaleOrdinal, schemeSet3 } from "d3";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
+import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
 
 // Define the color scale with D3 schemeSet3
 const color = scaleOrdinal(schemeSet3);
@@ -24,6 +25,7 @@ const checkIsUser = (node) => {
  * @returns {JSX.Element} - A JSX element representing the node.
  */
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
+  const {selectedColour} = useSelectedColour();
   // Determine stroke and fill colors based on whether the node is selected
   const strokeColor = isSelected ? "rgb(139, 227, 139)" : "grey";
   const strokeWidth = isSelected ? 2 : 1;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelectedColour } from "../../../contexts/SelectedColourContext";
+import { useSelectedColour } from "../contexts/SelectedColourContext";
 import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 // Define arrays of colour optoins

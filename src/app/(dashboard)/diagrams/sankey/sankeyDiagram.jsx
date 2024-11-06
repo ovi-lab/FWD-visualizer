@@ -130,7 +130,7 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
    * @param {string} nodeName - The name of the node that was interacted with.
    */
   const handleSankeyInteraction = (nodeName) => {
-    setSelectedNode(nodeName);
+    setSelectedNode(nodeName.split(": ")[1]); // take only topic name after "speaker: "
   };
 
   // If data is still loading, display a loading message

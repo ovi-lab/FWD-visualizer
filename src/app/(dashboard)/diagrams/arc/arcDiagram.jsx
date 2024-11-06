@@ -222,7 +222,7 @@ function ArcDiagram({data}) {
   const { selectedNode, setSelectedNode } = useSelectedNode();
 
   const handleNodeSelect = (nodeName) => {
-    setSelectedNode(nodeName);
+    setSelectedNode(nodeName.split(": ")[1]); // take only topic name after ": "
   };
 
   useEffect(() => {

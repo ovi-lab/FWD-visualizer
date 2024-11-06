@@ -14,7 +14,6 @@ export default function Layout({
 
   return (
     <>
-      {/* set bg-black if darkmode is true bg-white if darkmode is false */}
       <div
         style={{ background: darkMode ? "#3C3C3C" : "white" }}
         className="grid grid-cols-7 w-full h-full"

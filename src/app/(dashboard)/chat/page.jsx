@@ -30,7 +30,6 @@ function includeTimestamp(current, previous) {
 export default function Chatbox() {
 
   const {selectedNode} = useSelectedNode();
-  console.log("selectedNode: " + selectedNode);
 
   /* TODO: I'd like to pass visibleDivs from page.jsx to Bubbles.tsx using useContext. can you create context file? */
   // Keep track of visible divs
@@ -87,12 +86,15 @@ export default function Chatbox() {
 
   // Effect to scroll to the matching topic when clickedBubble changes
   useEffect(() => {
+
     if (selectedNode) {
+
+      console.log("selectedNode" + selectedNode);
       // Find the statements that match the clickedBubble
       const matchingStatements = filteredTranscript.filter(
-        (stmt) => stmt.topic === selectedNode
+        (stmt) => stmt.topic === selectedNode,
       );
-      // Find the statement with the minimum index
+    
       const minIndexStmt = matchingStatements.reduce((minStmt, currentStmt) => {
         return currentStmt.idx < minStmt.idx ? currentStmt : minStmt;
       }, matchingStatements[0]);
@@ -104,6 +106,8 @@ export default function Chatbox() {
       }
     }
   }, [selectedNode, filteredTranscript, anchorMove, chatAnchor]);
+
+
 
   // Effect to keep track of visible chatboxes wtihin chatcontainer 
   useEffect(() => {

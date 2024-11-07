@@ -3,11 +3,8 @@ import { useState } from "react";
 import Chatbox from "../chat/page";
 // import InfoPanel from "../../components/infoPanel";
 import React from "react";
-<<<<<<< HEAD
-=======
 import ColorPicker from "@/app/components/ColorPicker";
 import { DarkModeSwitch } from "@/app/components/DarkModeSwitch";
->>>>>>> b892bcf6d800f292edb193456d7d36caa99719d0
 import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 export default function Layout({

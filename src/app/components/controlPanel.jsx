@@ -13,7 +13,7 @@ const defaultFilters = {
   timestamp: "",
 };
 
-const turnList = ["haru", "user"];
+const turnList = ["robot", "user"];
 const sentimentList = ["positive", "neutral", "negative"];
 const emotionList = [
   "anger",
@@ -129,7 +129,7 @@ const ControlPanel = () => {
     if (!transcriptData) return;
     const uniqueTopics = new Set();
     transcriptData.forEach((line) => {
-      if (line.turn === "haru") {
+      if (line.turn === "robot") {
         uniqueTopics.add(line.topic);
       }
     });

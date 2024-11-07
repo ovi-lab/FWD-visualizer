@@ -155,10 +155,10 @@ export default function Chatbox() {
 
   if (!filteredTranscript) return <p>Loading...</p>;
   return (
-    <div className="h-[80vh] col-span-2 chatbox-container">
+    <div className="h-[80vh] col-span-2 chatbox-container mt-7">
       <div className="chatbox-body h-100% overflow-hidden rounded-lg pb-10">
         <div className="flex rounded-lg items-center justify-center bg-cyan-100">
-          <h2 className="text-lg font-semibold">Conversation Transcript</h2>
+          <h2 className="text-lg font-semibold">Chat Record</h2>
         </div>
         <div className="chatbox-content overflow-y-scroll" id="chatboxContent">
           {filteredTranscript.map((stmt, index) => {

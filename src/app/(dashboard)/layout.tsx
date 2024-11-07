@@ -12,7 +12,7 @@ import { VisibleDivsProvider } from "../contexts/VisibleTranscriptContext";
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const { darkMode } = useDarkMode();
+  // const { darkMode } = useDarkMode();
   return (
     <div className="grid grid-cols-9 w-full h-full min-h-screen min-w-screen">
       <SocketDataProvider>
@@ -25,11 +25,8 @@ export default function Layout({
               <div className="col-span-8 flex flex-col h-full">
                 <FilterProvider>
                   <DarkModeProvider>
-                    <div
-                      className={`${
-                        darkMode ? "bg-black" : "bg-white"
-                      } flex-1 overflow-y-auto p-3`}
-                    >
+                    {/* Could this div to be full? high */}
+                    <div className="flex-1 overflow-y-auto">
                       <ChatProvider>
                         <SelectedNodeProvider>{children}</SelectedNodeProvider>
                       </ChatProvider>

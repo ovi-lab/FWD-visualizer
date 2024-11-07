@@ -79,7 +79,7 @@ const Node = ({
         y={(nodeData.y1 + nodeData.y0) / 2} // Y-coordinate centered vertically on the node
         dy={"0.35em"}                // Adjusts the text vertically
         textAnchor={textAnchorPosition} // Aligns text based on node position
-        fill = {darkMode? "white" : "black"}
+        fill = {"black"}
       >
         {nodeData.name}
       </text>

@@ -160,7 +160,7 @@ const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added
       d={pathData}
       fill="none"
       stroke={strokeColor}
-      opacity={1}
+      opacity={opacity}
       strokeWidth={7}
       className=""
       id={name}

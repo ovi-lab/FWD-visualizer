@@ -4,8 +4,8 @@ import "./chatBox.css";
 import { useChatAnchor } from "@/app/contexts/chatContext";
 import Bubble from "./chatBubble";
 import { useFilter } from "@/app/contexts/filterContext";
-import { useClickedBubble } from '../contexts/ClickedBubbleContext';
-import { useVisibleDivs } from '../contexts/VisibleDivsContext';
+import { useVisibleDivs } from '../../contexts/VisibleTranscriptContext';
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 
 
@@ -29,17 +29,17 @@ function includeTimestamp(current, previous) {
  */
 export default function Chatbox() {
 
+  const {selectedNode} = useSelectedNode();
+
   /* TODO: I'd like to pass visibleDivs from page.jsx to Bubbles.tsx using useContext. can you create context file? */
   // Keep track of visible divs
   const {setVisibleDivs } = useVisibleDivs();
-
-  // Importing ClickedBubbleState allows access to the clickedBubble 
-  const { clickedBubble } = useClickedBubble();
 
   const { filteredTranscript } = useFilter();  
   
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
+  
   const anchorMoveCallback = useCallback(
     (anchorRef) => {
       return function (anchor) {
@@ -64,13 +64,14 @@ export default function Chatbox() {
             // targetElement.style.border = "5px solid #a5faee";
             anchorRef.current = anchor;
             setChatAnchor(anchor);
+            
           }
         }
       };
     },
     [setChatAnchor]
   );
-
+  
   const anchorMove = anchorMoveCallback(AnchorRef);
 
   // Effect to scroll to the last line whenever a new last line is added
@@ -81,32 +82,32 @@ export default function Chatbox() {
   }, [filteredTranscript, anchorMove]);
   useEffect(() => {
     anchorMove(chatAnchor);
-  }, [chatAnchor]);
+  }, [selectedNode, filteredTranscript, anchorMove, chatAnchor]);
 
   // Effect to scroll to the matching topic when clickedBubble changes
   useEffect(() => {
-    if (clickedBubble) {
+
+    if (selectedNode) {
+
+      console.log("selectedNode" + selectedNode);
       // Find the statements that match the clickedBubble
       const matchingStatements = filteredTranscript.filter(
-        (stmt) => stmt.topic === clickedBubble
+        (stmt) => stmt.topic === selectedNode,
       );
-      // Find the statement with the minimum index
+    
       const minIndexStmt = matchingStatements.reduce((minStmt, currentStmt) => {
         return currentStmt.idx < minStmt.idx ? currentStmt : minStmt;
       }, matchingStatements[0]);
 
       if (minIndexStmt) {
-
-        console.log("Find minIndexStmt.topic: " +  minIndexStmt.topic)
-        console.log("Find minIndexStmt.idx: " + minIndexStmt.idx)
-        console.log("Find filteredTranscript.indexOf(minIndexStmt): " + filteredTranscript.indexOf(minIndexStmt))
-
         const anchorId = `${minIndexStmt.topic}-${minIndexStmt.idx}-${filteredTranscript.indexOf(minIndexStmt)}`;
         anchorMove(anchorId);
         console.log("scroll to: "+anchorId);
       }
     }
-  }, [clickedBubble, filteredTranscript, anchorMove]);
+  }, [selectedNode, filteredTranscript, anchorMove, chatAnchor]);
+
+
 
   // Effect to keep track of visible chatboxes wtihin chatcontainer 
   useEffect(() => {
@@ -178,14 +179,6 @@ export default function Chatbox() {
           })}
         </div>
       </div>
-      {/* <div>
-        <h3>Visible Divs:</h3>
-        <ul>
-          {visibleDivs.map(id => (
-            <li key={id}>{id}</li>
-          ))}
-        </ul>
-      </div> */}
     </div>
   );
 }

@@ -93,29 +93,29 @@ function ThreadList({ data, selected, anchorClick, selectedLine }) {
     anchorClick(clickedID);
   };
 
-  return (
-    <div className="w-full h-[70vh] border border-gray-300 overflow-scroll p-4 m-auto rounded-lg">
-      {itemsArray.length < 1 ? (
-        <p>
-          The dialog currently does not contain a response that links to this
-          node.
-        </p>
-      ) : (
-        <ul>
-          {itemsArray.map((interact) => (
-            <li key={interact[1].idx}>
-              <InfoButton
-                interact={interact[1]}
-                conversationNum={interact[0]}
-                handleClick={handleListClick}
-                isClicked={selectedLine === interact[1].idx}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+  // return (
+  //   <div className="w-full h-[70vh] border border-gray-300 overflow-scroll p-4 m-auto rounded-lg">
+  //     {itemsArray.length < 1 ? (
+  //       <p>
+  //         The dialog currently does not contain a response that links to this
+  //         node.
+  //       </p>
+  //     ) : (
+  //       <ul>
+  //         {itemsArray.map((interact) => (
+  //           <li key={interact[1].idx}>
+  //             <InfoButton
+  //               interact={interact[1]}
+  //               conversationNum={interact[0]}
+  //               handleClick={handleListClick}
+  //               isClicked={selectedLine === interact[1].idx}
+  //             />
+  //           </li>
+  //         ))}
+  //       </ul>
+  //     )}
+  //   </div>
+  // );
 }
 
 export default InfoPanel;

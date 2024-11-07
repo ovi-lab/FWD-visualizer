@@ -12,7 +12,9 @@ export const DarkModeSwitch = () => {
 
   return (
     <div className="flex" onClick={darkModeToggle}>
-      <span className="pt-1 pr-2"> DarkMode </span>
+      <span className={`${darkMode ? "text-white" : "text-black"} pt-1 pr-2`}>
+        DarkMode
+      </span>
       {/* Render icons based on darkMode state */}
       <div className="bg-stone-200 rounded-md p-2 pb-1">
         {darkMode ? (

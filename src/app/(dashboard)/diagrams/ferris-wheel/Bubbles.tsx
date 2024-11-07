@@ -20,10 +20,10 @@ import {
   Surprise_User,
   Flag,
 } from "@/app/components/svgs";
-import { useVisibleDivs } from "../../contexts/VisibleDivsContext";
-import { useSelectedColour } from "../../contexts/SelectedColourContext";
+import { useVisibleDivs } from "../../../contexts/VisibleTranscriptContext";
+import { useSelectedColour } from "../../../contexts/SelectedColourContext";
 import { useDarkMode } from "../../../contexts/DarkModeContext";
-import { useClickedBubble } from "../../contexts/ClickedBubbleContext";
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 // Define the types for the passed parameters
 interface TopicMap {
@@ -73,7 +73,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const { darkMode } = useDarkMode();
 
   // Pass clicked bubble topic name to chatbox component using useContext
-  const { setClickedBubble } = useClickedBubble();
+  const { setSelectedNode } = useSelectedNode();
 
   // Track hovered bubble
   const [hoveredBubble, setHoveredBubble] = useState<string | null>(null);
@@ -415,6 +415,21 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
     }
 
+    // Helper function to darken the given color by the given percentage
+    function darkenColor(hexColor: string, percent: number) {
+      let r = parseInt(hexColor.slice(1, 3), 16);
+      let g = parseInt(hexColor.slice(3, 5), 16);
+      let b = parseInt(hexColor.slice(5, 7), 16);
+
+      r = Math.max(0, Math.floor(r - r * percent));
+      g = Math.max(0, Math.floor(g - g * percent));
+      b = Math.max(0, Math.floor(b - b * percent));
+
+      return `#${r.toString(16).padStart(2, "0")}${g
+        .toString(16)
+        .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+    }
+
     return (
       <circle
         cx={cx}
@@ -425,7 +440,11 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         // If the current topic is visible on chatbox display, create stroke in lighter fill color with glow effect
         stroke={
           /* Array.includes(searchValue): returns true is search value exists in the array */
-          visibleTopics.includes(topic) ? lightenColor(color, 0.4) : "none"
+          visibleTopics.includes(topic)
+            ? darkMode
+              ? lightenColor(color, 0.4)
+              : darkenColor(color, 0.05)
+            : "none"
         }
         strokeWidth={visibleTopics.includes(topic) ? 4 : 0}
         filter={
@@ -437,7 +456,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         // Set HoveredBubble and ClickedBubble on mouse event
         onMouseEnter={() => setHoveredBubble(topic)}
         onMouseLeave={() => setHoveredBubble(null)}
-        onClick={() => setClickedBubble(topic)}
+        onClick={() => setSelectedNode(topic)}
       />
     );
   };
@@ -506,16 +525,13 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const calculateFontSize = (
     circleRadius: number,
     text: string,
-    padding = 10
+    padding = 13
   ) => {
     const circleDiameter = circleRadius * 2;
     const availableWidth = circleDiameter - padding * 2;
 
     let fontSize = 20;
 
-    if (text === "family ski trips") {
-      text = "ski trips";
-    }
     let wrappedLines = wrapText(text, fontSize, availableWidth);
 
     while (
@@ -540,7 +556,13 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     opactiy: number
   ) => {
     if (text === "family ski trips") {
-      text = "ski trips";
+      text = "family trips";
+    } else if (text === "goalkeeping") {
+      text = "goalie";
+    } else if (text === "watching with family") {
+      text = "watching sports";
+    } else if (text === "friend activities") {
+      text = "practice with friends";
     }
     const fontSize = calculateFontSize(circleSize, text);
     const availableWidth = circleSize * 2 - 10;
@@ -549,6 +571,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
 
     return (
       <text
+        className="font-mono"
         x={cx}
         y={cy - ((lines.length - 1) * lineHeight) / 4}
         textAnchor="middle"
@@ -556,12 +579,19 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         fill="white"
         filter="url(#drop-shadow)"
         opacity={opactiy}
+        stroke="white"
+        strokeWidth="0.5px"
         style={{
           transition: "opacity 0.4s ease-out",
         }}
       >
         {lines.map((line, index) => (
-          <tspan x={cx} dy={index === 0 ? 0 : lineHeight} key={index}>
+          <tspan
+            // style={{ fontWeight: "bold" }}
+            x={cx}
+            dy={index === 0 ? 0 : lineHeight}
+            key={index}
+          >
             {line}
           </tspan>
         ))}
@@ -578,7 +608,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         height: "100vh",
         alignItems: "center",
         justifyContent: "center",
-        background: darkMode ? "#383838" : "white",
+        background: darkMode ? "#3C3C3C" : "white",
       }}
     >
       <svg width="600" height="600">

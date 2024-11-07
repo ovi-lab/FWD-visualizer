@@ -7,8 +7,8 @@ const ArcDiagramPage = () => {
   const { filteredDiagramData } = useFilter();
 
   return (
-    <div>
-      <h1 className="float-left text-xl  font-bold mx-4">Arc Diagram</h1>
+    <div className="p-5 w-full h-full mt-20">
+      {/* <h1 className="float-left text-xl  font-bold mx-4">Arc Diagram</h1> */}
       <ArcDiagram data={filteredDiagramData} />
     </div>
   );

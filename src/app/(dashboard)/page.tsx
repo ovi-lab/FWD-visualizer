@@ -15,8 +15,8 @@ export default function Dashboard() {
             flexDirection: "column",
           }}
         >
-          {/* <ArcDiagram/>
-            <SankeyInterface/> */}
+          <ArcDiagram data={undefined} />
+          <SankeyInterface />
         </div>
         <Chatbox />
       </div>

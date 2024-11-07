@@ -130,7 +130,7 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
    * @param {string} nodeName - The name of the node that was interacted with.
    */
   const handleSankeyInteraction = (nodeName) => {
-    setSelectedNode(nodeName);
+    setSelectedNode(nodeName.split(": ")[1]); // take only topic name after "speaker: "
   };
 
   // If data is still loading, display a loading message
@@ -150,7 +150,7 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
         {links.map((link) => (
           <Link
             key={link.name}
-            linkID={link.id}
+            linkID={link.source.id} // replace link.id with link.source.id to get source object to access source topic id
             dValue={sankeyLinkHorizontal()(link)} // Path data for the link
             linkSourceName={link.sourceName.match(/:(.*)/)[1].trim()} // Extract source name
             linkedNodeSelected={link.name.includes(selectedNode)} // Check if linked to selected node

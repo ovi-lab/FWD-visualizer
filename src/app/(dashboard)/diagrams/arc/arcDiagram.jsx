@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { scaleLinear, scalePoint, scaleOrdinal, schemeSet3 } from "d3";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
+import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
+import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 // Define the color scale with D3 schemeSet3
 const color = scaleOrdinal(schemeSet3);
@@ -23,16 +25,38 @@ const checkIsUser = (node) => {
  * @param {Function} props.handle - The function to handle the node click event.
  * @returns {JSX.Element} - A JSX element representing the node.
  */
+
+
+
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
+  const {selectedColour} = useSelectedColour();
+  const colors =
+    Array.isArray(selectedColour) && selectedColour.length > 0
+      ? selectedColour
+      : [
+          "#8CD0C7",
+          "#F4EC90",
+          "#BDBBD9",
+          "#FE7F70",
+          "#81B1D1",
+          "#FEB363",
+          "#B2DD6A",
+          "#FDCDE4",
+          "#D7D8D9",
+          "#C181BD",
+          "#CBEAC7",
+        ];
   // Determine stroke and fill colors based on whether the node is selected
   const strokeColor = isSelected ? "rgb(139, 227, 139)" : "grey";
   const strokeWidth = isSelected ? 2 : 1;
   const fillColor = isSelected
     ? "rgb(139, 227, 139)"
-    : color(node.name.match(/:(.*)/)[1].trim());
+    : colors[Math.floor(node.id / 2)]  // Use selectedColour from context if not selecte
 
   // Handle node click event
   const handleClick = () => handle(node.name);
+
+  const {darkMode} = useDarkMode();
 
   return (
     <g key={`node${node.name}`}>
@@ -79,10 +103,12 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
         x={xPosition - 35}
         y={arcHeight + 35}
         transform="rotate(-45)"
+        fill = {darkMode ? "white" : "black"}
         style={{
           textAnchor: "end",
           transformOrigin: `${xPosition}px ${arcHeight - 15}px`,
         }}
+        
       >
         {node.name}
       </text>
@@ -100,11 +126,31 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
  * @param {boolean} props.isConnectedNodeSelected - A boolean indicating if the connected node is selected.
  * @returns {JSX.Element} - A JSX element representing the link.
  */
-const Link = ({ name, source, pathData, isConnectedNodeSelected }) => {
+const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added linkID to get link colour
+
+  const {selectedColour} = useSelectedColour();
+  const colors =
+    Array.isArray(selectedColour) && selectedColour.length > 0
+      ? selectedColour
+      : [
+          "#8CD0C7",
+          "#F4EC90",
+          "#BDBBD9",
+          "#FE7F70",
+          "#81B1D1",
+          "#FEB363",
+          "#B2DD6A",
+          "#FDCDE4",
+          "#D7D8D9",
+          "#C181BD",
+          "#CBEAC7",
+        ];
+  
   // Determine stroke color based on whether the connected node is selected
   const strokeColor = isConnectedNodeSelected
     ? "rgb(139, 227, 139)"
-    : color(source.match(/:(.*)/)[1].trim());
+    : colors[Math.floor(linkID/ 2)]
+
 
   // Set opacity based on selection status
   const opacity = isConnectedNodeSelected ? 1 : 0.5;
@@ -114,7 +160,7 @@ const Link = ({ name, source, pathData, isConnectedNodeSelected }) => {
       d={pathData}
       fill="none"
       stroke={strokeColor}
-      opacity={opacity}
+      opacity={1}
       strokeWidth={7}
       className=""
       id={name}
@@ -220,7 +266,7 @@ function ArcDiagram({data}) {
   const { selectedNode, setSelectedNode } = useSelectedNode();
 
   const handleNodeSelect = (nodeName) => {
-    setSelectedNode(nodeName);
+    setSelectedNode(nodeName.split(": ")[1]); // take only topic name after ": "
   };
 
   useEffect(() => {
@@ -282,6 +328,7 @@ function ArcDiagram({data}) {
             <Link
               key={link.name}
               name={link.name}
+              linkID={link.source} // added linkID to give access to sourceid
               source={link.sourceName}
               pathData={link.d}
               isConnectedNodeSelected={link.name.includes(selectedNode)}

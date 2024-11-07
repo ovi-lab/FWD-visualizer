@@ -1,12 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import SankeyDiagram from "./sankeyDiagram";
+import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 const SelectorButton = ({
   buttonDirection,
   directionState,
   handleRadioChange,
 }) => {
+  const {darkMode} = useDarkMode();
   const labeltext = () => {
     switch (buttonDirection) {
       case "robot-user":
@@ -20,12 +22,13 @@ const SelectorButton = ({
     }
   };
   return (
+
     <label
       htmlFor={buttonDirection}
-      className={`btn mr-4 p-2 ${
+      className={`btn mr-4 p-2 ${darkMode ? "bg-white" :  "bg-gray-200"} ${
         directionState === buttonDirection
           ? "btn-active border-2 border-sky-500 "
-          : "btn-outline-success border border-gray-500"
+          : "btn-outline-success border border-stone-200"
       }`}
     >
       <input

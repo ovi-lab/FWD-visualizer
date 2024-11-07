@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { scaleLinear, scalePoint, scaleOrdinal, schemeSet3 } from "d3";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
+import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 // Define the color scale with D3 schemeSet3
 const color = scaleOrdinal(schemeSet3);
@@ -55,6 +56,8 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
   // Handle node click event
   const handleClick = () => handle(node.name);
 
+  const {darkMode} = useDarkMode();
+
   return (
     <g key={`node${node.name}`}>
       {/* Render the line connecting the node */}
@@ -100,10 +103,12 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
         x={xPosition - 35}
         y={arcHeight + 35}
         transform="rotate(-45)"
+        fill = {darkMode ? "white" : "black"}
         style={{
           textAnchor: "end",
           transformOrigin: `${xPosition}px ${arcHeight - 15}px`,
         }}
+        
       >
         {node.name}
       </text>

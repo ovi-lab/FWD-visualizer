@@ -1,5 +1,6 @@
 import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
 import { scaleOrdinal, schemeSet3 } from "d3";
+import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 // Create a color scale using D3's categorical color scheme
 const color = scaleOrdinal(schemeSet3);
@@ -48,6 +49,7 @@ const Node = ({
           "#C181BD",
           "#CBEAC7",
         ];
+  const {darkMode} = useDarkMode();
   return (
     <g key={nodeData.id}>
       {/* Node rectangle */}
@@ -77,6 +79,7 @@ const Node = ({
         y={(nodeData.y1 + nodeData.y0) / 2} // Y-coordinate centered vertically on the node
         dy={"0.35em"}                // Adjusts the text vertically
         textAnchor={textAnchorPosition} // Aligns text based on node position
+        fill = {darkMode? "white" : "black"}
       >
         {nodeData.name}
       </text>

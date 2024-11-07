@@ -525,7 +525,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const calculateFontSize = (
     circleRadius: number,
     text: string,
-    padding = 10
+    padding = 13
   ) => {
     const circleDiameter = circleRadius * 2;
     const availableWidth = circleDiameter - padding * 2;
@@ -561,6 +561,8 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
       text = "goalie";
     } else if (text === "watching with family") {
       text = "watching sports";
+    } else if (text === "friend activities") {
+      text = "practice with friends";
     }
     const fontSize = calculateFontSize(circleSize, text);
     const availableWidth = circleSize * 2 - 10;
@@ -569,6 +571,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
 
     return (
       <text
+        className="font-mono"
         x={cx}
         y={cy - ((lines.length - 1) * lineHeight) / 4}
         textAnchor="middle"
@@ -577,7 +580,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         filter="url(#drop-shadow)"
         opacity={opactiy}
         stroke="white"
-        strokeWidth="0.8px"
+        strokeWidth="0.5px"
         style={{
           transition: "opacity 0.4s ease-out",
         }}

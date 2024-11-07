@@ -24,14 +24,33 @@ const checkIsUser = (node) => {
  * @param {Function} props.handle - The function to handle the node click event.
  * @returns {JSX.Element} - A JSX element representing the node.
  */
+
+
+
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
   const {selectedColour} = useSelectedColour();
+  const colors =
+    Array.isArray(selectedColour) && selectedColour.length > 0
+      ? selectedColour
+      : [
+          "#8CD0C7",
+          "#F4EC90",
+          "#BDBBD9",
+          "#FE7F70",
+          "#81B1D1",
+          "#FEB363",
+          "#B2DD6A",
+          "#FDCDE4",
+          "#D7D8D9",
+          "#C181BD",
+          "#CBEAC7",
+        ];
   // Determine stroke and fill colors based on whether the node is selected
   const strokeColor = isSelected ? "rgb(139, 227, 139)" : "grey";
   const strokeWidth = isSelected ? 2 : 1;
   const fillColor = isSelected
     ? "rgb(139, 227, 139)"
-    : color(node.name.match(/:(.*)/)[1].trim());
+    : colors[Math.floor(node.id / 2)]  // Use selectedColour from context if not selecte
 
   // Handle node click event
   const handleClick = () => handle(node.name);

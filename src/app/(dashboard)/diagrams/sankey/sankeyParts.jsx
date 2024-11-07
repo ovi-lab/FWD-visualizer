@@ -1,3 +1,4 @@
+import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
 import { scaleOrdinal, schemeSet3 } from "d3";
 
 // Create a color scale using D3's categorical color scheme
@@ -30,6 +31,23 @@ const Node = ({
   // Text alignment based on node position
   const textAnchorPosition = widthLessThanHalf ? "start" : "end";
 
+  const {selectedColour} = useSelectedColour();
+  const colors =
+    Array.isArray(selectedColour) && selectedColour.length > 0
+      ? selectedColour
+      : [
+          "#8CD0C7",
+          "#F4EC90",
+          "#BDBBD9",
+          "#FE7F70",
+          "#81B1D1",
+          "#FEB363",
+          "#B2DD6A",
+          "#FDCDE4",
+          "#D7D8D9",
+          "#C181BD",
+          "#CBEAC7",
+        ];
   return (
     <g key={nodeData.id}>
       {/* Node rectangle */}
@@ -42,11 +60,7 @@ const Node = ({
         fill={
           isSelected
             ? "rgb(139, 227, 139)" // Fill color if selected
-            : color(
-                nodeData.name.match(/:(.*)/)
-                  ? nodeData.name.match(/:(.*)/)[1].trim()
-                  : nodeData.name
-              ) // Assign color based on node name
+            : colors[Math.floor(nodeData.id / 2)]  // Use selectedColour from context if not selected
         }
         className="hover:fill-[#8be38b] cursor-pointer" // Tailwind CSS classes for hover effect and pointer cursor
         onClick={() => {
@@ -83,6 +97,7 @@ const Node = ({
  *
  * @returns {JSX.Element} The rendered link element.
  */
+
 const Link = ({
   linkID,
   dValue,
@@ -90,6 +105,23 @@ const Link = ({
   linkedNodeSelected,
   linkWidth,
 }) => {
+  const {selectedColour} = useSelectedColour();
+  const colors =
+    Array.isArray(selectedColour) && selectedColour.length > 0
+      ? selectedColour
+      : [
+          "#8CD0C7",
+          "#F4EC90",
+          "#BDBBD9",
+          "#FE7F70",
+          "#81B1D1",
+          "#FEB363",
+          "#B2DD6A",
+          "#FDCDE4",
+          "#D7D8D9",
+          "#C181BD",
+          "#CBEAC7",
+        ];
   return (
     <g>
       {/* Link path */}

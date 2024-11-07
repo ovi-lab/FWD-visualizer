@@ -121,7 +121,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
  * @param {boolean} props.isConnectedNodeSelected - A boolean indicating if the connected node is selected.
  * @returns {JSX.Element} - A JSX element representing the link.
  */
-const Link = ({ name, source, pathData, isConnectedNodeSelected }) => {
+const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added linkID to get link colour
 
   const {selectedColour} = useSelectedColour();
   const colors =
@@ -144,13 +144,11 @@ const Link = ({ name, source, pathData, isConnectedNodeSelected }) => {
   // Determine stroke color based on whether the connected node is selected
   const strokeColor = isConnectedNodeSelected
     ? "rgb(139, 227, 139)"
-    : colors[Math.floor(Link.source/ 2)]
+    : colors[Math.floor(linkID/ 2)]
 
 
   // Set opacity based on selection status
   const opacity = isConnectedNodeSelected ? 1 : 0.5;
-
-  console.log("source");
 
   return (
     <path
@@ -325,6 +323,7 @@ function ArcDiagram({data}) {
             <Link
               key={link.name}
               name={link.name}
+              linkID={link.source} // added linkID to give access to sourceid
               source={link.sourceName}
               pathData={link.d}
               isConnectedNodeSelected={link.name.includes(selectedNode)}

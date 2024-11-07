@@ -1,6 +1,6 @@
-import { SunIcon } from "../../../components/svgs/sun_icon";
-import { MoonIcon } from "../../../components/svgs/moon_icon";
-import { useDarkMode } from "../../../contexts/DarkModeContext";
+import { SunIcon } from "./svgs/sun_icon";
+import { MoonIcon } from "./svgs/moon_icon";
+import { useDarkMode } from "../contexts/DarkModeContext";
 
 export const DarkModeSwitch = () => {
   const { darkMode, setDarkMode } = useDarkMode();

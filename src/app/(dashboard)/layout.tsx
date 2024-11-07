@@ -4,7 +4,7 @@ import { SelectedNodeProvider } from "@/app/contexts/selectedNodeContext";
 import { ChatProvider } from "@/app/contexts/chatContext";
 import { FilterProvider } from "@/app/contexts/filterContext";
 import { SocketDataProvider } from "@/app/contexts/socketDataContext";
-import { DarkModeProvider, useDarkMode } from "../contexts/DarkModeContext";
+import { DarkModeProvider } from "../contexts/DarkModeContext";
 import { ClickedBubbleProvider } from "./contexts/ClickedBubbleContext";
 import { SelectedColourProvider } from "../contexts/SelectedColourContext";
 import { VisibleDivsProvider } from "../contexts/VisibleTranscriptContext";

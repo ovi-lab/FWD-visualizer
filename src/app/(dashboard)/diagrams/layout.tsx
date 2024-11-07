@@ -1,7 +1,7 @@
 import Chatbox from "../chat/page";
 import InfoPanel from "../../components/infoPanel";
 import React from "react";
-// import { useDarkMode } from "../contexts/DarkModeContext";
+import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 export default function Layout({
   children,

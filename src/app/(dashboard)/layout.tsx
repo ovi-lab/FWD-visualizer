@@ -4,7 +4,7 @@ import { SelectedNodeProvider } from "@/app/contexts/selectedNodeContext";
 import { ChatProvider } from "@/app/contexts/chatContext";
 import { FilterProvider } from "@/app/contexts/filterContext";
 import { SocketDataProvider } from "@/app/contexts/socketDataContext";
-import { DarkModeProvider } from "../contexts/DarkModeContext";
+import { DarkModeProvider} from "../contexts/DarkModeContext";
 import { ClickedBubbleProvider } from "./contexts/ClickedBubbleContext";
 import { SelectedColourProvider } from "../contexts/SelectedColourContext";
 import { VisibleDivsProvider } from "../contexts/VisibleTranscriptContext";
@@ -12,7 +12,6 @@ import { VisibleDivsProvider } from "../contexts/VisibleTranscriptContext";
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const { darkMode } = useDarkMode();
   return (
     <div className="grid grid-cols-9 w-full h-full min-h-screen min-w-screen">
       <SocketDataProvider>
@@ -26,9 +25,7 @@ export default function Layout({
                 <FilterProvider>
                   <DarkModeProvider>
                     <div
-                      className={`${
-                        darkMode ? "bg-black" : "bg-white"
-                      } flex-1 overflow-y-auto p-3`}
+                      className={`flex-1 overflow-y-auto p-3`}
                     >
                       <ChatProvider>
                         <SelectedNodeProvider>{children}</SelectedNodeProvider>

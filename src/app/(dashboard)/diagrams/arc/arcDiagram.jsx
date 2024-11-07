@@ -122,20 +122,42 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
  * @returns {JSX.Element} - A JSX element representing the link.
  */
 const Link = ({ name, source, pathData, isConnectedNodeSelected }) => {
+
+  const {selectedColour} = useSelectedColour();
+  const colors =
+    Array.isArray(selectedColour) && selectedColour.length > 0
+      ? selectedColour
+      : [
+          "#8CD0C7",
+          "#F4EC90",
+          "#BDBBD9",
+          "#FE7F70",
+          "#81B1D1",
+          "#FEB363",
+          "#B2DD6A",
+          "#FDCDE4",
+          "#D7D8D9",
+          "#C181BD",
+          "#CBEAC7",
+        ];
+  
   // Determine stroke color based on whether the connected node is selected
   const strokeColor = isConnectedNodeSelected
     ? "rgb(139, 227, 139)"
-    : color(source.match(/:(.*)/)[1].trim());
+    : colors[Math.floor(Link.source/ 2)]
+
 
   // Set opacity based on selection status
   const opacity = isConnectedNodeSelected ? 1 : 0.5;
+
+  console.log("source");
 
   return (
     <path
       d={pathData}
       fill="none"
       stroke={strokeColor}
-      opacity={opacity}
+      opacity={1}
       strokeWidth={7}
       className=""
       id={name}

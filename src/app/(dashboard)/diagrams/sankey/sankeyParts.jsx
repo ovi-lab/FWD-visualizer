@@ -105,6 +105,7 @@ const Link = ({
   linkedNodeSelected,
   linkWidth,
 }) => {
+
   const {selectedColour} = useSelectedColour();
   const colors =
     Array.isArray(selectedColour) && selectedColour.length > 0
@@ -131,10 +132,10 @@ const Link = ({
         stroke={
           linkedNodeSelected
             ? "rgb(139, 227, 139)" // Stroke color if linked node is selected
-            : color(linkSourceName)
+            : colors[Math.floor(linkID/ 2)]
         }
         fill="none"        // No fill color
-        strokeOpacity={linkedNodeSelected ? "1" : "0.8"} // Opacity adjustment
+        strokeOpacity={linkedNodeSelected ? "1" : "1"} // Opacity adjustment
         strokeWidth={Math.max(1, linkWidth)} // Ensure stroke width is at least 1
         style={{
           mixBlendMode: "multiply",            // Blends overlapping links

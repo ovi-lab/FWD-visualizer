@@ -24,6 +24,7 @@ import { useVisibleDivs } from "../../../contexts/VisibleTranscriptContext";
 import { useSelectedColour } from "../../../contexts/SelectedColourContext";
 import { useDarkMode } from "../../../contexts/DarkModeContext";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
+import { useSelectedBackgroundColour } from "@/app/contexts/SelectedBackgroundColourContext";
 
 // Define the types for the passed parameters
 interface TopicMap {
@@ -568,7 +569,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     const availableWidth = circleSize * 2 - 10;
     const lines = wrapText(text, fontSize, availableWidth);
     const lineHeight = fontSize * 1.2;
-
     return (
       <text
         className="font-mono"
@@ -599,6 +599,8 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     );
   };
 
+  const { selectedBackgroundColour } = useSelectedBackgroundColour();
+
   // Display Section
   return (
     <div
@@ -608,7 +610,11 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         height: "100vh",
         alignItems: "center",
         justifyContent: "center",
-        background: darkMode ? "#3C3C3C" : "white",
+        background: darkMode
+          ? "#3C3C3C"
+          : selectedBackgroundColour
+          ? selectedBackgroundColour
+          : "white",
       }}
     >
       <svg width="600" height="600">

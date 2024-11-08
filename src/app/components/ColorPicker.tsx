@@ -140,6 +140,8 @@ const ColorPicker = () => {
   const [isOpen, setIsOpen] = useState(false);
   // Keep track of which colour is selected
   const [selectedColor, setSelectedColor] = useState(colors[0]);
+  // Kepp track of dark mode setting
+  const { darkMode } = useDarkMode();
 
   // Helper function to toggle spinner opening
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -147,9 +149,9 @@ const ColorPicker = () => {
   // Helper function to update setSelectedColour and setIsOpen on colour section
   const selectColorScheme = (scheme: React.SetStateAction<string[]>) => {
     setSelectedColor(scheme);
+    setSelectedColour(scheme);
     setIsOpen(false);
   };
-  const { darkMode } = useDarkMode();
 
   return (
     <div style={{ display: "inline-block", position: "relative" }}>
@@ -160,7 +162,7 @@ const ColorPicker = () => {
         }}
       >
         <span style={{ color: darkMode ? "white" : "black" }}>
-          Color Scheme
+          Color Palette
         </span>
       </label>
       {/* Container for only the selected color scheme */}
@@ -198,65 +200,67 @@ const ColorPicker = () => {
 
         {/* Create container for the color scheme options */}
       </div>
-      {isOpen && (
-        <div
-          style={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            background: "white",
-            padding: "4px",
-            marginTop: "4px",
-            boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-            zIndex: 10,
-            maxHeight: "85px",
-            overflowY: "auto",
-          }}
-        >
-          {/* Create bottom line for every colour scheme */}
-          {colors.map((scheme, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                selectColorScheme(scheme);
-                setSelectedColour(scheme);
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "4px",
-                cursor: "pointer",
-                borderBottom:
-                  index !== colors.length - 1 ? "1px solid #eee" : "none", // Create bottom border for every colour scheme except for the last one
-              }}
-            >
-              {/* Create  a set of color blocks for every color scheme options */}
-              {scheme.map((color, i) => (
-                <span
-                  key={i}
-                  style={{
-                    display: "inline-block",
-                    width: "16px",
-                    height: "16px",
-                    backgroundColor: color,
-                    marginRight: "4px",
-                    borderRadius: "2px",
-                    border: "1px solid #ddd",
-                  }}
-                />
-              ))}
-              {/* If the current scehme is the selectedColour, create ✓ beside the color blocks */}
-              {/* { condition && (execution statement) } 
+      <div
+        className={`transform transition-all duration-[400ms] ${
+          isOpen
+            ? "-translate-y-1 opacity-100 ease-in-out"
+            : "-translate-y-2 opacity-0 pointer-events-none ease-in-out"
+        } w-fit`}
+        style={{
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          background: "white",
+          padding: "4px",
+          marginTop: "4px",
+          boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+          zIndex: 10,
+          maxHeight: "85px",
+          overflowY: "auto",
+        }}
+      >
+        {/* Create bottom line for every colour scheme */}
+        {colors.map((scheme, index) => (
+          <div
+            key={index}
+            onClick={() => {
+              selectColorScheme(scheme);
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "4px",
+              cursor: "pointer",
+              borderBottom:
+                index !== colors.length - 1 ? "1px solid #eee" : "none", // Create bottom border for every colour scheme except for the last one
+            }}
+          >
+            {/* Create  a set of color blocks for every color scheme options */}
+            {scheme.map((color, i) => (
+              <span
+                key={i}
+                style={{
+                  display: "inline-block",
+                  width: "16px",
+                  height: "16px",
+                  backgroundColor: color,
+                  marginRight: "4px",
+                  borderRadius: "2px",
+                  border: "1px solid #ddd",
+                }}
+              />
+            ))}
+            {/* If the current scehme is the selectedColour, create ✓ beside the color blocks */}
+            {/* { condition && (execution statement) } 
                 If condition is correct execute the statement */}
-              {scheme === selectedColor && (
-                <span style={{ marginLeft: "auto", color: "#7a7a7a" }}>✓</span>
-              )}{" "}
-            </div>
-          ))}
-        </div>
-      )}
+            {scheme === selectedColor && (
+              <span style={{ marginLeft: "auto", color: "#7a7a7a" }}>✓</span>
+            )}{" "}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

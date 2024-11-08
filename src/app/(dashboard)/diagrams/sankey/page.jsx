@@ -25,7 +25,7 @@ const SelectorButton = ({
 
     <label
       htmlFor={buttonDirection}
-      className={`btn mr-4 p-2 ${darkMode ? "bg-white" :  "bg-gray-200"} ${
+      className={`btn mr-4 p-2 bg-cyan-100 ${
         directionState === buttonDirection
           ? "btn-active border-2 border-sky-500 "
           : "btn-outline-success border border-stone-200"

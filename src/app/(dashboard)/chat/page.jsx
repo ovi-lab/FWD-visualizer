@@ -89,7 +89,6 @@ export default function Chatbox() {
 
     if (selectedNode) {
 
-      console.log("selectedNode" + selectedNode);
       // Find the statements that match the clickedBubble
       const matchingStatements = filteredTranscript.filter(
         (stmt) => stmt.topic === selectedNode,
@@ -102,7 +101,6 @@ export default function Chatbox() {
       if (minIndexStmt) {
         const anchorId = `${minIndexStmt.topic}-${minIndexStmt.idx}-${filteredTranscript.indexOf(minIndexStmt)}`;
         anchorMove(anchorId);
-        console.log("scroll to: "+anchorId);
       }
     }
   }, [selectedNode, filteredTranscript, anchorMove, chatAnchor]);

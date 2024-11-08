@@ -128,7 +128,7 @@ export default function TiersOfFriendship() {
       <div className={`grid grid-rows-${rows.length} overflow-auto`}>
         {rows.map((row) => {
           // Only render the row if it has nodes
-          console.log("row", row);
+          // console.log("row", row);
           return (
             row !== undefined && (
               <div
@@ -136,7 +136,6 @@ export default function TiersOfFriendship() {
                 className="flex justify-center topic-wrapper"
               >
                 {row.map((node) => {
-                  console.log(`node-${node.topic}-${node.collected.length}-${node.required.length}`)
                   return (
                     <Topic
                       key={`node-${node.topic}-${node.collected.length}-${node.required.length}`}

@@ -59,14 +59,14 @@ export default function NodeList({
           if (!topicData.ids.includes(node.id)) {
             topicData.ids.push(node.id);
           }
-          console.log(
-            "ID Already Exists " +
-              node.topic +
-              " " +
-              node.id +
-              " topicData.ids " +
-              topicData.ids
-          );
+          // console.log(
+          //   "ID Already Exists " +
+          //     node.topic +
+          //     " " +
+          //     node.id +
+          //     " topicData.ids " +
+          //     topicData.ids
+          // );
         }
       } else {
         // If the topic doesn't exist in topicMap, create new entry with the initial data

@@ -8,6 +8,8 @@ import { DarkModeProvider, useDarkMode } from "../contexts/DarkModeContext";
 import { ClickedBubbleProvider } from "./contexts/ClickedBubbleContext";
 import { SelectedColourProvider } from "../contexts/SelectedColourContext";
 import { VisibleDivsProvider } from "../contexts/VisibleTranscriptContext";
+import { SelectedBackgroundColourProvider } from "../contexts/SelectedBackgroundColourContext";
+import { DarkModeHoverProvider } from "../contexts/DarkModeHoverContext";
 
 export default function Layout({
   children,
@@ -21,21 +23,27 @@ export default function Layout({
         </div>
         <ClickedBubbleProvider>
           <VisibleDivsProvider>
-            <SelectedColourProvider>
-              <div className="col-span-8 flex flex-col h-full">
-                <FilterProvider>
-                  <DarkModeProvider>
-                    {/* Could this div to be full? high */}
-                    <div className="flex-1 overflow-y-auto">
-                      <ChatProvider>
-                        <SelectedNodeProvider>{children}</SelectedNodeProvider>
-                      </ChatProvider>
-                    </div>
-                  </DarkModeProvider>
-                  <ControlPanel />
-                </FilterProvider>
-              </div>
-            </SelectedColourProvider>
+            <SelectedBackgroundColourProvider>
+              <SelectedColourProvider>
+                <div className="col-span-8 flex flex-col h-full">
+                  <FilterProvider>
+                    <DarkModeProvider>
+                      <DarkModeHoverProvider>
+                        {/* Could this div to be full? high */}
+                        <div className="flex-1 overflow-y-auto">
+                          <ChatProvider>
+                            <SelectedNodeProvider>
+                              {children}
+                            </SelectedNodeProvider>
+                          </ChatProvider>
+                        </div>
+                      </DarkModeHoverProvider>
+                    </DarkModeProvider>
+                    <ControlPanel />
+                  </FilterProvider>
+                </div>
+              </SelectedColourProvider>
+            </SelectedBackgroundColourProvider>
           </VisibleDivsProvider>
         </ClickedBubbleProvider>
       </SocketDataProvider>

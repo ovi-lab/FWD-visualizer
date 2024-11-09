@@ -1,54 +1,51 @@
-import { useState } from "react";
 import { useDarkMode } from "../contexts/DarkModeContext";
 import { useDarkModeHover } from "../contexts/DarkModeHoverContext";
 import { useSelectedBackgroundColour } from "../contexts/SelectedBackgroundColourContext";
 import { MoonIcon } from "./svgs/moon_icon";
 import { SunIcon } from "./svgs/sun_icon";
 
-const colors = [["White"], ["#e8efff"], ["#e5fff7"], ["#fffcea"], ["#fcedee"]];
+// Define color option array
+const colors = ["White", "#e8efff", "#e5fff7", "#fffcea", "#fcedee"];
 
-export const DarkModeSwitch = () => {
+export const BackgroundPicker = () => {
+  // Keep track of darkmode setting and pass to other components
   const { darkMode, setDarkMode } = useDarkMode();
+  // Keep track of whether dark mode switch is hovered
   const { darkModeHover, setDarkModeHover } = useDarkModeHover();
-
+  // Handle dark mode switch toggle
   const darkModeToggle = () => {
     setDarkMode((prevMode) => !prevMode);
   };
 
-  const { setSelectedBackgroundColour } = useSelectedBackgroundColour();
-  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(
-    colors[0]
-  );
+  // Keep track of selectedBackgroundColour
+  const { selectedBackgroundColour, setSelectedBackgroundColour } =
+    useSelectedBackgroundColour();
 
-  const selectColorScheme = (scheme: string[]) => {
-    setSelectedBackgroundColor(scheme);
-    setSelectedBackgroundColour(scheme[0]);
-  };
+  // Handle dark mode hover on and off
   const darkModeHoverOn = () => {
     if (!darkMode) setDarkModeHover(true);
   };
-
   const darkModeHoverOff = () => {
     if (!darkMode) setDarkModeHover(false);
   };
 
   return (
     <div className="flex relative z-10">
-      <div
-        className="flex"
-        onMouseEnter={darkModeHoverOn}
-        onMouseLeave={darkModeHoverOff}
-        onClick={darkModeToggle}
-      >
+      <div className="flex" onClick={darkModeToggle}>
         <span
           className={`${
             darkMode ? "text-white" : "text-black"
           } pt-1 pr-2 whitespace-nowrap`}
         >
-          Dark Mode
+          Backdrop Theme
         </span>
 
-        <div className="bg-cyan-100 rounded-md p-2 pl-2.5 pr-2.5 z-10">
+        {/* Dark mode switch */}
+        <div
+          className="bg-cyan-100 rounded-md p-2 pl-2.5 pr-2.5 z-10"
+          onMouseEnter={darkModeHoverOn}
+          onMouseLeave={darkModeHoverOff}
+        >
           {darkMode ? (
             <MoonIcon className="mb-1" />
           ) : (
@@ -57,7 +54,9 @@ export const DarkModeSwitch = () => {
         </div>
       </div>
 
+      {/* Background colour option ui is shown only when dark mode is off upon mouse hover */}
       {!darkMode && (
+        // Colour container
         <div
           className={`transform transition-all duration-[400ms] ${
             darkModeHover
@@ -67,28 +66,21 @@ export const DarkModeSwitch = () => {
           onMouseEnter={darkModeHoverOn}
           onMouseLeave={darkModeHoverOff}
         >
+          {/* Colour blcoks */}
           <div className="flex gap-2 border border-gray-300 rounded-md bg-white p-1.5">
             {colors.map((scheme, index) => (
               <div
                 key={index}
-                onClick={() => selectColorScheme(scheme)}
-                className={`flex items-center gap-1 p-1 cursor-pointer rounded-sm ${
-                  scheme === selectedBackgroundColor
+                onClick={() => setSelectedBackgroundColour(scheme)}
+                className={`flex items-center gap-1 p-2 cursor-pointer rounded-sm ${
+                  scheme === selectedBackgroundColour
                     ? "border-1.5 border-gray-500"
                     : "border border-gray-300"
                 }`}
                 style={{
-                  backgroundColor: scheme[0] === "White" ? "#fff" : scheme[0],
+                  backgroundColor: scheme,
                 }}
-              >
-                {scheme.map((color, i) => (
-                  <span
-                    key={i}
-                    className="inline-block w-2 h-2"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
+              ></div>
             ))}
           </div>
         </div>

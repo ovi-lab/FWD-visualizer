@@ -134,21 +134,20 @@ const colors = [
 ];
 
 const ColorPicker = () => {
-  // Pass selected colour to parent component using useContext
-  const { setSelectedColour } = useSelectedColour();
   // Keep track of if spinner is open
   const [isOpen, setIsOpen] = useState(false);
-  // Keep track of which colour is selected
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
+  // Keep track of colour palette selected
+  const { selectedColour, setSelectedColour } = useSelectedColour();
   // Kepp track of dark mode setting
   const { darkMode } = useDarkMode();
 
-  // Helper function to toggle spinner opening
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  // Handle mouse hover
+  /* mouse enter and mouse leave to be handled seaprately */
+  const handleMouseEnter = () => setIsOpen(true);
+  const handleMouseLeave = () => setIsOpen(false);
 
   // Helper function to update setSelectedColour and setIsOpen on colour section
   const selectColorScheme = (scheme: React.SetStateAction<string[]>) => {
-    setSelectedColor(scheme);
     setSelectedColour(scheme);
     setIsOpen(false);
   };
@@ -161,9 +160,7 @@ const ColorPicker = () => {
           marginBottom: "8px",
         }}
       >
-        <span style={{ color: darkMode ? "white" : "black" }}>
-          Color Palette
-        </span>
+        <span style={{ color: darkMode ? "white" : "black" }}>Color Theme</span>
       </label>
       {/* Container for only the selected color scheme */}
       <div
@@ -177,15 +174,17 @@ const ColorPicker = () => {
           borderRadius: "4px",
           backgroundColor: "white",
         }}
-        onClick={toggleDropdown} // Execute toggleDropdown function on click
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         {/* Array.prototype.map((element, index) => ()) */}
         <div style={{ display: "flex", gap: "4px" }}>
           {/* Create a set of color blocks for the selected colour scheme */}
-          {selectedColor.map((color, i) => (
+          {selectedColour.map((color, i) => (
             <span
               key={i}
               style={{
+                cursor: "pointer",
                 display: "inline-block",
                 width: "16px",
                 height: "16px",
@@ -200,13 +199,15 @@ const ColorPicker = () => {
 
         {/* Create container for the color scheme options */}
       </div>
+
       <div
-        className={`transform transition-all duration-[400ms] ${
+        className={`transform transition-all duration-[400ms] ease-in-out ${
           isOpen
-            ? "-translate-y-1 opacity-100 ease-in-out"
-            : "-translate-y-2 opacity-0 pointer-events-none ease-in-out"
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-2 opacity-0 pointer-events-none"
         } w-fit`}
         style={{
+          cursor: "pointer",
           position: "absolute",
           top: "100%",
           left: 0,
@@ -220,6 +221,8 @@ const ColorPicker = () => {
           maxHeight: "85px",
           overflowY: "auto",
         }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         {/* Create bottom line for every colour scheme */}
         {colors.map((scheme, index) => (
@@ -232,7 +235,6 @@ const ColorPicker = () => {
               display: "flex",
               alignItems: "center",
               padding: "4px",
-              cursor: "pointer",
               borderBottom:
                 index !== colors.length - 1 ? "1px solid #eee" : "none", // Create bottom border for every colour scheme except for the last one
             }}
@@ -255,7 +257,7 @@ const ColorPicker = () => {
             {/* If the current scehme is the selectedColour, create ✓ beside the color blocks */}
             {/* { condition && (execution statement) } 
                 If condition is correct execute the statement */}
-            {scheme === selectedColor && (
+            {scheme === selectedColour && (
               <span style={{ marginLeft: "auto", color: "#7a7a7a" }}>✓</span>
             )}{" "}
           </div>

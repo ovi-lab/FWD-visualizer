@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils/processJSON.jsx", "src/app/lib/utils/loadJSON.jsx", "src/app/contexts/filterContext.jsx", "src/app/components/timeline.jsx", "src/app/components/svgs/moon_icon.jsx", "src/app/components/svgs/sun_icon.jsx", "src/app/components/DarkModeSwitch.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils/processJSON.jsx", "src/app/lib/utils/loadJSON.jsx", "src/app/contexts/filterContext.jsx", "src/app/components/timeline.jsx", "src/app/components/svgs/moon_icon.jsx", "src/app/components/svgs/sun_icon.jsx", "src/app/components/BackgroundPicker.tsx"],
   "exclude": ["node_modules"]
 }

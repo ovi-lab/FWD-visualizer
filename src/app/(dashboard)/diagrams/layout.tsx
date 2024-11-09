@@ -1,12 +1,9 @@
 "use client";
-import { useState } from "react";
 import Chatbox from "../chat/page";
-// import InfoPanel from "../../components/infoPanel";
 import React from "react";
 import ColorPicker from "@/app/components/ColorPicker";
-import { DarkModeSwitch } from "@/app/components/DarkModeSwitch";
+import { BackgroundPicker } from "@/app/components/BackgroundPicker";
 import { useDarkMode } from "@/app/contexts/DarkModeContext";
-import BackgroundColorPicker from "@/app/components/BackgroundColorPicker";
 import { useSelectedBackgroundColour } from "@/app/contexts/SelectedBackgroundColourContext";
 import { useDarkModeHover } from "@/app/contexts/DarkModeHoverContext";
 
@@ -15,9 +12,6 @@ export default function Layout({
 }: Readonly<{ children: React.ReactNode }>) {
   const { darkMode } = useDarkMode();
   const { selectedBackgroundColour } = useSelectedBackgroundColour();
-
-  const { darkModeHover } = useDarkModeHover();
-
   return (
     <>
       <div
@@ -32,7 +26,7 @@ export default function Layout({
       >
         <div className="col-span-1 ml-8 mt-5">
           <div className="z-10">
-            <DarkModeSwitch />
+            <BackgroundPicker />
           </div>
           <div className="mt-2">
             <ColorPicker />

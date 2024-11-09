@@ -61,10 +61,12 @@ const BubbleContent = ({ speaker, id, color, text, emoLabel }) => (
     {speaker.toLowerCase() !== "user" ? (
       <>
         <EmotionDisplay label={emoLabel} speaker={speaker} />
+        {/* "#EFEFEF" */}
         <MessageDisplay id={id} speaker={speaker} color={color} message={text} />
       </>
     ) : (
       <>
+        {/* "#CEFAFE" */}
         <MessageDisplay id={id} speaker={speaker} color={color} message={text} />
         <EmotionDisplay label={emoLabel} speaker={speaker} />
       </>

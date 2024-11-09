@@ -18,7 +18,19 @@ export const SelectedColourProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [selectedColour, setSelectedColour] = useState<string[]>([]);
+  const [selectedColour, setSelectedColour] = useState<string[]>([
+    "#8CD0C7",
+    "#F4EC90",
+    "#c8a7c9",
+    "#FE7F70",
+    "#81B1D1",
+    "#FEB363",
+    "#B2DD6A",
+    "#FDCDE4",
+    "#d1d1d1",
+    "#edcfa6",
+    "#bca498",
+  ]);
 
   return (
     <SelectedColourContext.Provider

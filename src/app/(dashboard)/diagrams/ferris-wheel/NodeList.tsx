@@ -75,7 +75,7 @@ export default function NodeList({
           analysis: interaction.turn === "user" ? [interaction] : [],
           ids: [node.id],
         });
-        console.log("NEW ID " + node.topic + " " + node.id);
+        // console.log("NEW ID " + node.topic + " " + node.id);
       }
     });
   });

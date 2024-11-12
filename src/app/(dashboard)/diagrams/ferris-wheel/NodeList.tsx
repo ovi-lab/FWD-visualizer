@@ -1,5 +1,6 @@
 "use client";
 import Bubbles from "./Bubbles";
+import Legend from "../../../components/Legend";
 
 // Define the types for the node(interaction) and links
 interface Nodes {

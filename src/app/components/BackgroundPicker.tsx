@@ -34,7 +34,7 @@ export const BackgroundPicker = () => {
       <div className="flex" onClick={darkModeToggle}>
         <span
           className={`${
-            darkMode ? "text-white" : "text-black"
+            darkMode ? "text-white" : "text-grey700"
           } pt-1 pr-2 whitespace-nowrap`}
         >
           Backdrop Theme
@@ -74,7 +74,7 @@ export const BackgroundPicker = () => {
                 onClick={() => setSelectedBackgroundColour(scheme)}
                 className={`flex items-center gap-1 p-2 cursor-pointer rounded-sm ${
                   scheme === selectedBackgroundColour
-                    ? "border-1.5 border-gray-500"
+                    ? "border-[1.5px] border-gray-400"
                     : "border border-gray-300"
                 }`}
                 style={{

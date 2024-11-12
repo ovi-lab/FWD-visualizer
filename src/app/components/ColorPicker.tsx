@@ -160,7 +160,9 @@ const ColorPicker = () => {
           marginBottom: "8px",
         }}
       >
-        <span style={{ color: darkMode ? "white" : "black" }}>Color Theme</span>
+        <span style={{ color: darkMode ? "white" : "grey700" }}>
+          Color Theme
+        </span>
       </label>
       {/* Container for only the selected color scheme */}
       <div

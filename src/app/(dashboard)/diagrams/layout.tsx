@@ -5,13 +5,18 @@ import ColorPicker from "@/app/components/ColorPicker";
 import { BackgroundPicker } from "@/app/components/BackgroundPicker";
 import { useDarkMode } from "@/app/contexts/DarkModeContext";
 import { useSelectedBackgroundColour } from "@/app/contexts/SelectedBackgroundColourContext";
-import { useDarkModeHover } from "@/app/contexts/DarkModeHoverContext";
+import Legend from "@/app/components/Legend";
+import { usePathname } from "next/navigation";
 
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const { darkMode } = useDarkMode();
   const { selectedBackgroundColour } = useSelectedBackgroundColour();
+
+  const pathname = usePathname(); // Getting the current URL using usePathname from next/navigation library
+  const isFerrisWheelPage = pathname.includes("/ferris-wheel");
+
   return (
     <>
       <div
@@ -31,6 +36,11 @@ export default function Layout({
           <div className="mt-2">
             <ColorPicker />
           </div>
+          {isFerrisWheelPage && (
+            <div className="mt-5">
+              <Legend />
+            </div>
+          )}
         </div>
         <div className="col-span-4 flex flex-col overflow-auto">{children}</div>
         <div className="col-span-2">

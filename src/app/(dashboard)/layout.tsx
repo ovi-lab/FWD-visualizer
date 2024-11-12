@@ -14,7 +14,6 @@ import { DarkModeHoverProvider } from "../contexts/DarkModeHoverContext";
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // const { darkMode } = useDarkMode();
   return (
     <div className="grid grid-cols-9 w-full h-full min-h-screen min-w-screen">
       <SocketDataProvider>

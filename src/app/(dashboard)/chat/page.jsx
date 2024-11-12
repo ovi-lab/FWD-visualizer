@@ -31,7 +31,6 @@ export default function Chatbox() {
 
   const {selectedNode} = useSelectedNode();
 
-  /* TODO: I'd like to pass visibleDivs from page.jsx to Bubbles.tsx using useContext. can you create context file? */
   // Keep track of visible divs
   const {setVisibleDivs } = useVisibleDivs();
 

@@ -21,20 +21,12 @@ export const BackgroundPicker = () => {
   const { selectedBackgroundColour, setSelectedBackgroundColour } =
     useSelectedBackgroundColour();
 
-  // Handle dark mode hover on and off
-  const darkModeHoverOn = () => {
-    if (!darkMode) setDarkModeHover(true);
-  };
-  const darkModeHoverOff = () => {
-    if (!darkMode) setDarkModeHover(false);
-  };
-
   return (
     <div className="flex relative z-10">
       <div className="flex" onClick={darkModeToggle}>
         <span
           className={`${
-            darkMode ? "text-white" : "text-grey700"
+            darkMode ? "text-white" : "text-grey500"
           } pt-1 pr-2 whitespace-nowrap`}
         >
           Backdrop Theme
@@ -43,8 +35,8 @@ export const BackgroundPicker = () => {
         {/* Dark mode switch */}
         <div
           className="bg-cyan-100 rounded-md p-2 pl-2.5 pr-2.5 z-10"
-          onMouseEnter={darkModeHoverOn}
-          onMouseLeave={darkModeHoverOff}
+          onMouseEnter={() => setDarkModeHover(true)}
+          onMouseLeave={() => setDarkModeHover(false)}
         >
           {darkMode ? (
             <MoonIcon className="mb-1" />
@@ -63,8 +55,8 @@ export const BackgroundPicker = () => {
               ? "translate-x-0 opacity-100 ease-in-out"
               : "-translate-x-8 opacity-0 pointer-events-none ease-in-out"
           } w-fit`}
-          onMouseEnter={darkModeHoverOn}
-          onMouseLeave={darkModeHoverOff}
+          onMouseEnter={() => setDarkModeHover(true)}
+          onMouseLeave={() => setDarkModeHover(false)}
         >
           {/* Colour blcoks */}
           <div className="flex gap-2 border border-gray-300 rounded-md bg-white p-1.5">

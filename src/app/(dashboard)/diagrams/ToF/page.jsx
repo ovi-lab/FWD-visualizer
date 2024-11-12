@@ -60,8 +60,6 @@ export default function TiersOfFriendship() {
         for (const existing of rows[i]) {
           if (line.topic === "topic-intro" && lineSlots !== undefined) {
             if (existing.collected.length === 0) existing.collected = lineSlots;
-
-            // TODO: index locations
           }
 
           if (existing.topic === topicNode.topic) {

@@ -141,11 +141,6 @@ const ColorPicker = () => {
   // Kepp track of dark mode setting
   const { darkMode } = useDarkMode();
 
-  // Handle mouse hover
-  /* mouse enter and mouse leave to be handled seaprately */
-  const handleMouseEnter = () => setIsOpen(true);
-  const handleMouseLeave = () => setIsOpen(false);
-
   // Helper function to update setSelectedColour and setIsOpen on colour section
   const selectColorScheme = (scheme: React.SetStateAction<string[]>) => {
     setSelectedColour(scheme);
@@ -160,7 +155,7 @@ const ColorPicker = () => {
           marginBottom: "8px",
         }}
       >
-        <span style={{ color: darkMode ? "white" : "grey700" }}>
+        <span style={{ color: darkMode ? "white" : "#3c3c3c" }}>
           Color Theme
         </span>
       </label>
@@ -176,8 +171,8 @@ const ColorPicker = () => {
           borderRadius: "4px",
           backgroundColor: "white",
         }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
       >
         {/* Array.prototype.map((element, index) => ()) */}
         <div style={{ display: "flex", gap: "4px" }}>
@@ -223,8 +218,8 @@ const ColorPicker = () => {
           maxHeight: "85px",
           overflowY: "auto",
         }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
       >
         {/* Create bottom line for every colour scheme */}
         {colors.map((scheme, index) => (

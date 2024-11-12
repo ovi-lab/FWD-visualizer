@@ -33,11 +33,11 @@ export default function Layout({
           <div className="z-10">
             <BackgroundPicker />
           </div>
-          <div className="mt-2">
+          <div className="mt-1">
             <ColorPicker />
           </div>
           {isFerrisWheelPage && (
-            <div className="mt-5">
+            <div className="mt-8">
               <Legend />
             </div>
           )}

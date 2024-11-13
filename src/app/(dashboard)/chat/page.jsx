@@ -7,8 +7,6 @@ import { useFilter } from "@/app/contexts/filterContext";
 import { useVisibleDivs } from '../../contexts/VisibleTranscriptContext';
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
-
-
 function checkForCollection(current, previous) {
   if (previous === undefined) return false;
   return previous.slots.length < current.slots.length;
@@ -39,55 +37,52 @@ export default function Chatbox() {
   const { chatAnchor, setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
   
-  const anchorMoveCallback = useCallback(
-    (anchorRef) => {
-      return function (anchor) {
-        if (anchor !== anchorRef.current) {
-          const targetElement = document.getElementById(anchor);
-          const targetContainer = document.getElementById("chatboxContent");
-          const currentElement = document.getElementById(anchorRef.current);
+  const anchorMoveRef = useRef(null);
 
-          if (targetElement === null) return;
+  useEffect(() => {
+    anchorMoveRef.current = (anchor) => {
+      if (anchor !== AnchorRef.current) {
+        const targetElement = document.getElementById(anchor);
+        const targetContainer = document.getElementById("chatboxContent");
+        const currentElement = document.getElementById(AnchorRef.current);
 
-          if (targetElement && targetContainer) {
-            const scrollPosition =
-              targetElement.offsetTop -
-              (targetContainer.clientHeight - targetElement.clientHeight) / 2;
-            targetContainer.scrollTo({
-              top: scrollPosition,
-              behavior: "smooth",
-            });
-            if (currentElement !== null) {
-              currentElement.style.border = "none";
-            }
-            // targetElement.style.border = "5px solid #a5faee";
-            anchorRef.current = anchor;
-            setChatAnchor(anchor);
-            
+        if (targetElement === null) return;
+
+        if (targetElement && targetContainer) {
+          const scrollPosition =
+            targetElement.offsetTop -
+            (targetContainer.clientHeight - targetElement.clientHeight) / 2;
+          targetContainer.scrollTo({
+            top: scrollPosition,
+            behavior: "smooth",
+          });
+
+          if (currentElement !== null) {
+            currentElement.style.border = "none";
           }
+          AnchorRef.current = anchor;
+          setChatAnchor(anchor);
         }
-      };
-    },
-    [setChatAnchor]
-  );
-  
-  const anchorMove = anchorMoveCallback(AnchorRef);
+      }
+    };
+  }, [setChatAnchor]); 
+
+  const anchorMove = anchorMoveRef.current;
+
+  useEffect(() => {
+    anchorMove;
+  }, [filteredTranscript]);
 
   // Effect to scroll to the last line whenever a new last line is added
   useEffect(() => {
     if (filteredTranscript.length > 0) {
-      anchorMove(`response${filteredTranscript.length - 1}`);
+      anchorMove;
     }
   }, [filteredTranscript, anchorMove]);
-  useEffect(() => {
-    anchorMove(chatAnchor);
-  }, [filteredTranscript]);
 
   // Effect to scroll to the matching topic when clickedBubble changes
   useEffect(() => {
-
     if (selectedNode) {
-
       // Find the statements that match the clickedBubble
       const matchingStatements = filteredTranscript.filter(
         (stmt) => stmt.topic === selectedNode,
@@ -103,8 +98,6 @@ export default function Chatbox() {
       }
     }
   }, [selectedNode, filteredTranscript]);
-
-
 
   // Effect to keep track of visible chatboxes wtihin chatcontainer 
   useEffect(() => {

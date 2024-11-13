@@ -29,7 +29,7 @@ export default function Layout({
         }}
         className="grid grid-cols-7 w-full h-full"
       >
-        <div className="col-span-1 ml-8 mt-5">
+        <div className="col-span-1 ml-8 mt-6 flex flex-col">
           <div className="z-10">
             <BackgroundPicker />
           </div>
@@ -37,7 +37,7 @@ export default function Layout({
             <ColorPicker />
           </div>
           {isFerrisWheelPage && (
-            <div className="mt-8">
+            <div className="mt-auto pb-12">
               <Legend />
             </div>
           )}

@@ -141,6 +141,9 @@ const ColorPicker = () => {
   // Kepp track of dark mode setting
   const { darkMode } = useDarkMode();
 
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+
   // Helper function to update setSelectedColour and setIsOpen on colour section
   const selectColorScheme = (scheme: React.SetStateAction<string[]>) => {
     setSelectedColour(scheme);
@@ -171,8 +174,8 @@ const ColorPicker = () => {
           borderRadius: "4px",
           backgroundColor: "white",
         }}
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
+        onMouseEnter={handleOpen}
+        onMouseLeave={handleClose}
       >
         {/* Array.prototype.map((element, index) => ()) */}
         <div style={{ display: "flex", gap: "4px" }}>
@@ -215,11 +218,11 @@ const ColorPicker = () => {
           marginTop: "4px",
           boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
           zIndex: 10,
-          maxHeight: "85px",
+          maxHeight: "81px",
           overflowY: "auto",
         }}
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
+        onMouseEnter={handleOpen}
+        onMouseLeave={handleClose}
       >
         {/* Create bottom line for every colour scheme */}
         {colors.map((scheme, index) => (

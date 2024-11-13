@@ -29,12 +29,11 @@ export default function Chatbox() {
 
   const {selectedNode} = useSelectedNode();
 
-  // Keep track of visible divs
   const {setVisibleDivs } = useVisibleDivs();
 
   const { filteredTranscript } = useFilter();  
   
-  const { chatAnchor, setChatAnchor } = useChatAnchor();
+  const {setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
   
   const anchorMoveRef = useRef(null);
@@ -44,8 +43,6 @@ export default function Chatbox() {
       if (anchor !== AnchorRef.current) {
         const targetElement = document.getElementById(anchor);
         const targetContainer = document.getElementById("chatboxContent");
-        const currentElement = document.getElementById(AnchorRef.current);
-
         if (targetElement === null) return;
 
         if (targetElement && targetContainer) {
@@ -57,9 +54,6 @@ export default function Chatbox() {
             behavior: "smooth",
           });
 
-          if (currentElement !== null) {
-            currentElement.style.border = "none";
-          }
           AnchorRef.current = anchor;
           setChatAnchor(anchor);
         }

@@ -141,7 +141,7 @@ const Link = ({
         strokeOpacity={linkedNodeSelected ? "1" : "1"} // Opacity adjustment
         strokeWidth={Math.max(1, linkWidth)} // Ensure stroke width is at least 1
         style={{
-          mixBlendMode: "multiply",            // Blends overlapping links
+          // mixBlendMode: "multiply",            // Blends overlapping links
           strokeDasharray: 1000,               // Total length of dashes
           strokeDashoffset: 1000,              // Starting point for the dash animation
           animation: "dash 1s linear forwards", // Animates the drawing of the path

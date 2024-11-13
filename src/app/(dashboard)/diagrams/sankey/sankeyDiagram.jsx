@@ -145,7 +145,7 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
       }`}
     >
       {/* Group element to contain all diagram elements */}
-      <g style={{ mixBlendMode: "multiply" }} id="svg-content">
+      <g id="svg-content">
         {/* Render links */}
         {links.map((link) => (
           <Link

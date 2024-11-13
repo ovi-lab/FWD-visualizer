@@ -81,24 +81,12 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
 
   // Track visible chat boxes by fetching visible div ids passed from chatbox page using useContext
   const { visibleDivs } = useVisibleDivs();
-  /* Create a new array by modifying the value of existing array
-     const newArray = Array.from(new Set(existingArr.map((item)=>callback(item))));
-  */
-  /* Array.from(): creates a new, shallow-copied Array instance from an iterable or array-like object */
-  /* new Set(): constructor that creates Set objects */
-  /* Array.map((item) => callback_func(item)) */
-  /* map vs foreach
-    - map creates and returns a new array
-    - forEach does not return a new array
-  */
-  /* String.split(separator): returns an array of substrings resulted from dividing the string by the given separator */
+
   const visibleTopics = Array.from(
     new Set(visibleDivs.map((divId) => divId.split("-")[0]))
   );
 
   // Convert topicMap and linkMap to Array
-  /* Array.from(Map.entries): converts Map into Array */
-  /* Map.entries(): returns a new map iterator object that contains the [key, value] pairs for each element in this map */
   const topicArray = Array.from(topicMap.entries());
   const totalTopicNum = topicArray.length;
 
@@ -172,18 +160,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     }
   };
 
-  /* reduce() vs flatMap()
-     reduce(): returns a single, accumulated result based on a custom logic defined in its callback 
-     flatMap(): returns a new array by flattening the results of mapping over each element by one level */
-
   // Helper function to create a mapping of topicId to topic name for easy lookup
-  /*
-   * Array.prototype.reduce((newMap, [existingKey, {existingValues}]) => {
-      existingValues.forEach(item) => newMap.set(existing key, value); 
-      return newMap;
-    }, newMap<newKeyType, newValueType>());
-    Initially create an empty map and add each id and its name to the map
- */
   const topicIdToNameMap = topicArray.reduce((idToNameMap, [name, { ids }]) => {
     ids.forEach((id) => {
       idToNameMap.set(id, name);
@@ -192,31 +169,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   }, new Map<number, string>());
 
   // Helper functions to extract the links initated by robot and user separately from the linksMap by deconstructing for each target Id to have each entry
-  /*
-    Destructure each entry of linksMap with `sourceId` as the key and `targetIds` as the array values 
-    Iterate over the array `targetId`s, creating an object `{ sourceId, targetId }` for each entry
-
-    Before: linksMap<number, number[]>
-    Stores each key (source ID) pointing to an array of values(target IDs)
-    {
-      0 => [2],
-      2 => [2, 4],
-    ...
-    }
-    After: robotLinks{sourceid: num, targetId: num}
-    Flattens map structure to create individual link objects
-    [
-      { sourceId: 0, targetId: 2 },
-      { sourceId: 2, targetId: 2 },
-      { sourceId: 2, targetId: 4 },
-      ...
-    ]
-  */
-
-  /* Array.flatMap((item) => (callback_func(item))
-     returns a new array formed by applying a given callback function to each element of the array
-     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap
-  */
   const robotLinks = linkRobotArray.flatMap(([sourceId, targetIds]) =>
     targetIds.map((targetId) => ({ sourceId, targetId }))
   );
@@ -247,7 +199,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const uniqueTopicNameArray = Array.from(topicMap.keys());
 
   // Helper function to reindexize topic id to calculate configuration
-  /* Array.indexOf(searchValue): returns index of the search value in the array */
   const getReIndex = (sourceTopicName: string, targetTopicName: string) => {
     const sourceIndex = uniqueTopicNameArray.indexOf(String(sourceTopicName));
     const targetIndex = uniqueTopicNameArray.indexOf(String(targetTopicName));
@@ -282,19 +233,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   // Define type of configuration_trans and configuration_add to resue for both robot and user links
 
   // Helper function to render the link lines using the configuration values
-  /*
-    IDEA
-    * If the source and target of a link are not the same it means the link is transition link
-
-    * As the way the link object stores link is prompt -> sentence, we need modify the way to fetch and render them
-      * prompt -> sentence link suggests there should be 2 links if it was constructed as sentence -> sentence 
-        * source topic -> source topic from the prompt speaker(who prompted the new topic)
-        * souce topic -> target topic from the sentence speaker(who actually started the new topic)
-        
-    * If sourceTopicName !== targetTopicName (using topic name as topic can have multiple ids), draw two liens
-      * one line from source topic to source topic from the prompt speaker (last sentence wihtin the current topic) - use targetIndex to calculate targetAngle
-      * one line from source topic to target topic from the sentence speaker (first sentence of the new topic) - use promptSpeakerBubble radius to calculate target coordinate
-  */
   const renderLinkLines = (
     links: { sourceId: any; targetId: any }[],
     transRadius: number,
@@ -440,7 +378,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         opacity={opacity}
         // If the current topic is visible on chatbox display, create stroke in lighter fill color with glow effect
         stroke={
-          /* Array.includes(searchValue): returns true is search value exists in the array */
           visibleTopics.includes(topic)
             ? darkMode
               ? lightenColor(color, 0.4)

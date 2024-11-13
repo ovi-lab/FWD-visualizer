@@ -81,7 +81,7 @@ export default function Chatbox() {
   }, [filteredTranscript, anchorMove]);
   useEffect(() => {
     anchorMove(chatAnchor);
-  }, [selectedNode, filteredTranscript, anchorMove, chatAnchor]);
+  }, [filteredTranscript]);
 
   // Effect to scroll to the matching topic when clickedBubble changes
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function Chatbox() {
         anchorMove(anchorId);
       }
     }
-  }, [selectedNode, filteredTranscript, anchorMove, chatAnchor]);
+  }, [selectedNode, filteredTranscript]);
 
 
 
@@ -148,7 +148,7 @@ export default function Chatbox() {
         }
       });
     };
-  }, [anchorMove]); 
+  }, [anchorMove, filteredTranscript]); 
 
   if (!filteredTranscript) return <p>Loading...</p>;
   return (

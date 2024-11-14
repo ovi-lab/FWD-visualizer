@@ -64,7 +64,7 @@ const Node = ({
             ? "rgb(139, 227, 139)" // Fill color if selected
             : colors[Math.floor(nodeData.id / 2)]  // Use selectedColour from context if not selected
         }
-        className="hover:fill-[#8be38b] cursor-pointer" // Tailwind CSS classes for hover effect and pointer cursor
+        className="hover:fill-[#8be38b] cursor-pointer opacity-80" // Tailwind CSS classes for hover effect and pointer cursor
         onClick={() => {
           handle(nodeData.name); // Handle node click event
         }}
@@ -142,6 +142,7 @@ const Link = ({
         strokeWidth={Math.max(1, linkWidth)} // Ensure stroke width is at least 1
         style={{
           // mixBlendMode: "multiply",            // Blends overlapping links
+          opacity: 0.8,
           strokeDasharray: 1000,               // Total length of dashes
           strokeDashoffset: 1000,              // Starting point for the dash animation
           animation: "dash 1s linear forwards", // Animates the drawing of the path

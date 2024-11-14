@@ -151,7 +151,11 @@ const ColorPicker = () => {
   };
 
   return (
-    <div style={{ display: "inline-block", position: "relative" }}>
+    <div
+      style={{ display: "inline-block", position: "relative" }}
+      onMouseEnter={handleOpen}
+      onMouseLeave={handleClose}
+    >
       <label
         style={{
           display: "block",
@@ -174,8 +178,6 @@ const ColorPicker = () => {
           borderRadius: "4px",
           backgroundColor: "white",
         }}
-        onMouseEnter={handleOpen}
-        onMouseLeave={handleClose}
       >
         {/* Array.prototype.map((element, index) => ()) */}
         <div style={{ display: "flex", gap: "4px" }}>
@@ -221,8 +223,6 @@ const ColorPicker = () => {
           maxHeight: "81px",
           overflowY: "auto",
         }}
-        onMouseEnter={handleOpen}
-        onMouseLeave={handleClose}
       >
         {/* Create bottom line for every colour scheme */}
         {colors.map((scheme, index) => (

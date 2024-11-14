@@ -390,6 +390,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         }
         style={{
           transition: "opacity 0.4s ease-out",
+          cursor: "pointer",
         }}
         // Set HoveredBubble and ClickedBubble on mouse event
         onMouseEnter={() => setHoveredBubble(topic)}
@@ -493,15 +494,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     circleSize: number,
     opactiy: number
   ) => {
-    if (text === "family ski trips") {
-      text = "family trips";
-    } else if (text === "goalkeeping") {
-      text = "goalie";
-    } else if (text === "watching with family") {
-      text = "watching sports";
-    } else if (text === "friend activities") {
-      text = "practice with friends";
-    }
     const fontSize = calculateFontSize(circleSize, text);
     const availableWidth = circleSize * 2 - 10;
     const lines = wrapText(text, fontSize, availableWidth);
@@ -520,7 +512,11 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         strokeWidth="0.5px"
         style={{
           transition: "opacity 0.4s ease-out",
+          cursor: "pointer",
         }}
+        onMouseEnter={() => setHoveredBubble(text)}
+        onMouseLeave={() => setHoveredBubble(null)}
+        onClick={() => setSelectedNode(text)}
       >
         {lines.map((line, index) => (
           <tspan
@@ -641,7 +637,11 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
                 style={{
                   opacity: hoveredOpacity,
                   transition: "opacity 0.4s ease-out",
+                  cursor: "pointer",
                 }}
+                onMouseEnter={() => setHoveredBubble(topic)}
+                onMouseLeave={() => setHoveredBubble(null)}
+                onClick={() => setSelectedNode(topic)}
               >
                 {getEmotionSVG("user", emotionLabel, userSize)}
               </g>

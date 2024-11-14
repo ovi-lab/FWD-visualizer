@@ -1,6 +1,7 @@
 "use client";
 import Bubbles from "./Bubbles";
 import Legend from "../../../components/Legend";
+import { Arrow } from "@/app/components/svgs";
 
 // Define the types for the node(interaction) and links
 interface Nodes {
@@ -107,8 +108,24 @@ export default function NodeList({
   });
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        paddingLeft: "-100px",
+        paddingTop: "-50px",
+      }}
+    >
       <Bubbles topicMap={topicMap} linksMap={linksMap} />
+      <Arrow
+        style={{
+          position: "absolute",
+          top: "45px",
+          right: "540px",
+          width: "180px",
+          height: "180px",
+        }}
+      />
     </div>
   );
 }

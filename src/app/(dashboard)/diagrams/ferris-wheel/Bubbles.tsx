@@ -19,6 +19,7 @@ import {
   Sadness_User,
   Surprise_User,
   Flag,
+  Arrow,
 } from "@/app/components/svgs";
 import { useVisibleDivs } from "../../../contexts/VisibleTranscriptContext";
 import { useSelectedColour } from "../../../contexts/SelectedColourContext";

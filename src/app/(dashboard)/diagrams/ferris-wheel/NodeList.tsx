@@ -1,6 +1,5 @@
 "use client";
 import Bubbles from "./Bubbles";
-import Legend from "../../../components/Legend";
 import { Arrow } from "@/app/components/svgs";
 
 // Define the types for the node(interaction) and links
@@ -119,11 +118,11 @@ export default function NodeList({
       <Bubbles topicMap={topicMap} linksMap={linksMap} />
       <Arrow
         style={{
-          position: "absolute",
-          top: "45px",
-          right: "540px",
-          width: "180px",
-          height: "180px",
+          position: "relative",
+          top: "10px",
+          right: "200px",
+          width: "240px",
+          height: "240px",
         }}
       />
     </div>

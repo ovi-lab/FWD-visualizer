@@ -36,43 +36,44 @@ export default function Chatbox() {
   const {setChatAnchor } = useChatAnchor();
   let AnchorRef = useRef(null);
   
-  const anchorMoveRef = useRef(null);
-
-  useEffect(() => {
-    anchorMoveRef.current = (anchor) => {
-      if (anchor !== AnchorRef.current) {
-        const targetElement = document.getElementById(anchor);
-        const targetContainer = document.getElementById("chatboxContent");
-        if (targetElement === null) return;
-
-        if (targetElement && targetContainer) {
-          const scrollPosition =
-            targetElement.offsetTop -
-            (targetContainer.clientHeight - targetElement.clientHeight) / 2;
-          targetContainer.scrollTo({
-            top: scrollPosition,
-            behavior: "smooth",
-          });
-
-          AnchorRef.current = anchor;
-          setChatAnchor(anchor);
+  const anchorMoveCallback = useCallback(
+    (anchorRef) => {
+      return function (anchor) {
+        if (anchor !== anchorRef.current) {
+          const targetElement = document.getElementById(anchor);
+          const targetContainer = document.getElementById("chatboxContent");
+          const currentElement = document.getElementById(anchorRef.current);
+          if (targetElement === null) return;
+          if (targetElement && targetContainer) {
+            const scrollPosition =
+              targetElement.offsetTop -
+              (targetContainer.clientHeight - targetElement.clientHeight) / 2;
+            targetContainer.scrollTo({
+              top: scrollPosition,
+              behavior: "smooth",
+            });
+            if (currentElement !== null) {
+              currentElement.style.border = "none";
+            }
+            // targetElement.style.border = "5px solid #a5faee";
+            anchorRef.current = anchor;
+            setChatAnchor(anchor);
+            
+          }
         }
-      }
-    };
-  }, [setChatAnchor]); 
-
-  const anchorMove = anchorMoveRef.current;
-
-  useEffect(() => {
-    anchorMove;
-  }, [filteredTranscript]);
+      };
+    },
+    [setChatAnchor]
+  );
+  
+  const anchorMove = anchorMoveCallback(AnchorRef);
 
   // Effect to scroll to the last line whenever a new last line is added
   useEffect(() => {
     if (filteredTranscript.length > 0) {
-      anchorMove;
+      anchorMove(`response${filteredTranscript.length - 1}`);
     }
-  }, [filteredTranscript, anchorMove]);
+  }, [filteredTranscript]);
 
   // Effect to scroll to the matching topic when clickedBubble changes
   useEffect(() => {
@@ -91,7 +92,7 @@ export default function Chatbox() {
         anchorMove(anchorId);
       }
     }
-  }, [selectedNode, filteredTranscript]);
+  }, [selectedNode]);
 
   // Effect to keep track of visible chatboxes wtihin chatcontainer 
   useEffect(() => {
@@ -113,7 +114,7 @@ export default function Chatbox() {
       setVisibleDivs(visibleIds); // Update the state with the visible div IDs
     }, {
       root: chatboxElement, // The scrollable area to observe
-      threshold: 1.0 // Trigger when the entire element is visible (1: entire, 0.5: half)
+      threshold: 1 // Trigger when the entire element is visible (1: entire, 0.5: half)
     });
   
     // Observe - Find visible divIds and their elements and observe them
@@ -135,7 +136,7 @@ export default function Chatbox() {
         }
       });
     };
-  }, [anchorMove, filteredTranscript]); 
+  }, [anchorMove]); 
 
   if (!filteredTranscript) return <p>Loading...</p>;
   return (

@@ -98,7 +98,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const topicRadius = 175;
   const robotRadius = 85;
 
-  const userScaleFactor = 10;
+  const userScaleFactor = 15;
   const topicScaleFactor = 3;
 
   const angleSlice = (2 * Math.PI) / totalTopicNum;
@@ -214,8 +214,25 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     sourceIndex: number,
     targetIndex: number
   ) => {
-    const sourceAngle = startingAngle + sourceIndex * angleSlice;
-    const targetAngle = startingAngle + targetIndex * angleSlice;
+    let sourceAngle = startingAngle + sourceIndex * angleSlice;
+    let targetAngle = startingAngle + targetIndex * angleSlice;
+
+    /* For Pilot Study With Sport Conversation */
+    /* LATER: Ideally, use numeric index value to calculate targetangle differently without affecting the legibility too much */
+    if (sourceIndex === 1 && targetIndex == 3) {
+      targetAngle -= 0.15;
+    } else if (sourceIndex === 1 && targetIndex == 2) {
+      targetAngle -= 0.15;
+    } else if (sourceIndex === 5 && targetIndex == 6) {
+      targetAngle -= 0.15;
+    } else if (sourceIndex === 5 && targetIndex == 7) {
+      targetAngle -= 0.15;
+    } else if (sourceIndex === 3 && targetIndex == 1) {
+      targetAngle += 0.05;
+    } else if (sourceIndex === 1 && targetIndex == 5) {
+      targetAngle += 0.08;
+    }
+    /* For Pilot Study With Sport Conversation */
 
     const sourceX = startingPosition + radius * Math.cos(sourceAngle);
     const sourceY = startingPosition + radius * Math.sin(sourceAngle);
@@ -229,8 +246,6 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
       targetY,
     };
   };
-
-  // Define type of configuration_trans and configuration_add to resue for both robot and user links
 
   // Helper function to render the link lines using the configuration values
   const renderLinkLines = (
@@ -605,7 +620,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
           );
           const averageSentimentScore = totalSentimentScore / analysis.length;
 
-          const minUserSize = 15;
+          const minUserSize = 10;
           const userSize =
             minUserSize + averageSentimentScore * userScaleFactor;
 

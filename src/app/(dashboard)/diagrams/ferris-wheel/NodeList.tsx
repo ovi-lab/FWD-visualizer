@@ -119,8 +119,8 @@ export default function NodeList({
       <Arrow
         style={{
           position: "relative",
-          top: "10px",
-          right: "200px",
+          top: "0px",
+          right: "220px",
           width: "240px",
           height: "240px",
         }}

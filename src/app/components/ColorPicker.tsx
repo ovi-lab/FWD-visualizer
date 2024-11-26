@@ -132,7 +132,6 @@ const colors = [
     "#C2B280",
   ],
 ];
-
 const ColorPicker = () => {
   // Keep track of if spinner is open
   const [isOpen, setIsOpen] = useState(false);
@@ -223,6 +222,8 @@ const ColorPicker = () => {
           maxHeight: "81px",
           overflowY: "auto",
         }}
+        onMouseEnter={handleOpen}
+        onMouseLeave={handleClose}
       >
         {/* Create bottom line for every colour scheme */}
         {colors.map((scheme, index) => (

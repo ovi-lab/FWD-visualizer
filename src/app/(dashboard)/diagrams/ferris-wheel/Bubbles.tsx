@@ -98,7 +98,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const topicRadius = 175;
   const robotRadius = 85;
 
-  const userScaleFactor = 15;
+  const userScaleFactor = 16;
   const topicScaleFactor = 3;
 
   const angleSlice = (2 * Math.PI) / totalTopicNum;
@@ -611,6 +611,8 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
           const robotSize = 22;
 
           const minTopicSize = 27.5;
+
+          // console.log("topic: " + topic + " frequency: " + frequency);
           const topicSize = minTopicSize + frequency * topicScaleFactor;
 
           // Get the sum of all sentiment scores by accumulating current senitment score from initial value 0
@@ -620,10 +622,16 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
           );
           const averageSentimentScore = totalSentimentScore / analysis.length;
 
-          const minUserSize = 10;
+          const minUserSize = 8;
           const userSize =
             minUserSize + averageSentimentScore * userScaleFactor;
 
+          // console.log(
+          //   "topic: " +
+          //     topic +
+          //     " averageSentimentScore: " +
+          //     averageSentimentScore
+          // );
           const emotionLabel = analysis[0].emotion_label;
 
           const hoveredOpacity = hoveredBubble

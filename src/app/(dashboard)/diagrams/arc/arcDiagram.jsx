@@ -27,8 +27,11 @@ const checkIsUser = (node) => {
  */
 
 
-
 const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
+  const [hoveredNode, setHoveredNode] = useState(false);
+
+  const { selectedNode } = useSelectedNode();
+
   const {selectedColour} = useSelectedColour();
   const colors =
     Array.isArray(selectedColour) && selectedColour.length > 0
@@ -47,11 +50,9 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
           "#CBEAC7",
         ];
   // Determine stroke and fill colors based on whether the node is selected
-  const strokeColor = isSelected ? "rgb(139, 227, 139)" : "grey";
-  const strokeWidth = isSelected ? 2 : 1;
-  const fillColor = isSelected
-    ? "rgb(139, 227, 139)"
-    : colors[Math.floor(node.id / 2)]  // Use selectedColour from context if not selecte
+  const strokeColor = "grey";
+  const strokeWidth = 1;
+  const fillColor = colors[Math.floor(node.id / 2)]  // Use selectedColour from context if not selecte
 
   // Handle node click event
   const handleClick = () => handle(node.name);
@@ -69,37 +70,43 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
         stroke="grey"
         strokeWidth="1"
       />
-
+ 
       {/* Conditionally render a rect for "robot" type nodes or a circle for others */}
       {checkIsUser(node) ? (
         <circle
-          className="hover:fill-[#8be38b] cursor-pointer"
+          className="cursor-pointer"
           cx={xPosition}
           cy={arcHeight}
           id={node.name}
-          r={size}
+          r={hoveredNode ? size * 1.2 : size}
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill={fillColor}
+          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.5): 1 }
           onClick={handleClick}
+          onMouseEnter={() => setHoveredNode(true)}
+          onMouseLeave={() => setHoveredNode(false)}
         />
       ) : (
         <rect
-          className="hover:fill-[#8be38b] cursor-pointer"
-          height={size * 1.5}
-          width={size * 1.5}
-          x={xPosition - size / 1.5}
-          y={arcHeight - size / 2}
+          className="cursor-pointer"
+          height={hoveredNode ? size * 2.6 : size * 1.8}
+          width={hoveredNode ? size * 2.6 : size * 1.8}
+          x={xPosition - (hoveredNode ? size : size * 0.5) / 1} 
+          y={arcHeight - (hoveredNode ? size : size * 0.5) / 1}
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill={fillColor}
+          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.5): 1}
           onClick={handleClick}
+          onMouseEnter={() => setHoveredNode(true)}
+          onMouseLeave={() => setHoveredNode(false)}
         />
       )}
 
       {/* Render node label */}
       <text
-        className="text-sm font-mono"
+        className="text-xl font-mono"
         x={xPosition - 35}
         y={arcHeight + 35}
         transform="rotate(-45)"
@@ -147,9 +154,7 @@ const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added
         ];
   
   // Determine stroke color based on whether the connected node is selected
-  const strokeColor = isConnectedNodeSelected
-    ? "rgb(139, 227, 139)"
-    : colors[Math.floor(linkID/ 2)]
+  const strokeColor = colors[Math.floor(linkID/ 2)]
 
 
   // Set opacity based on selection status
@@ -160,10 +165,9 @@ const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added
       d={pathData}
       fill="none"
       stroke={strokeColor}
-      opacity={opacity}
       strokeWidth={7}
-      className=""
       id={name}
+      opacity = {opacity}
     />
   );
 };
@@ -226,6 +230,7 @@ function calculateLinkPath(link, nodesWithPosition, xRobot, xUser, arcHeight) {
  * @returns {number} The calculated engagement score for the node.
  */
 const calcEngagement = (node, maxUtteranceLength) => {
+
   const numericScore = (label, score) => {
     switch (label.toLowerCase()) {
       case "positive":
@@ -258,16 +263,18 @@ const calcEngagement = (node, maxUtteranceLength) => {
  * @returns {JSX.Element} The rendered component.
  */
 function ArcDiagram({data}) {
+  const { selectedNode, setSelectedNode } = useSelectedNode();
+
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [scales, setScales] = useState({});
   const [viewBox, setViewBox] = useState([]);
-  // Context for storing the node the user selects
-  const { selectedNode, setSelectedNode } = useSelectedNode();
 
   const handleNodeSelect = (nodeName) => {
     setSelectedNode(nodeName.split(": ")[1]); // take only topic name after ": "
   };
+
+  console.log("selectedNode: " + selectedNode)
 
   useEffect(() => {
     if (!data) return;
@@ -331,6 +338,7 @@ function ArcDiagram({data}) {
               linkID={link.source} // added linkID to give access to sourceid
               source={link.sourceName}
               pathData={link.d}
+              opacity={selectedNode ? (link.sourceName.includes(selectedNode) ? 1 : 0.5) : 1}
               isConnectedNodeSelected={link.name.includes(selectedNode)}
             />
           ))}
@@ -356,6 +364,8 @@ function ArcDiagram({data}) {
                 arcHeight={450}
                 isSelected={node.name === selectedNode}
                 handle={handleNodeSelect}
+                onMouseEnter = {()=> setHoveredBubble(node.name)}
+                onMouseLeave = {()=> setHoveredBubble(null)}
               />
             );
           })}

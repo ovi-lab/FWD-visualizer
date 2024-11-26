@@ -61,7 +61,7 @@ const Legend = () => {
         style={{
           border: "1px solid #CCCCCC",
           borderRadius: "5px",
-          width: "265px",
+          width: "245px",
           height: "55px",
           zIndex: "1",
           padding: "8px",
@@ -79,9 +79,8 @@ const Legend = () => {
             fontSize="14"
             alignmentBaseline="middle"
           >
-            Visiting New Topic
+            Visit New Topic
           </text>
-
           {/* Dashed Line and Text for Revisiting */}
           <line
             x1="0"
@@ -99,7 +98,7 @@ const Legend = () => {
             fontSize="14"
             alignmentBaseline="middle"
           >
-            Revisiting Previous Topic
+            Revisit Previous Topic
           </text>
         </svg>
       </div>

@@ -82,7 +82,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill={fillColor}
-          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.5): 1 }
+          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.6): 1 }
           onClick={handleClick}
           onMouseEnter={() => setHoveredNode(true)}
           onMouseLeave={() => setHoveredNode(false)}
@@ -90,14 +90,14 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
       ) : (
         <rect
           className="cursor-pointer"
-          height={hoveredNode ? size * 2.6 : size * 1.8}
-          width={hoveredNode ? size * 2.6 : size * 1.8}
-          x={xPosition - (hoveredNode ? size : size * 0.5) / 1} 
-          y={arcHeight - (hoveredNode ? size : size * 0.5) / 1}
+          height={hoveredNode ? size * 2.2 : size * 1.6}
+          width={hoveredNode ? size * 2.2 : size * 1.6}
+          x={xPosition - (hoveredNode ? size : size * 0.6) / 1} 
+          y={arcHeight - (hoveredNode ? size : size * 0.6) / 1}
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill={fillColor}
-          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.5): 1}
+          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.6): 1}
           onClick={handleClick}
           onMouseEnter={() => setHoveredNode(true)}
           onMouseLeave={() => setHoveredNode(false)}
@@ -158,7 +158,7 @@ const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added
 
 
   // Set opacity based on selection status
-  const opacity = isConnectedNodeSelected ? 1 : 0.5;
+  const opacity = isConnectedNodeSelected ? 1 : 0.6;
 
   return (
     <path
@@ -252,8 +252,8 @@ const calcEngagement = (node, maxUtteranceLength) => {
   );
 
   return node.turn.toLowerCase() === "user"
-    ? 0.5 * (sentimentScore * 0.4 + 1)
-    : 0.5;
+    ? 0.6 * (sentimentScore * 0.4 + 1)
+    : 0.6;
 };
 
 /**
@@ -338,7 +338,7 @@ function ArcDiagram({data}) {
               linkID={link.source} // added linkID to give access to sourceid
               source={link.sourceName}
               pathData={link.d}
-              opacity={selectedNode ? (link.sourceName.includes(selectedNode) ? 1 : 0.5) : 1}
+              opacity={selectedNode ? (link.sourceName.includes(selectedNode) ? 1 : 0.6) : 1}
               isConnectedNodeSelected={link.name.includes(selectedNode)}
             />
           ))}

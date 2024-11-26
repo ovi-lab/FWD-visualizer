@@ -56,7 +56,6 @@ function SankeyInterface() {
   return (
     <div className="p-5 w-full h-full mt-20">
       <div className="pb-4 mb-6">
-        {/* <h3 className="float-left text-md font-bold mr-4">Sankey Diagram</h3> */}
         <div className="direction-selector float-right ">
           <SelectorButton
             buttonDirection={"robot-user"}
@@ -77,8 +76,8 @@ function SankeyInterface() {
           />
         </div>
       </div>
-      <SankeyDiagram dataDirection={dataDirection} isBidirectional={dataDirection==="both"}/>
-    </div>
+      <SankeyDiagram style dataDirection={dataDirection} isBidirectional={dataDirection==="both"}/>
+      </div>
   );
 }
 

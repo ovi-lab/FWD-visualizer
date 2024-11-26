@@ -42,7 +42,9 @@ export default function Layout({
             </div>
           )}
         </div>
-        <div className="col-span-4 flex flex-col overflow-auto">{children}</div>
+        <div className="p-5 col-span-4 flex flex-col overflow-auto">
+          {children}
+        </div>
         <div className="col-span-2">
           <Chatbox />
         </div>

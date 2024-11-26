@@ -1,6 +1,9 @@
+import React, { useState } from "react";
 import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
 import { scaleOrdinal, schemeSet3 } from "d3";
-import { useDarkMode } from "@/app/contexts/DarkModeContext";
+// import { useDarkMode } from "@/app/contexts/DarkModeContext";
+import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
+
 
 // Create a color scale using D3's categorical color scheme
 const color = scaleOrdinal(schemeSet3);
@@ -23,6 +26,12 @@ const Node = ({
   isSelected,
   handle,
 }) => {
+
+  const {selectedColour} = useSelectedColour();
+  const {selectedNode} = useSelectedNode();
+
+  const [hoveredNode, setHoveredNode] = useState(false);
+
   // Determine if the node is on the left half of the diagram
   const widthLessThanHalf = nodeData.x0 < width / 2;
 
@@ -32,7 +41,6 @@ const Node = ({
   // Text alignment based on node position
   const textAnchorPosition = widthLessThanHalf ? "start" : "end";
 
-  const {selectedColour} = useSelectedColour();
   const colors =
     Array.isArray(selectedColour) && selectedColour.length > 0
       ? selectedColour
@@ -49,31 +57,37 @@ const Node = ({
           "#C181BD",
           "#CBEAC7",
         ];
-  const {darkMode} = useDarkMode();
+  const rectHeight = nodeData.y1 - nodeData.y0
+  const rectWidth = nodeData.x1 - nodeData.x0
+  
+
   return (
     <g key={nodeData.id}>
       {/* Node rectangle */}
       <rect
-        height={nodeData.y1 - nodeData.y0} // Height of the node
-        width={nodeData.x1 - nodeData.x0}  // Width of the node
-        x={nodeData.x0}                    // X-coordinate position
-        y={nodeData.y0}                    // Y-coordinate position
-        stroke={isSelected ? "rgb(14, 165, 233)" : "black"} // Border color changes if selected
+        height={hoveredNode ? rectHeight * 1.2: rectHeight} // Height of the node
+        width={hoveredNode ? rectWidth * 1.2 : rectWidth}  // Width of the node
+        x={nodeData.x0 - (hoveredNode ? rectWidth * 0.1 : 0)} 
+        y={nodeData.y0 - (hoveredNode ? rectHeight * 0.1 : 0)}                   
+        stroke={"black"} // Border color changes if selected
         fill={
           isSelected
             ? "rgb(139, 227, 139)" // Fill color if selected
             : colors[Math.floor(nodeData.id / 2)]  // Use selectedColour from context if not selected
         }
-        className="hover:fill-[#8be38b] cursor-pointer opacity-80" // Tailwind CSS classes for hover effect and pointer cursor
+        className="cursor-pointer" // Tailwind CSS classes for hover effect and pointer cursor
+        opacity = {selectedNode ? (nodeData.name.includes(selectedNode) ? 1 : 0.6): 1}
         onClick={() => {
           handle(nodeData.name); // Handle node click event
         }}
+        onMouseEnter={()=>{setHoveredNode(true)}}
+        onMouseLeave={()=>{setHoveredNode(false)}}
       />
       {/* Tooltip displaying node name */}
       <title>{nodeData.name}</title>
       {/* Node label */}
       <text
-        key={`${nodeData.id}a`}
+        key={`${nodeData.id}`}
         className="text-xs font-mono" // Tailwind CSS classes for text styling
         x={rectPosition}             // X-coordinate for the text
         y={(nodeData.y1 + nodeData.y0) / 2} // Y-coordinate centered vertically on the node
@@ -105,11 +119,12 @@ const Link = ({
   linkID,
   dValue,
   linkSourceName,
-  linkedNodeSelected,
   linkWidth,
 }) => {
 
+  const {selectedNode} = useSelectedNode();
   const {selectedColour} = useSelectedColour();
+
   const colors =
     Array.isArray(selectedColour) && selectedColour.length > 0
       ? selectedColour
@@ -126,23 +141,18 @@ const Link = ({
           "#C181BD",
           "#CBEAC7",
         ];
-  return (
+
+        return (
     <g>
       {/* Link path */}
       <path
         id={linkID}       // Unique identifier for the link
         d={dValue}        // SVG path data defining the link's shape
-        stroke={
-          linkedNodeSelected
-            ? "rgb(139, 227, 139)" // Stroke color if linked node is selected
-            : colors[Math.floor(linkID/ 2)]
-        }
-        fill="none"        // No fill color
-        strokeOpacity={linkedNodeSelected ? "1" : "1"} // Opacity adjustment
+        stroke={colors[Math.floor(linkID/ 2)]}
+        fill="none"       
         strokeWidth={Math.max(1, linkWidth)} // Ensure stroke width is at least 1
         style={{
-          // mixBlendMode: "multiply",            // Blends overlapping links
-          opacity: 0.8,
+          opacity: selectedNode ? (linkSourceName.includes(selectedNode) ? 1 : 0.6): 1,
           strokeDasharray: 1000,               // Total length of dashes
           strokeDashoffset: 1000,              // Starting point for the dash animation
           animation: "dash 1s linear forwards", // Animates the drawing of the path

@@ -140,10 +140,9 @@ const SankeyDiagram = ({ dataDirection, isBidirectional = false }) => {
   return (
     <svg
       className="p-1"
-      viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width + 20} ${
-        viewBox.height + 50
-      }`}
+      viewBox={`${viewBox.x-20} ${viewBox.y} ${viewBox.width + 40} ${viewBox.height + 50}`}
     >
+
       {/* Group element to contain all diagram elements */}
       <g /*style={{ mixBlendMode: "multiply" }}*/ id="svg-content">
         {/* Render links */}

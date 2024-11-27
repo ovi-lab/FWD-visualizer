@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
-import { scaleOrdinal, schemeSet3 } from "d3";
+// import { scaleOrdinal, schemeSet3 } from "d3";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 // Create a color scale using D3's categorical color scheme
@@ -21,27 +21,26 @@ import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 const Node = ({
   nodeData,
   width,
-  isSelected,
 }) => {
 
   const {selectedColour} = useSelectedColour();
   const {selectedNode, setSelectedNode} = useSelectedNode();
   const [hoveredNode, setHoveredNode] = useState(false);
-  const prevSelectedNode = useRef(null);
+  const [prevSelectedNode, setPrevSelectedNode] = useState(false);
 
   const handleNodeClick = (nodeName) => {
     // console.log("prevSelectedNode.current: " + prevSelectedNode.current)
     // console.log("nodeName: " + nodeName)
-    if (prevSelectedNode.current === nodeName) {
+    if (prevSelectedNode === nodeName) {
       // console.log("Node was previously selected:", nodeName);
       setSelectedNode(null); // Deselect if the same node is clicked again
       // console.log("unselect selectedNode: " + selectedNode)
-      prevSelectedNode.current = null; // Reset the reference to the previously clicked node
+      setPrevSelectedNode(null); // Reset the reference to the previously clicked node
     } else {
       // console.log("New node was selected:", nodeName);
       setSelectedNode(nodeName); // Select the newly selected node
       // ("select selectedNode: " + selectedNode)
-      prevSelectedNode.current = nodeName; // Update the reference to the previously clicked node
+      setPrevSelectedNode(nodeName); // Update the reference to the previously clicked node
     }
   };
 

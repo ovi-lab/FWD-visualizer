@@ -6,7 +6,7 @@ import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
 import { useDarkMode } from "@/app/contexts/DarkModeContext";
 
 // Define the color scale with D3 schemeSet3
-const color = scaleOrdinal(schemeSet3);
+// const color = scaleOrdinal(schemeSet3);
 
 // Determine if the node is a "user" type or a different entity
 const checkIsUser = (node) => {
@@ -27,10 +27,22 @@ const checkIsUser = (node) => {
  */
 
 
-const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
+const Node = ({ xPosition, node, size, arcHeight, handle }) => {
+
   const [hoveredNode, setHoveredNode] = useState(false);
 
-  const { selectedNode } = useSelectedNode();
+  const { selectedNode, setSelectedNode } = useSelectedNode();
+  const[prevSelectedNode, setPrevSelectedNode] = useState(null);
+
+  const handleNodeClick = (nodeName) => {
+    if(prevSelectedNode == nodeName) {
+      setSelectedNode(null);
+      setPrevSelectedNode(null)
+    }else {
+      setSelectedNode(nodeName);
+      setPrevSelectedNode(nodeName);
+    }
+  }
 
   const {selectedColour} = useSelectedColour();
   const colors =
@@ -55,7 +67,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
   const fillColor = colors[Math.floor(node.id / 2)]  // Use selectedColour from context if not selecte
 
   // Handle node click event
-  const handleClick = () => handle(node.name);
+  // const handleClick = () => handle(node.name);
 
   const {darkMode} = useDarkMode();
 
@@ -83,7 +95,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
           strokeWidth={strokeWidth}
           fill={fillColor}
           opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.5): 1 }
-          onClick={handleClick}
+          onClick={() => handleNodeClick(node.name)}
           onMouseEnter={() => setHoveredNode(true)}
           onMouseLeave={() => setHoveredNode(false)}
         />
@@ -98,7 +110,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
           strokeWidth={strokeWidth}
           fill={fillColor}
           opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.5): 1}
-          onClick={handleClick}
+          onClick={() => handleNodeClick(node.name)}
           onMouseEnter={() => setHoveredNode(true)}
           onMouseLeave={() => setHoveredNode(false)}
         />

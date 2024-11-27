@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { scaleLinear, scalePoint, scaleOrdinal, schemeSet3 } from "d3";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
@@ -32,15 +32,15 @@ const Node = ({ xPosition, node, size, arcHeight, handle }) => {
   const [hoveredNode, setHoveredNode] = useState(false);
 
   const { selectedNode, setSelectedNode } = useSelectedNode();
-  const[prevSelectedNode, setPrevSelectedNode] = useState(null);
+  const prevSelectedNode = useRef(null);
 
   const handleNodeClick = (nodeName) => {
     if(prevSelectedNode == nodeName) {
       setSelectedNode(null);
-      setPrevSelectedNode(null)
+      prevSelectedNode.current = null;
     }else {
       setSelectedNode(nodeName);
-      setPrevSelectedNode(nodeName);
+      prevSelectedNode.current = nodeName;
     }
   }
 
@@ -67,7 +67,7 @@ const Node = ({ xPosition, node, size, arcHeight, handle }) => {
   const fillColor = colors[Math.floor(node.id / 2)]  // Use selectedColour from context if not selecte
 
   // Handle node click event
-  // const handleClick = () => handle(node.name);
+  const handleClick = () => handle(node.name);
 
   const {darkMode} = useDarkMode();
 

@@ -21,12 +21,13 @@ import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 const Node = ({
   nodeData,
   width,
+  handle
 }) => {
 
   const {selectedColour} = useSelectedColour();
   const {selectedNode, setSelectedNode} = useSelectedNode();
   const [hoveredNode, setHoveredNode] = useState(false);
-  const [prevSelectedNode, setPrevSelectedNode] = useState(false);
+  const prevSelectedNode = useRef(null);
 
   const handleNodeClick = (nodeName) => {
     // console.log("prevSelectedNode.current: " + prevSelectedNode.current)
@@ -35,12 +36,12 @@ const Node = ({
       // console.log("Node was previously selected:", nodeName);
       setSelectedNode(null); // Deselect if the same node is clicked again
       // console.log("unselect selectedNode: " + selectedNode)
-      setPrevSelectedNode(null); // Reset the reference to the previously clicked node
+      prevSelectedNode.current = null; // Reset the reference to the previously clicked node
     } else {
       // console.log("New node was selected:", nodeName);
       setSelectedNode(nodeName); // Select the newly selected node
       // ("select selectedNode: " + selectedNode)
-      setPrevSelectedNode(nodeName); // Update the reference to the previously clicked node
+      prevSelectedNode.current = nodeName; // Update the reference to the previously clicked node
     }
   };
 
@@ -82,7 +83,7 @@ const Node = ({
         fill={colors[Math.floor(nodeData.id / 2)]}
         className="cursor-pointer" // Tailwind CSS classes for hover effect and pointer cursor
         opacity = {selectedNode ? (nodeData.name.includes(selectedNode) ? 1 : 0.4): 1}
-        onClick={() => handleNodeClick(nodeData.name)}         
+        onClick={() => {handleNodeClick(nodeData.name);}}
         onMouseEnter={()=>{setHoveredNode(true)}}
         onMouseLeave={()=>{setHoveredNode(false)}}
       />

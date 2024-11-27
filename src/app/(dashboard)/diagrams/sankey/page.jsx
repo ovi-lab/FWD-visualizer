@@ -55,7 +55,7 @@ function SankeyInterface() {
 
   return (
     <div className="p-5 w-full h-full mt-20">
-      <div className="pb-4 mb-6">
+      <div className="pb-4 mb-10">
         <div className="direction-selector float-right ">
           <SelectorButton
             buttonDirection={"robot-user"}

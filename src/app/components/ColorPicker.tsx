@@ -161,7 +161,11 @@ const ColorPicker = () => {
           marginBottom: "8px",
         }}
       >
-        <span style={{ color: darkMode ? "white" : "#3c3c3c" }}>
+        <span
+          className={`${
+            darkMode ? "text-white" : "text-grey500"
+          } pt-1 pr-2 whitespace-nowrap`}
+        >
           Color Theme
         </span>
       </label>

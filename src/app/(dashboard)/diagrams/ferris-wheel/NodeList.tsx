@@ -112,7 +112,7 @@ export default function NodeList({
         style={{
           position: "relative",
           top: "0px",
-          right: "220px",
+          right: "200px",
           width: "240px",
           height: "240px",
         }}

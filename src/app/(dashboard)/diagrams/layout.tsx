@@ -37,7 +37,7 @@ export default function Layout({
             <ColorPicker />
           </div>
           {isFerrisWheelPage && (
-            <div className="mt-auto pb-12">
+            <div className="mt-auto pb-20">
               <Legend />
             </div>
           )}

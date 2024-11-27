@@ -82,7 +82,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill={fillColor}
-          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.6): 1 }
+          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.5): 1 }
           onClick={handleClick}
           onMouseEnter={() => setHoveredNode(true)}
           onMouseLeave={() => setHoveredNode(false)}
@@ -97,7 +97,7 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill={fillColor}
-          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.6): 1}
+          opacity={selectedNode ? (node.name.includes(selectedNode) ? 1 : 0.5): 1}
           onClick={handleClick}
           onMouseEnter={() => setHoveredNode(true)}
           onMouseLeave={() => setHoveredNode(false)}
@@ -136,6 +136,8 @@ const Node = ({ xPosition, node, size, arcHeight, isSelected, handle }) => {
 const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added linkID to get link colour
 
   const {selectedColour} = useSelectedColour();
+  const { selectedNode, setSelectedNode } = useSelectedNode();
+
   const colors =
     Array.isArray(selectedColour) && selectedColour.length > 0
       ? selectedColour
@@ -158,7 +160,8 @@ const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added
 
 
   // Set opacity based on selection status
-  const opacity = isConnectedNodeSelected ? 1 : 0.6;
+  const opacity = selectedNode ? (name.includes(selectedNode) ? 1 : 0.2) : 1;
+  console.log("name.includes(selectedNode): " + name.includes(selectedNode))
 
   return (
     <path
@@ -338,7 +341,7 @@ function ArcDiagram({data}) {
               linkID={link.source} // added linkID to give access to sourceid
               source={link.sourceName}
               pathData={link.d}
-              opacity={selectedNode ? (link.sourceName.includes(selectedNode) ? 1 : 0.6) : 1}
+              opacity={selectedNode ? (link.sourceName.includes(selectedNode) ? 1 : 0) : 1}
               isConnectedNodeSelected={link.name.includes(selectedNode)}
             />
           ))}

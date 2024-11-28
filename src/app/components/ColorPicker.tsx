@@ -181,15 +181,20 @@ const ColorPicker = () => {
           borderRadius: "4px",
           backgroundColor: "white",
         }}
+        onMouseEnter={handleOpen}
+        onMouseLeave={handleClose}
       >
         {/* Array.prototype.map((element, index) => ()) */}
-        <div style={{ display: "flex", gap: "4px" }}>
+        <div
+          style={{ display: "flex", gap: "4px" }}
+          onMouseEnter={handleOpen}
+          onMouseLeave={handleClose}
+        >
           {/* Create a set of color blocks for the selected colour scheme */}
           {selectedColour.map((color, i) => (
             <span
               key={i}
               style={{
-                cursor: "pointer",
                 display: "inline-block",
                 width: "16px",
                 height: "16px",
@@ -208,8 +213,8 @@ const ColorPicker = () => {
       <div
         className={`transform transition-all duration-[400ms] ease-in-out ${
           isOpen
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-2 opacity-0 pointer-events-none"
+            ? "translate-y-0 opacity-100 ease-in-out"
+            : "-translate-y-2 opacity-0 ease-in-out"
         } w-fit`}
         style={{
           cursor: "pointer",
@@ -243,6 +248,8 @@ const ColorPicker = () => {
               borderBottom:
                 index !== colors.length - 1 ? "1px solid #eee" : "none", // Create bottom border for every colour scheme except for the last one
             }}
+            onMouseEnter={handleOpen}
+            onMouseLeave={handleClose}
           >
             {/* Create  a set of color blocks for every color scheme options */}
             {scheme.map((color, i) => (

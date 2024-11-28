@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect } from "react";
 import { scaleLinear, scalePoint, scaleOrdinal, schemeSet3 } from "d3";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
@@ -26,21 +26,22 @@ const checkIsUser = (node) => {
  * @returns {JSX.Element} - A JSX element representing the node.
  */
 
-
 const Node = ({ xPosition, node, size, arcHeight, handle }) => {
+  
+  const {darkMode} = useDarkMode();
+  const { selectedNode, setSelectedNode } = useSelectedNode();
 
   const [hoveredNode, setHoveredNode] = useState(false);
-
-  const { selectedNode, setSelectedNode } = useSelectedNode();
-  const prevSelectedNode = useRef(null);
+  const[prevSelectedNode, setPrevSelectedNode] = useState(null);
 
   const handleNodeClick = (nodeName) => {
-    if(prevSelectedNode == nodeName) {
+    if(prevSelectedNode === nodeName) {
       setSelectedNode(null);
-      prevSelectedNode.current = null;
+      setPrevSelectedNode(null)
     }else {
       setSelectedNode(nodeName);
-      prevSelectedNode.current = nodeName;
+      setPrevSelectedNode(nodeName);
+      handle(nodeName)
     }
   }
 
@@ -66,10 +67,8 @@ const Node = ({ xPosition, node, size, arcHeight, handle }) => {
   const strokeWidth = 1;
   const fillColor = colors[Math.floor(node.id / 2)]  // Use selectedColour from context if not selecte
 
-  // Handle node click event
-  const handleClick = () => handle(node.name);
 
-  const {darkMode} = useDarkMode();
+  
 
   return (
     <g key={`node${node.name}`}>
@@ -173,7 +172,6 @@ const Link = ({ name, linkID, pathData, isConnectedNodeSelected }) => { // added
 
   // Set opacity based on selection status
   const opacity = selectedNode ? (name.includes(selectedNode) ? 1 : 0.2) : 1;
-  console.log("name.includes(selectedNode): " + name.includes(selectedNode))
 
   return (
     <path
@@ -289,7 +287,6 @@ function ArcDiagram({data}) {
     setSelectedNode(nodeName.split(": ")[1]); // take only topic name after ": "
   };
 
-  console.log("selectedNode: " + selectedNode)
 
   useEffect(() => {
     if (!data) return;
@@ -334,7 +331,7 @@ function ArcDiagram({data}) {
     const svgContent = document.getElementById("arc-content");
     if (svgContent) {
       const { x, y, width, height } = svgContent.getBBox();
-      const newViewBox = `${x} ${y} ${width + 50} ${height + 20}`;
+      const newViewBox = `${x} ${y-10} ${width + 50} ${height + 20}`;
       setViewBox(newViewBox);
     }
   }, [nodes, links]);

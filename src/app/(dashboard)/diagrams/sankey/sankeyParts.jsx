@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useSelectedColour } from "@/app/contexts/SelectedColourContext";
 // import { scaleOrdinal, schemeSet3 } from "d3";
 import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
@@ -26,22 +26,25 @@ const Node = ({
 
   const {selectedColour} = useSelectedColour();
   const {selectedNode, setSelectedNode} = useSelectedNode();
-  const [hoveredNode, setHoveredNode] = useState(false);
-  const prevSelectedNode = useRef(null);
+  const [hoveredNode, setHoveredNode] = useState(null);
+  const [prevSelectedNode, setPrevSelectedNode] = useState(null);
 
   const handleNodeClick = (nodeName) => {
-    // console.log("prevSelectedNode.current: " + prevSelectedNode.current)
-    // console.log("nodeName: " + nodeName)
+    console.log("prevSelectedNode: " + prevSelectedNode);
+    console.log("nodeName: " + nodeName);
+
     if (prevSelectedNode === nodeName) {
-      // console.log("Node was previously selected:", nodeName);
+      console.log("Node was previously selected:", nodeName);
       setSelectedNode(null); // Deselect if the same node is clicked again
-      // console.log("unselect selectedNode: " + selectedNode)
-      prevSelectedNode.current = null; // Reset the reference to the previously clicked node
+      console.log("unselect selectedNode: " + selectedNode)
+      setPrevSelectedNode(null); // Reset the reference to the previously clicked node
+
     } else {
-      // console.log("New node was selected:", nodeName);
+      console.log("New node was selected:", nodeName);
       setSelectedNode(nodeName); // Select the newly selected node
-      // ("select selectedNode: " + selectedNode)
-      prevSelectedNode.current = nodeName; // Update the reference to the previously clicked node
+      console.log("select selectedNode: " + selectedNode)
+      setPrevSelectedNode(nodeName); // Update the reference to the previously clicked node
+      handle(nodeName); // For scrolling functinoality
     }
   };
 
@@ -71,6 +74,8 @@ const Node = ({
           "#CBEAC7",
         ];
 
+
+
   return (
     <g key={nodeData.id}>
       {/* Node rectangle */}
@@ -82,8 +87,8 @@ const Node = ({
         stroke={"black"} // Border color changes if selected
         fill={colors[Math.floor(nodeData.id / 2)]}
         className="cursor-pointer" // Tailwind CSS classes for hover effect and pointer cursor
-        opacity = {selectedNode ? (nodeData.name.includes(selectedNode) ? 1 : 0.4): 1}
-        onClick={() => {handleNodeClick(nodeData.name);}}
+        opacity = {selectedNode ? (selectedNode === nodeData.name.split(": ")[1] ? 1 : 0.4) : 1}
+        onClick={() => handleNodeClick(nodeData.name)}         
         onMouseEnter={()=>{setHoveredNode(true)}}
         onMouseLeave={()=>{setHoveredNode(false)}}
       />
@@ -119,7 +124,6 @@ const Node = ({
  * @returns {JSX.Element} The rendered link element.
  */
 
-// How can I set the dynamic opacity for Link component as well using selectedNode
 const Link = ({
   linkID,
   dValue,
@@ -147,11 +151,8 @@ const Link = ({
           "#CBEAC7",
         ];
 
-
-  const trimmedSelectedNode = selectedNode ? selectedNode.split(": ")[1] : null;
-  console.log("selectedNode: " +  trimmedSelectedNode + "=== linkSourceName: " + linkSourceName + ": " + (trimmedSelectedNode === linkSourceName))
-  
-  const opacity = selectedNode ? (trimmedSelectedNode === linkSourceName ? 1 : 0.4) : 1;
+  // console.log("selectedNode: " +  selectedNode + "=== linkSourceName: " + linkSourceName + ": " + (selectedNode === linkSourceName))
+  const opacity = selectedNode ? (selectedNode === linkSourceName ? 1 : 0.4) : 1;
 
   return (
     <g>

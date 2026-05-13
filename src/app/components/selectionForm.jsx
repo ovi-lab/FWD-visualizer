@@ -15,13 +15,16 @@ export function SelectionForm() {
   const [file, setFile] = useState(null);
   const [isConnected, setConnected] = useState(false);
 
-  const handleUploadSubmit = (e) => {
-    if (file !== null) {
-      socket.emit("upload_file", file, file.name);
-      socket.once("returner", (newfile) => {
-        console.log("file", newfile);
-      });
-    }
+  const handleUploadSubmit = () => {
+    if (file === null) return;
+    socket.once("upload-success", () => {
+      socket.emit("transcript_request");
+      socket.emit("diagram_request");
+    });
+    socket.once("upload-error", (msg) => {
+      alert(`Upload failed: ${msg}`);
+    });
+    socket.emit("upload_file", file, file.name);
   };
 
   const handleDownloadClick = (filetype) => {
@@ -93,12 +96,7 @@ export function SelectionForm() {
 
   return (
     <div className="items-center justify-center mb-8">
-      <form
-        onSubmit={handleUploadSubmit}
-        method="post"
-        encType="multipart/form-data"
-        className="shadow-md rounded p-2"
-      >
+      <div className="shadow-md rounded p-2">
         <div className="mb-3">
           <label
             className="block mb-2 text-sm font-medium text-white"
@@ -116,12 +114,13 @@ export function SelectionForm() {
           <button
             className="select-none cursor-pointer rounded-lg border-2 border-gray-700
                      py-1 px-2 font-bold text-gray-700 bg-white text-sm"
-            type="submit"
+            type="button"
+            onClick={handleUploadSubmit}
           >
             Submit
           </button>
         </div>
-      </form>
+      </div>
       <div className="mb-3">
         <label className="inline-flex  items-center cursor-pointer">
           <input

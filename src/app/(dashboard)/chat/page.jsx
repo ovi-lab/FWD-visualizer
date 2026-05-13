@@ -9,6 +9,7 @@ import { useSelectedNode } from "@/app/contexts/selectedNodeContext";
 
 function checkForCollection(current, previous) {
   if (previous === undefined) return false;
+  if (!previous.slots || !current.slots) return false; // original: previous.slots.length < current.slots.length — slots is optional, not present on every entry
   return previous.slots.length < current.slots.length;
 }
 

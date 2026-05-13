@@ -47,7 +47,7 @@ export default function SideBar() {
           <NavItem href="/diagrams/arc" title="Arc Diagram" />
           <NavItem href="/diagrams/sankey" title="Sankey Diagram" />
           <NavItem href="/diagrams/ferris-wheel" title="Ferris Wheel" />
-          <NavItem href="/diagrams/ToF" title="Tiers of Friendship" />
+          {/* <NavItem href="/diagrams/ToF" title="Tiers of Friendship" /> */}
           <li className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700"></li>
           <SelectionForm/>
         </ul>

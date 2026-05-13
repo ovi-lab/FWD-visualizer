@@ -17,28 +17,19 @@ export const SocketDataProvider = ({ children }) => {
 
   // Callback to handle incoming data
   const handleDiagramResponse = useCallback((newData) => {
-    if (newData === undefined) {
-      print("No correct diagram data received from server");
-      return;
-    }
+    if (newData === undefined) return;
     setDiagramData(newData);
   }, []);
-  
+
   const handleTranscriptResponse = useCallback((newData) => {
-    if (newData === undefined) {
-      print("No correct transcript data received from server");
-      return;
-    }
+    if (newData === undefined) return;
     setTranscriptData(newData);
   }, []);
 
   useEffect(() => {
     // Initialize socket connection
-    const newSocket = io(":6400", {
-      cors: {
-        origin: "http://127.0.0.1:6400",
-        methods: ["GET", "POST"],
-      },
+    const newSocket = io("http://localhost:6400", {
+      transports: ["websocket"],
     });
     setSocket(newSocket);
 

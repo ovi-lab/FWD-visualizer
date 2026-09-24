@@ -18,7 +18,9 @@ export default function Layout({
     <div className="grid grid-cols-9 w-full h-full min-h-screen min-w-screen">
       <SocketDataProvider>
         <div className="col-span-1 flex flex-col h-full">
+        {/* comment this out to remove side abr */}
           <SideBar />
+          {/* to remove side bar, comment out the above line */}
         </div>
         <ClickedBubbleProvider>
           <VisibleDivsProvider>
@@ -38,7 +40,9 @@ export default function Layout({
                         </div>
                       </DarkModeHoverProvider>
                     </DarkModeProvider>
-                    <ControlPanel />
+                    {/* Hidden for now: filter panel (speaker, sentiment, emotion, topic,
+                        safety, reset, timeline). Uncomment to bring it back.
+                    <ControlPanel /> */}
                   </FilterProvider>
                 </div>
               </SelectedColourProvider>

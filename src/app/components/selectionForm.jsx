@@ -14,16 +14,37 @@ export function SelectionForm() {
   const { socket } = useSocketData();
   const [file, setFile] = useState(null);
   const [isConnected, setConnected] = useState(false);
+  const [isUploading, setUploading] = useState(false);
+  const [status, setStatus] = useState([]);
 
   const handleUploadSubmit = () => {
-    if (file === null) return;
-    socket.once("upload-success", () => {
+    if (file === null || isUploading) return;
+    setUploading(true);
+    setStatus(["Uploading..."]);
+
+    // Raw transcripts are processed on the server, which reports each step here.
+    const onProgress = (msg) => setStatus((prev) => [...prev, msg]);
+    const finish = () => {
+      socket.off("upload-progress", onProgress);
+      socket.off("upload-success", onSuccess);
+      socket.off("upload-error", onError);
+      setUploading(false);
+    };
+    const onSuccess = () => {
+      finish();
+      setStatus((prev) => [...prev, "Done."]);
       socket.emit("transcript_request");
       socket.emit("diagram_request");
-    });
-    socket.once("upload-error", (msg) => {
+    };
+    const onError = (msg) => {
+      finish();
+      setStatus([]);
       alert(`Upload failed: ${msg}`);
-    });
+    };
+
+    socket.on("upload-progress", onProgress);
+    socket.once("upload-success", onSuccess);
+    socket.once("upload-error", onError);
     socket.emit("upload_file", file, file.name);
   };
 
@@ -102,25 +123,36 @@ export function SelectionForm() {
             className="block mb-2 text-sm font-medium text-white"
             htmlFor="upload_button"
           >
-            Upload the file you want to see visualized (YAML and JSON accepted)
+            Upload a transcript to visualize (raw Haru JSON or processed JSON)
           </label>
           <input
             className="block w-full mb-2 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
             id="upload_button"
-            accept=".json,.yml,.yaml"
+            // No accept filter: many transcripts are saved without a .json extension.
+            // The server checks the contents instead.
             type="file"
             onChange={(e) => setFile(e.target.files[0])}
           />
           <button
             className="select-none cursor-pointer rounded-lg border-2 border-gray-700
-                     py-1 px-2 font-bold text-gray-700 bg-white text-sm"
+                     py-1 px-2 font-bold text-gray-700 bg-white text-sm disabled:opacity-50 disabled:cursor-wait"
             type="button"
             onClick={handleUploadSubmit}
+            disabled={isUploading}
           >
-            Submit
+            {isUploading ? "Processing..." : "Submit"}
           </button>
+          {status.map((line, i) => (
+            <p
+              key={i}
+              className={`mt-1 text-xs ${line.startsWith("Warning") ? "text-yellow-300" : "text-gray-300"}`}
+            >
+              {line}
+            </p>
+          ))}
         </div>
       </div>
+      {/* Hidden for now; uncomment to bring back the live feed toggle and downloads.
       <div className="mb-3">
         <label className="inline-flex  items-center cursor-pointer">
           <input
@@ -149,6 +181,7 @@ export function SelectionForm() {
       >
         Download YAML
       </button>
+      */}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useFilter } from "@/app/contexts/filterContext";
 import TimeLine from "./timeline";
 import { useSocketData } from "@/app/contexts/socketDataContext";
@@ -124,6 +124,35 @@ const ControlPanel = () => {
   const [filterState, setFilterState] = useState(defaultFilters);
   const [availableTopics, setAvailableTopics] = useState([]);
   const { setFilters } = useFilter();
+  const loadedStartRef = useRef(null);
+  const loadedEndRef = useRef(null);
+
+  // Keep filters in step with the loaded transcript. The timeline filter hides every line
+  // after its timestamp, so a filter left at the previous transcript's end time would hide
+  // all of a later session (the diagram shows up empty until the page is refreshed).
+  useEffect(() => {
+    if (!transcriptData || transcriptData.length === 0) return;
+    const start = transcriptData[0].timestamp;
+    const end = transcriptData[transcriptData.length - 1].timestamp;
+
+    if (loadedStartRef.current !== null && start !== loadedStartRef.current) {
+      // A different transcript was uploaded: start again from default filters.
+      const resetValue = { ...defaultFilters, timestamp: end };
+      setFilterState(resetValue);
+      setFilters(resetValue);
+    } else if (loadedEndRef.current !== null && end !== loadedEndRef.current) {
+      // Same transcript grew (live feed): if the slider was at the end, follow the new end.
+      setFilterState((current) => {
+        if (current.timestamp !== loadedEndRef.current) return current;
+        const followed = { ...current, timestamp: end };
+        setFilters(followed);
+        return followed;
+      });
+    }
+
+    loadedStartRef.current = start;
+    loadedEndRef.current = end;
+  }, [transcriptData, setFilters]);
 
   useEffect(() => {
     if (!transcriptData) return;

@@ -22,7 +22,7 @@ export default function Layout({
       <div
         style={{
           background: darkMode
-            ? "#3C3C3C"
+            ? "#0f0f13"
             : selectedBackgroundColour
             ? selectedBackgroundColour
             : "white",
@@ -36,11 +36,11 @@ export default function Layout({
           <div className="mt-1">
             <ColorPicker />
           </div>
-          {isFerrisWheelPage && (
+          {/* {isFerrisWheelPage && (
             <div className="mt-auto pb-20">
               <Legend />
             </div>
-          )}
+          )} */}
         </div>
         <div className="p-5 col-span-4 flex flex-col overflow-auto">
           {children}

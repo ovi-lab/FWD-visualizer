@@ -69,11 +69,13 @@ function SankeyInterface() {
             handleRadioChange={handleRadioChange}
           />
 
+          {/* Hidden for now; uncomment to bring back the "Both" direction.
           <SelectorButton
             buttonDirection={"both"}
             directionState={dataDirection}
             handleRadioChange={handleRadioChange}
           />
+          */}
         </div>
       </div>
       <SankeyDiagram style dataDirection={dataDirection} isBidirectional={dataDirection==="both"}/>

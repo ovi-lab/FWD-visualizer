@@ -330,7 +330,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
   const calculateFontSize = (circleRadius: number, text: string, padding = 8) => {
     const availableWidth = circleRadius * 2 - padding * 2;
     const availableHeight = circleRadius * 2 - padding * 2;
-    let fontSize = Math.min(18, circleRadius * 0.45);
+    let fontSize = Math.min(18, circleRadius * 0.60);
     while (fontSize > 7) {
       const lines = wrapText(text, fontSize, availableWidth);
       const lineHeight = fontSize * 1.15;
@@ -355,16 +355,16 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
     const lineHeight = fontSize * 1.15;
     return (
       <text
-        className="font-mono"
+        className="font-sans"
         x={cx}
         y={cy - ((lines.length - 1) * lineHeight) / 2}
         textAnchor="middle"
         fontSize={fontSize}
-        fill="white"
-        filter="url(#drop-shadow)"
+        fill="#333"
+        // filter="url(#drop-shadow)"
         opacity={opactiy}
-        stroke="white"
-        strokeWidth="0.5px"
+        stroke="#333"
+        strokeWidth="0.9px"
         style={{ transition: "opacity 0.4s ease-out", cursor: "pointer" }}
         onMouseEnter={() => setHoveredBubble(text)}
         onMouseLeave={() => setHoveredBubble(null)}
@@ -390,7 +390,7 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
         alignItems: "center",
         justifyContent: "center",
         background: darkMode
-          ? "#3C3C3C"
+          ? "#0f0f13"
           : selectedBackgroundColour
           ? selectedBackgroundColour
           : "white",
@@ -430,8 +430,8 @@ const Bubbles: React.FC<BubbleProps> = ({ topicMap, linksMap }) => {
           const robotY = startingPosition + robotRadius * Math.sin(angle);
 
           const robotSize = 22;
-          const minTopicSize = 15.5;
-          const topicSize = minTopicSize + (frequency / maxFrequency) * 40;
+          const minTopicSize = 30;
+          const topicSize = minTopicSize + (frequency / maxFrequency) * 25;
 
           const totalSentimentScore = analysis.reduce(
             (sum, current) => sum + current.sentiment_score,

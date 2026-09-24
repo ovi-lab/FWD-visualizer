@@ -64,8 +64,6 @@ Commented out (`{/* ... */}`), not deleted — uncomment to restore:
 
 ---
 
-## For developers
-
 ### Tech stack
 
 - **Framework:** Next.js 14 (App Router)
